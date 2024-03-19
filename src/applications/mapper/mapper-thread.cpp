@@ -67,7 +67,7 @@ static double Cost(const model::Topology::Stats& stats, const std::string metric
   {
     cost = stats.energy;
   }
-  else if (metric == "last_level_accesses")
+  else if (metric == "last-level-accesses")
   {
     cost = stats.last_level_accesses;
   }
@@ -267,7 +267,6 @@ MapperThread::MapperThread(
   uint128_t search_size,
   std::uint32_t timeout,
   std::uint32_t victory_condition,
-  std::int32_t max_temporal_loops_in_a_mapping,
   uint128_t sync_interval,
   uint128_t log_interval,
   bool log_oaves,
@@ -293,7 +292,6 @@ MapperThread::MapperThread(
     search_size_(search_size),
     timeout_(timeout),
     victory_condition_(victory_condition),
-    max_temporal_loops_in_a_mapping_(max_temporal_loops_in_a_mapping),
     sync_interval_(sync_interval),
     log_interval_(log_interval),
     log_oaves_(log_oaves),
@@ -364,7 +362,7 @@ void MapperThread::Run()
 
       if (valid_mappings > 0)
       {
-        msg << std::setw(10) << OUT_FLOAT_FORMAT << std::setprecision(2) << OUT_PERCENT(stats_.thread_best.stats.utilization)
+        msg << std::setw(10) << OUT_FLOAT_FORMAT << std::setprecision(2) << (stats_.thread_best.stats.utilization * 100) << "%"
             << std::setw(11) << OUT_FLOAT_FORMAT << PRINTFLOAT_PRECISION << stats_.thread_best.stats.energy /
           stats_.thread_best.stats.algorithmic_computes;
       }
@@ -388,7 +386,7 @@ void MapperThread::Run()
       terminate = true;
     }
 
-    if (search_size_ > 0 && valid_mappings >= search_size_)
+    if (search_size_ > 0 && valid_mappings == search_size_)
     {
       mutex_->lock();
       log_stream_ << "[" << std::setw(3) << thread_id_ << "] STATEMENT: " << search_size_
@@ -398,7 +396,7 @@ void MapperThread::Run()
       terminate = true;
     }
 
-    if (victory_condition_ > 0 && mappings_since_last_best_update >= victory_condition_)
+    if (victory_condition_ > 0 && mappings_since_last_best_update == victory_condition_)
     {
       mutex_->lock();
       log_stream_ << "[" << std::setw(3) << thread_id_ << "] STATEMENT: " << victory_condition_
@@ -409,7 +407,7 @@ void MapperThread::Run()
     }
 
     if ((invalid_mappings_mapcnstr + invalid_mappings_eval) > 0 &&
-        (invalid_mappings_mapcnstr + invalid_mappings_eval) >= timeout_)
+        (invalid_mappings_mapcnstr + invalid_mappings_eval) == timeout_)
     {
       mutex_->lock();
       log_stream_ << "[" << std::setw(3) << thread_id_ << "] STATEMENT: " << timeout_
@@ -498,18 +496,13 @@ void MapperThread::Run()
     bool only_bypass_changed = false;
     if (total_mappings > 1)
     {
-      // Match ON if the bypass changed
-      for (unsigned idim = 0; idim < unsigned(mapspace::Dimension::Num); idim++)
-      {
-        if (mapspace::Dimension(idim) == mapspace::Dimension::DatatypeBypass)
-          only_bypass_changed |= (mapping_id[idim] != prev_mapping_id[idim]);
-      }
-      // OFF if anything else changed
+      bool match = true;
       for (unsigned idim = 0; idim < unsigned(mapspace::Dimension::Num); idim++)
       {
         if (mapspace::Dimension(idim) != mapspace::Dimension::DatatypeBypass)
-          only_bypass_changed &= (mapping_id[idim] == prev_mapping_id[idim]);
+          match &= (mapping_id[idim] == prev_mapping_id[idim]);
       }
+      only_bypass_changed = match;
     }
     prev_mapping_id = mapping_id;
 
@@ -530,17 +523,6 @@ void MapperThread::Run()
                                { return cur && status.success; });
 
     total_mappings++;
-    if(success && max_temporal_loops_in_a_mapping_ > 0)
-    { // Count the number of temporal loops
-      int temporal_loops = 0;
-      for(auto& maploop: mapping.loop_nest.loops)
-      {
-        if(loop::IsSpatial(maploop.spacetime_dimension)) continue;
-        temporal_loops += (maploop.end - maploop.start) > maploop.stride;
-      }
-      if(temporal_loops > max_temporal_loops_in_a_mapping_) success = false;
-    }
-
 
     if (!success)
     {
@@ -663,7 +645,7 @@ void MapperThread::Run()
       if (is_sparse_topology)
       {
         log_stream_ << "[" << std::setw(3) << thread_id_ << "]"
-                  << " Utilization = " << std::setw(4) << OUT_PERCENT(stats.utilization)
+                  << " Utilization = " << std::setw(4) << OUT_FLOAT_FORMAT << std::setprecision(2) << stats.utilization
                   << " | pJ/Algorithmic-Compute = " << std::setw(4) << OUT_FLOAT_FORMAT << PRINTFLOAT_PRECISION << stats.energy / stats.algorithmic_computes
                   << " | pJ/Compute = " << std::setw(4) << OUT_FLOAT_FORMAT << PRINTFLOAT_PRECISION << stats.energy / stats.actual_computes
                   << " | " << mapping.PrintCompact()
@@ -672,7 +654,7 @@ void MapperThread::Run()
       else
       {
         log_stream_ << "[" << std::setw(3) << thread_id_ << "]"
-                  << " Utilization = " << std::setw(4) << OUT_PERCENT(stats.utilization)
+                  << " Utilization = " << std::setw(4) << OUT_FLOAT_FORMAT << std::setprecision(2) << stats.utilization
                   << " | pJ/Compute = " << std::setw(4) << OUT_FLOAT_FORMAT << PRINTFLOAT_PRECISION << stats.energy / stats.actual_computes
                   << " | " << mapping.PrintCompact()
                   << std::endl;

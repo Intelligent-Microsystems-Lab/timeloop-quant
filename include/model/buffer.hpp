@@ -88,10 +88,11 @@ class BufferLevel : public Level
     
     Attribute<std::string> name;
     Attribute<Technology> technology;
-    Attribute<std::uint64_t> size;
+    // Attribute<std::uint64_t> size;
+    Attribute<std::uint64_t> size_bits;
     Attribute<std::uint64_t> md_size;
     Attribute<std::uint64_t> md_size_bits;
-    Attribute<std::uint64_t> word_bits;
+    // Attribute<std::uint64_t> word_bits;
     Attribute<std::uint64_t> addr_gen_bits;
     Attribute<std::uint64_t> block_size;
     Attribute<std::uint64_t> cluster_size;
@@ -101,9 +102,9 @@ class BufferLevel : public Level
     Attribute<double> shared_bandwidth;
     Attribute<double> read_bandwidth;
     Attribute<double> write_bandwidth;
-    problem::PerDataSpace<double> bandwidth_consumption_scale;
     Attribute<double> multiple_buffering;
-    Attribute<std::uint64_t> effective_size;
+    // Attribute<std::uint64_t> effective_size;
+    Attribute<std::uint64_t> effective_size_bits;
     Attribute<std::uint64_t> effective_md_size;
     Attribute<std::uint64_t> effective_md_size_bits;
     Attribute<double> min_utilization;
@@ -136,8 +137,6 @@ class BufferLevel : public Level
     Attribute<std::string> drain_network_name;
     Attribute<std::string> update_network_name;    
 
-    Attribute<std::string> power_gated_at_name;
-
     // for ERT parsing
     std::map<std::string, double> ERT_entries;
     std::map<std::string, double> op_energy_map;
@@ -167,8 +166,9 @@ class BufferLevel : public Level
       {
         ar& BOOST_SERIALIZATION_NVP(name);
         ar& BOOST_SERIALIZATION_NVP(technology);
-        ar& BOOST_SERIALIZATION_NVP(size);
-        ar& BOOST_SERIALIZATION_NVP(word_bits);
+        // ar& BOOST_SERIALIZATION_NVP(size);
+        ar& BOOST_SERIALIZATION_NVP(size_bits);
+        // ar& BOOST_SERIALIZATION_NVP(word_bits);
         ar& BOOST_SERIALIZATION_NVP(addr_gen_bits);
         ar& BOOST_SERIALIZATION_NVP(block_size);
         ar& BOOST_SERIALIZATION_NVP(cluster_size);
@@ -178,7 +178,6 @@ class BufferLevel : public Level
         ar& BOOST_SERIALIZATION_NVP(shared_bandwidth);
         ar& BOOST_SERIALIZATION_NVP(read_bandwidth);
         ar& BOOST_SERIALIZATION_NVP(write_bandwidth);
-        ar& BOOST_SERIALIZATION_NVP(bandwidth_consumption_scale);
         ar& BOOST_SERIALIZATION_NVP(multiple_buffering);
         ar& BOOST_SERIALIZATION_NVP(min_utilization);
         ar& BOOST_SERIALIZATION_NVP(num_ports);
@@ -188,7 +187,6 @@ class BufferLevel : public Level
         ar& BOOST_SERIALIZATION_NVP(fill_network_name);
         ar& BOOST_SERIALIZATION_NVP(drain_network_name);
         ar& BOOST_SERIALIZATION_NVP(update_network_name);
-        ar& BOOST_SERIALIZATION_NVP(power_gated_at_name);
       }
     }
 
@@ -208,11 +206,12 @@ class BufferLevel : public Level
   struct Stats
   {
     problem::PerDataSpace<bool> keep;
-    problem::PerDataSpace<bool> no_coalesce;
     problem::PerDataSpace<std::uint64_t> partition_size;
-    problem::PerDataSpace<std::uint64_t> utilized_capacity;
+    // problem::PerDataSpace<std::uint64_t> utilized_capacity;
+    problem::PerDataSpace<std::uint64_t> utilized_capacity_bits;
     problem::PerDataSpace<std::uint64_t> utilized_md_capacity_bits;
     problem::PerDataSpace<std::uint64_t> tile_size;
+    problem::PerDataSpace<std::uint64_t> tile_size_bits;
     problem::PerDataSpace<double> utilized_instances;
     problem::PerDataSpace<std::uint64_t> utilized_x_expansion;
     problem::PerDataSpace<std::uint64_t> utilized_y_expansion;
@@ -233,10 +232,11 @@ class BufferLevel : public Level
     problem::PerDataSpace<double> cluster_access_energy;
     problem::PerDataSpace<double> cluster_access_energy_due_to_overflow;
     problem::PerDataSpace<double> energy_due_to_overflow;
-    double leakage_energy;
 
+    problem::PerDataSpace<double> tile_precision;
     problem::PerDataSpace<std::uint64_t> tile_shape;
-    problem::PerDataSpace<std::uint64_t> data_tile_size;
+    // problem::PerDataSpace<std::uint64_t> data_tile_size;
+    problem::PerDataSpace<std::uint64_t> data_tile_size_bits;
     problem::PerDataSpace<bool> compressed;
     //problem::PerDataSpace<std::uint64_t> metadata_tile_size;
     problem::PerDataSpace<std::vector<std::vector<std::uint64_t>>> metadata_tile_size;
@@ -281,11 +281,7 @@ class BufferLevel : public Level
     problem::PerDataSpace<tiling::PerTileFormatAccesses> random_format_updates;
     problem::PerDataSpace<tiling::PerTileFormatAccesses> skipped_format_updates;
     problem::PerDataSpace<tiling::PerTileFormatAccesses> gated_format_updates;
-
-    double n_instances_sharing_power_gating;
-    double leaks_per_cycle;
-    double non_power_gated_utilization;
-
+       
     //problem::PerDataSpace<std::uint64_t> metadata_reads;
     //problem::PerDataSpace<std::uint64_t> random_metadata_reads;
     //problem::PerDataSpace<std::uint64_t> gated_metadata_reads;
@@ -315,7 +311,8 @@ class BufferLevel : public Level
       {
         ar& BOOST_SERIALIZATION_NVP(keep);
         ar& BOOST_SERIALIZATION_NVP(partition_size);
-        ar& BOOST_SERIALIZATION_NVP(utilized_capacity);
+        // ar& BOOST_SERIALIZATION_NVP(utilized_capacity);
+        ar& BOOST_SERIALIZATION_NVP(utilized_capacity_bits);
         ar& BOOST_SERIALIZATION_NVP(utilized_instances);
         ar& BOOST_SERIALIZATION_NVP(utilized_clusters);
         ar& BOOST_SERIALIZATION_NVP(reads);
@@ -387,9 +384,6 @@ class BufferLevel : public Level
   std::shared_ptr<Network> network_update_;
   std::shared_ptr<Network> network_drain_;
 
-  bool power_gated_at_other_ = false;
-  std::shared_ptr<BufferLevel> power_gated_at_;
-
   // Serialization
   friend class boost::serialization::access;
   template <class Archive>
@@ -425,7 +419,6 @@ class BufferLevel : public Level
   double StorageEnergy(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const;
   double TemporalReductionEnergy(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const;
   double AddrGenEnergy(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const;
-  double LeakageEnergy(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const;
 
   //
   // API
@@ -451,8 +444,8 @@ class BufferLevel : public Level
 
   void PopulateEnergyPerOp(unsigned num_ops);
 
-  inline Specs& GetSpecs() { return specs_; }
-  inline Stats& GetStats() { return stats_; }
+  Specs& GetSpecs() { return specs_; }
+  Stats& GetStats() { return stats_;}
   
   bool HardwareReductionSupported() override;
 
@@ -464,9 +457,6 @@ class BufferLevel : public Level
   std::shared_ptr<Network> GetReadNetwork() { return network_read_; }
   std::shared_ptr<Network> GetUpdateNetwork() { return network_update_; }
  
-  void SetPowerGatedAt(std::shared_ptr<BufferLevel> other);
-  BufferLevel GetPowerGater();
-
   // Evaluation functions.
   EvalStatus PreEvaluationCheck(const problem::PerDataSpace<std::size_t> working_set_sizes,
                                 const tiling::CompoundMask mask,
@@ -480,11 +470,10 @@ class BufferLevel : public Level
 
   // Energy calculation functions that are externally accessed in topology.cpp
   void ComputeEnergyDueToChildLevelOverflow(Stats child_level_stats, unsigned data_space_id);
-  void FinalizeBufferEnergy(uint64_t total_cycles);
-  void ComputeLeaksPerCycle();
+  void FinalizeBufferEnergy();
 
   // Operational intensity calculation function
-  double OperationalIntensity(std::uint64_t total_ops) const;
+  double OperationalIntensity(std::uint64_t total_ops);
 
   // Accessors (post-evaluation).
   double Energy(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const override;
@@ -492,7 +481,7 @@ class BufferLevel : public Level
   std::string Name() const override;
   double Area() const override;
   double AreaPerInstance() const override;
-  double Size() const;
+  double Size_bits() const;
   std::uint64_t Cycles() const override;
   std::uint64_t Accesses(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const override;
   double CapacityUtilization() const override;

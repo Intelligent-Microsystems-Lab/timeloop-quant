@@ -106,7 +106,7 @@ class Network : public Module
   virtual void Print(std::ostream& out) const = 0;
 
   // Ugly abstraction-breaking probes that should be removed.
-  virtual std::uint64_t WordBits() const = 0;
+  // virtual std::uint64_t WordBits() const = 0;
 
   // Get fill drain latency spec
   virtual std::uint64_t FillLatency() const = 0;

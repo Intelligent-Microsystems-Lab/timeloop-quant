@@ -1,0 +1,168 @@
+architecture:
+  version: 0.3
+  subtree:
+    - name: eyeriss_168
+      attributes:
+        technology: 45nm
+      local:
+        - name: Wire # to work with the current timeloop hack...
+          class: wire
+          attributes:
+            technology: 32nm          
+            length: 1
+            datawidth: 1
+            latency: 1ns   
+        - name: Router # to work with the current timeloop hack...
+          class: router
+          attributes:
+            technology: 32nm          
+            latency: 1ns 
+            datawidth: 1
+        - name: DRAM
+          class: DRAM
+          subclass: dram_smartbuffer_metadata
+          attributes:
+            width: 64
+            block_size: 8
+            datawidth: 8
+            metadata_storage_width: 64
+            # metadata_block_size: 60
+            metadata_storage_depth: dram_metadata_storage_depth
+            metadata_storage_width: 64
+            metadata_block_size: 64
+            metadata_datawidth: dram_metadata_datawidth
+            metadata_counter_width: 4
+            decompression_supported: true  # from DRAM decompression
+            compression_supported: true    # to DRAM compression
+            writes: True
+            reads: True
+        # - name: shared_glb
+        #   class: storage
+        #   subclass: SRAM
+        #   attributes:
+        #     depth: logical_depth
+        #     width: glb_data_storage_width
+        #     datawidth: 8
+        #     block_size: 8
+        #     word-bits: 8
+        #     n_banks: 1
+        #     # read_bandwidth: 8
+        #     # write_bandwidth: 8
+        #     # metadata_storage_depth: glb_metadata_storage_depth
+        #     # metadata_storage_width: glb_metadata_storage_width
+        #     # metadata_block_size: glb_metadata_storage_block_size
+        #     # metadata_datawidth: glb_metadata_width
+        #     # metadata_counter_width: glb_metadata_counter_width
+        #     decompression_supported: true  # from DRAM decompression
+        #     compression_supported: true    # to DRAM compression            
+        - name: shared_glb
+          class: storage
+          subclass: smartbuffer_metadata
+          attributes:
+            data_storage_depth: glb_data_storage_depth
+            data_storage_width: glb_data_storage_width
+            datawidth: 8
+            block_size: 8
+            word-bits: 8
+            n_banks: 32
+            read_bandwidth: 16
+            write_bandwidth: 16
+            metadata_storage_depth: glb_metadata_storage_depth
+            metadata_storage_width: glb_metadata_storage_width
+            metadata_block_size: glb_metadata_storage_block_size
+            metadata_datawidth: glb_metadata_datawidth
+            metadata_counter_width: 4
+            decompression_supported: true  # from DRAM decompression
+            compression_supported: true    # to DRAM compression
+            writes: True
+            reads: True
+        - name: DummyBuffer[0..31] #13
+          class: storage
+          subclass: SRAM
+          attributes:
+            width: 16
+            depth: 0
+            num_banks: 1
+            datawidth: 8
+            entries: 0
+            meshX: reg_mesh
+
+      subtree:
+       # - name: PE[0..479] #167
+        - name: PE[0..767] #167 instead --> PE [ precision,instance combo]
+          local:
+            - name: ifmap_spad
+              class: smartbuffer_metadata
+              attributes:
+                data_storage_depth: ispad_data_storage_depth
+                data_storage_width: ispad_data_storage_width
+                metadata_storage_width: ispad_metadata_storage_width
+                metadata_storage_depth: ispad_data_storage_depth
+                metadata_datawidth: ispad_metadata_datawidth
+                metadata_block_size: ispad_metadata_block_size
+                metadata_counter_width: 4
+                n_banks: 1
+                read_bandwidth: 2
+                write_bandwidth: 2                
+                datawidth: ispad_datawidth
+                meshX: reg_mesh
+                writes: True
+                reads: True
+              decompression_supported: true # decompress data from parent (output data)
+              compression_supported: true                
+            # - name: weights_spad
+            #   class: storage
+            #   subclass: SRAM
+            #   attributes:
+            #     depth: wspad_data_storage_depth
+            #     width: wspad_data_storage_width
+            #     #n_banks: 1
+            #     datawidth: wspad_datawidth
+            #     reads: True
+            #     writes: True
+            #     read_bandwidth: 2
+            #     write_bandwidth: 2
+            #     meshX: reg_mesh
+            - name: weights_spad
+              class: smartbuffer_metadata
+              attributes:
+                data_storage_depth: wspad_data_storage_depth
+                data_storage_width: wspad_data_storage_width
+                metadata_storage_width: ispad_metadata_storage_width
+                metadata_storage_depth: wspad_data_storage_depth
+                metadata_datawidth: ispad_metadata_datawidth
+                metadata_block_size: ispad_metadata_block_size
+                metadata_counter_width: 4                   
+                read_bandwidth: 2
+                write_bandwidth: 2                
+                n_banks: 1
+                datawidth: psum_datawidth
+                reads: True
+                writes: True
+                meshX: reg_mesh 
+                decompression_supported: true # decompress data from parent (output data)
+                compression_supported: true                               
+            - name: psum_spad
+              class: smartbuffer_metadata
+              attributes:
+                data_storage_depth: psum_data_storage_depth
+                data_storage_width: psum_data_storage_width
+                metadata_storage_width: ispad_metadata_storage_width
+                metadata_storage_depth: psum_data_storage_depth
+                metadata_datawidth: ispad_metadata_datawidth
+                metadata_block_size: ispad_metadata_block_size
+                metadata_counter_width: 4                    
+                n_banks: 1
+                datawidth: psum_datawidth
+                reads: True
+                writes: True
+                meshX: reg_mesh
+                decompression_supported: true # decompress data from parent (output data)
+                compression_supported: true
+
+            - name: MACs
+              class: compute
+              subclass: addcmp
+              attributes:
+                meshX: reg_mesh
+                datawidth: 8

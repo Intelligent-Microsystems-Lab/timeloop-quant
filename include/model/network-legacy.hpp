@@ -121,6 +121,7 @@ class LegacyNetwork : public Network
     problem::PerDataSpace<double> energy_per_hop;
     problem::PerDataSpace<double> energy;
     problem::PerDataSpace<double> spatial_reduction_energy;
+    problem::PerDataSpace<double> tile_precision;
 
     // Network fill and drain latency, can be set by the spec or inferred from outer buffer
     // network_fill_latency and network_drain_latency
@@ -220,7 +221,7 @@ class LegacyNetwork : public Network
   void ComputeSpatialReductionEnergy();
   void ComputePerformance();
 
-  std::uint64_t WordBits() const override;
+  // std::uint64_t WordBits() const override;
   std::uint64_t FillLatency() const override;
   std::uint64_t DrainLatency() const override;
 

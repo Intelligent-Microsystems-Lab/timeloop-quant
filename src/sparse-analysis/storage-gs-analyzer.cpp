@@ -404,7 +404,8 @@ bool ComputeIneffectualReadImpact(const SparseAnalysisState& state,
   //     operand alignment
   unsigned l = child_level == -1 ? target_dspace_level : child_level;
   auto level_specs = topology_specs.GetStorageLevel(target_dspace_level);
-  auto ratio = level_specs->default_md_word_bits.Get()/level_specs->word_bits.Get();
+  // auto ratio = level_specs->default_md_word_bits.Get()/level_specs->word_bits.Get();kDefaultWordBits
+  auto ratio = level_specs->default_md_word_bits.Get()/level_specs->kDefaultWordBits;
   double equivalent_metadata_occupancy =
     compound_data_movement_nest[target_dspace_id][l].GetExpectedAggregatedMetaDataTileOccupancy() * ratio;
   expected_target_tile_occupancy += equivalent_metadata_occupancy;

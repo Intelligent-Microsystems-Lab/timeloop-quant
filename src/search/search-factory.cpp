@@ -57,7 +57,7 @@ SearchAlgorithm* ParseAndConstruct(config::CompoundConfigNode config,
   {
     search = new ExhaustiveSearch(config, mapspace);
   }
-  else if (search_alg == "linear_pruned")
+  else if (search_alg == "linear-pruned")
   {
     search = new LinearPrunedSearch(config, mapspace, id);
   }
@@ -65,7 +65,7 @@ SearchAlgorithm* ParseAndConstruct(config::CompoundConfigNode config,
   {
     search = new HybridSearch(config, mapspace, id);
   }
-  else if (search_alg == "random_pruned")
+  else if (search_alg == "random-pruned")
   {
     search = new RandomPrunedSearch(config, mapspace, id);
   }

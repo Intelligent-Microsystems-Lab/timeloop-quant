@@ -1,0 +1,17 @@
+#crc log files
+/logs/
+/experiments/
+
+#testing outputs
+/output/
+/output2/
+timeloop-mapper*
+/test/
+# Temp files created by most text editors
+*~
+/.vscode/
+# vim swap files
+.*.sw?
+.sw?
+# Compiled Python files
+__pycache__/

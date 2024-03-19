@@ -1,0 +1,39 @@
+variables:
+  reg_mesh: 32
+  # compressed UOP_RLE
+  dram_metadata_datawidth: 1
+  dram_metadata_storage_depth: 12800
+  dram_metadata_storage_width: 64
+  dram_metadata_storage_block_size: 64
+  dram_metadata_counter_width: 9
+
+  # uncompressed
+  # logical_depth: 12800 #54000
+  # glb_data_storage_depth: 12800 #54000  
+  logical_depth: 12800
+  glb_data_storage_depth: 12800
+  glb_data_storage_width: 64
+  glb_metadata_storage_width: 16
+  glb_metadata_storage_depth: 12800 #4096
+  glb_metadata_datawidth: 4
+  glb_metadata_storage_block_size: 4
+  glb_metadata_counter_width: 9 # counter per bank
+
+
+  # bitvector gating
+  ispad_data_storage_depth: 32 
+  ispad_data_storage_width: 8
+  ispad_datawidth: 1
+  ispad_metadata_storage_width: 8
+  ispad_metadata_datawidth: 4
+  ispad_metadata_block_size: 2
+
+  # uncompressed
+  wspad_data_storage_depth: 224
+  wspad_data_storage_width: 8
+  wspad_datawidth: 8
+
+  # no optimization
+  psum_data_storage_depth: 24
+  psum_data_storage_width: 8
+  psum_datawidth: 8

@@ -98,8 +98,6 @@ class Nest
   std::unordered_map<unsigned, problem::PerDataSpace<bool>> no_link_transfer;
   std::unordered_map<unsigned, problem::PerDataSpace<bool>> no_multicast;
   std::unordered_map<unsigned, problem::PerDataSpace<bool>> no_temporal_reuse;
-  std::unordered_map<unsigned, problem::PerDataSpace<bool>> rmw_first_update;
-  std::unordered_map<unsigned, problem::PerDataSpace<bool>> no_coalesce;
 
  public:
   Nest();

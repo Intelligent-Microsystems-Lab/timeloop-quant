@@ -76,6 +76,4 @@ extern bool enableDefaultFloatStatOutput;
   model::enableDefaultFloatStatOutput ? std::defaultfloat : std::fixed              \
 )
 
-#define OUT_PERCENT(x) std::fixed << (x * 100.0) << "%" << OUT_FLOAT_FORMAT
-
 } // namespace model

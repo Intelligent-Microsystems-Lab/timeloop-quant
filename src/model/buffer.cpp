@@ -148,28 +148,28 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
     specs.network_drain_latency = 0;
   }
 
-  // Word Bits.
-  std::uint32_t word_bits;
-  if (buffer.lookupValue("word_bits", word_bits) ||
-      buffer.lookupValue("word_width", word_bits) ||
-      buffer.lookupValue("datawidth", word_bits) )
-  {
-    specs.word_bits = word_bits;
-  }
-  else
-  {
-    specs.word_bits = Specs::kDefaultWordBits;
-  }
+  // // Word Bits.
+  // std::uint32_t word_bits;
+  // if (buffer.lookupValue("word-bits", word_bits) ||
+  //     buffer.lookupValue("word_width", word_bits) ||
+  //     buffer.lookupValue("datawidth", word_bits) )
+  // {
+  //   specs.word_bits = word_bits;
+  // }
+  // else
+  // {
+  //   specs.word_bits = Specs::kDefaultWordBits;
+  // }
 
   // Block size.
   std::uint32_t block_size;
   bool block_size_specified = false;
   specs.block_size = 1;
-  if (buffer.lookupValue("block_size", block_size) ||
+  if (buffer.lookupValue("block-size", block_size) ||
       buffer.lookupValue("block_size", block_size) ||
       buffer.lookupValue("n_words", block_size) )
   {
-    specs.block_size = block_size;
+    specs.block_size = block_size; // # of bits for blocksize
     assert(block_size != 0);
     block_size_specified = true;
   } 
@@ -265,7 +265,7 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
   specs.cluster_size = 1;
   std::uint32_t width;
   bool cluster_size_specified = false;
-  if (buffer.lookupValue("cluster_size", cluster_size))
+  if (buffer.lookupValue("cluster-size", cluster_size))
   {
     specs.cluster_size = cluster_size;
     cluster_size_specified = true;
@@ -276,61 +276,72 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
       buffer.lookupValue("memory_width", width) ||
       buffer.lookupValue("data_storage_width", width))
   {
-    word_bits = specs.word_bits.Get();
+    // word_bits = specs.word_bits.Get();
     block_size = specs.block_size.Get();
-    if (width % (word_bits * block_size)  != 0){
-      std::cout << "ERROR: data storage width: " << width << "  block_size: " << block_size << "  word_bits: " << word_bits << std::endl;
+    // if (width % (word_bits * block_size)  != 0){
+    if (width % (block_size)  != 0){
+      // std::cout << "ERROR: data storage width: " << width << "  block_size: " << block_size << "  word_bits: " << word_bits << std::endl;
+      std::cout << "ERROR: data storage width: " << width << "  block_size: " << block_size << std::endl;
     }
 
-    assert(width % (word_bits * block_size)  == 0);
+    assert(width % (block_size)  == 0);
 
     if (block_size_specified && cluster_size_specified)
     {
-       if (block_size * word_bits * cluster_size != width) 
+       if (block_size * cluster_size != width) 
        {
-         std::cout << "ERROR: " << specs.level_name  << "  block_size * word_bits * cluster_size != storage width" << std::endl;
+         std::cout << "ERROR: " << specs.level_name  << "  block_size * cluster_size != storage width" << std::endl;
          exit(1);
        }
     }
     else if (cluster_size_specified)
     {
-      specs.block_size = width / cluster_size / word_bits; 
+      // specs.block_size = width / cluster_size / word_bits;
+      specs.block_size = width / cluster_size; 
     }
     else if (block_size_specified) 
     {
-      specs.cluster_size = width / (word_bits * block_size);
+      // specs.cluster_size = width / (word_bits * block_size);
+      specs.cluster_size = width / block_size;
     }
     else
     {
-      specs.block_size = width / word_bits;
+      specs.block_size = width ;
       specs.cluster_size = 1;
       std::cout << "Warning: neither block size nor cluster size specified, set according to specified storage width: block size: " 
-        << specs.block_size << "  cluster_size: " << specs.cluster_size << std::endl;
+        << specs.block_size << "  cluster-size: " << specs.cluster_size << std::endl;
     }
   }
 
 
   // Size.
   // It has dependency on BlockSize and thus is initialized after BlockSize.
-  std::uint32_t size;
-  if (buffer.lookupValue("entries", size) )
+  // std::uint32_t size; Converted to bits (needs to be deleted for code hygiene)
+  std::uint32_t size_bits;
+  std::uint32_t depth;
+  if (buffer.lookupValue("entries", size_bits) )
   {
     assert(buffer.exists("sizeKB") == false);
-    specs.size = size;
+    specs.size_bits = size_bits;
   }
-  else if (buffer.lookupValue("depth", size) ||
-           buffer.lookupValue("memory_depth", size) ||
-           buffer.lookupValue("data_storage_depth", size))
+  else if (buffer.lookupValue("depth", depth) ||
+           buffer.lookupValue("memory_depth", depth) ||
+           buffer.lookupValue("data_storage_depth", depth))
   {
     assert(buffer.exists("sizeKB") == false);
     assert(buffer.exists("entries") == false);
-    specs.size = size * specs.block_size.Get();
+    // specs.size = size * specs.block_size.Get(); //I don't really understand this
+    //I believe it should be like this. In this example size_bits is actually depth not the real size in bits
+    // What the orignal code is representing as size is the number of elements that fit
+    buffer.lookupValue("width", width);
+    specs.size_bits = depth * width; 
+    
   }
-  else if (buffer.lookupValue("sizeKB", size))
+  else if (buffer.lookupValue("sizeKB", size_bits))
   {
-    specs.size = std::uint64_t(size) * 1024 * 8 / specs.word_bits.Get();
+    specs.size_bits = std::uint64_t(size_bits) * 1024 * 8;
   }
-
+  
   std::uint32_t metadata_storage_size = 0;
   if (buffer.lookupValue("metadata_storage_depth", metadata_storage_size))
   {
@@ -342,7 +353,10 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
   }
 
   specs.md_size_bits = metadata_storage_size * metadata_storage_width;
-
+/*What I did basically is I am using width and depth of the memories 
+  to calculate the number of bits in buffer and metadata buffer
+  The definition of size varies between metadata and buffer and has to be fixed for the 
+  sake of consistency*/
 
   // Technology.
   // Unfortunately ".technology" means different things between ISPASS format
@@ -361,7 +375,7 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
   // SRAM Type.
   std::uint32_t num_ports = 2;
   specs.num_ports = num_ports;
-  if (buffer.lookupValue("num_ports", num_ports) ||
+  if (buffer.lookupValue("num-ports", num_ports) ||
       buffer.lookupValue("n_ports", num_ports))
   {
     if (num_ports == 1)
@@ -385,7 +399,7 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
   // Number of Banks.
   std::uint32_t num_banks = 2;
   specs.num_banks = num_banks;
-  if (buffer.lookupValue("num_banks", num_banks) ||
+  if (buffer.lookupValue("num-banks", num_banks) ||
       buffer.lookupValue("n_banks", num_banks))
   {
     specs.num_banks = num_banks;
@@ -419,47 +433,9 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
     specs.write_bandwidth = write_bandwidth;
   }
 
-  std::map<std::string, double> bw_scales;
-  auto errstr = "ERROR: " + specs.name.Get() + ": per_dataspace_bandwidth_consumption_scale must be a map of (string dataspace) : (float scale)";
-  if (buffer.exists("per_dataspace_bandwidth_consumption_scale"))
-  {
-    auto per_dataspace_bandwidth_consumption_scale = buffer.lookup("per_dataspace_bandwidth_consumption_scale");
-    if(!per_dataspace_bandwidth_consumption_scale.isMap())
-    {
-      std::cerr << errstr << std::endl;
-      exit(1);
-    }
-    std::vector<std::string> keys;
-    per_dataspace_bandwidth_consumption_scale.getMapKeys(keys);
-    for (auto key : keys)
-    {
-      if (!per_dataspace_bandwidth_consumption_scale.lookupValue(key, bw_scales[key]))
-      {
-        std::cerr << errstr << std::endl;
-        exit(1);
-      }
-    }
-  }
-  for (unsigned i = 0; i < problem::GetShape()->NumDataSpaces; i++) specs.bandwidth_consumption_scale[i] = 1.0;
-  for (auto key : bw_scales)
-  {
-    if (problem::GetShape()->DataSpaceNameToID.find(key.first) != problem::GetShape()->DataSpaceNameToID.end())
-    {
-      auto dim_id = problem::GetShape()->DataSpaceNameToID.at(key.first);
-      specs.bandwidth_consumption_scale[dim_id] = key.second;
-    }
-    else
-    {
-      std::cerr << "ERROR: " << specs.name.Get()
-                << ": per_dataspace_bandwidth_consumption_scale: " << key.first
-                << " is not a valid dimension name." << std::endl;
-      exit(1);
-    }
-  }
-
   // Multiple-buffering factor (e.g., 2.0 means double buffering)
   double multiple_buffering;
-  if (buffer.lookupValue("multiple_buffering", multiple_buffering))
+  if (buffer.lookupValue("multiple-buffering", multiple_buffering))
   {
     specs.multiple_buffering = multiple_buffering;
   }
@@ -468,21 +444,22 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
     specs.multiple_buffering = 1.0;
   }
   
-  if (specs.size.IsSpecified())
+  if (specs.size_bits.IsSpecified())
   {
-    specs.effective_size = static_cast<uint64_t>(std::floor(
-            specs.size.Get() / specs.multiple_buffering.Get()));
-
+    // specs.effective_size = static_cast<uint64_t>(std::floor(
+    //         specs.size.Get() / specs.multiple_buffering.Get()));
+    specs.effective_size_bits = static_cast<uint64_t>(std::floor(
+            specs.size_bits.Get() / specs.multiple_buffering.Get()));
+    
     specs.effective_md_size = static_cast<uint64_t>(std::floor(
       specs.md_size.Get() / specs.multiple_buffering.Get()));
-    
     specs.effective_md_size_bits = static_cast<uint64_t>(std::floor(
       specs.md_size_bits.Get() / specs.multiple_buffering.Get()));
   }
 
   // Minimum utilization factor (e.g., 1.0 requires full utilization of effective capacity)
   double min_utilizaiton;
-  if (buffer.lookupValue("min_utilization", min_utilizaiton))
+  if (buffer.lookupValue("min-utilization", min_utilizaiton))
   {
     specs.min_utilization = min_utilizaiton;
   }
@@ -492,7 +469,7 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
   }
   if (specs.min_utilization.Get() != 0.0)
   {
-    assert(specs.effective_size.IsSpecified());
+    assert(specs.effective_size_bits.IsSpecified());
   }
 
   // Instances.
@@ -543,12 +520,6 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
     specs.update_network_name = update_network_name;
   }
 
-  std::string power_gated_at_name;
-  if (buffer.lookupValue("power_gated_at", power_gated_at_name))
-  {
-    specs.power_gated_at_name = power_gated_at_name;
-  }
-
   // Overbooking Spec
   bool allow_overbooking;
   if (buffer.lookupValue("allow_overbooking", allow_overbooking)){
@@ -564,26 +535,32 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
   if (specs.technology.Get() == Technology::DRAM)
   {
     assert(specs.cluster_size.Get() == 1);
-    tmp_access_energy = pat::DRAMEnergy(specs.word_bits.Get() * specs.block_size.Get());
+    //I will have to get back to this part later for DRAM energy.
+    //Doesn't it have to account for cluster size too? what is the DRAM pattern
+    // tmp_access_energy = pat::DRAMEnergy(specs.word_bits.Get() * specs.block_size.Get());
+    // should this be width? PAT assumes a 16 bit access and it is incensitive to block size, hummm
+    tmp_access_energy = pat::DRAMEnergy(width);
     tmp_storage_area = 0;
   }
-  else if (specs.size.Get() == 0)
+  else if (specs.size_bits.Get() == 0)
   {
     //SRAM
     tmp_access_energy = 0;
     tmp_storage_area = 0;
   }
   else
-  {
-    std::uint64_t tmp_entries = specs.size.Get();
-    std::uint64_t tmp_word_bits = specs.word_bits.Get();
+  { //Also this part needs to get fixed
+    std::uint64_t tmp_entries = specs.size_bits.Get(); 
+    // std::uint64_t tmp_word_bits = specs.word_bits.Get();
     std::uint64_t tmp_block_size = specs.block_size.Get();
     std::uint64_t tmp_cluster_size = specs.cluster_size.Get();
-    std::uint64_t width = tmp_word_bits * tmp_block_size * tmp_cluster_size;
+    // std::uint64_t width = tmp_word_bits * tmp_block_size * tmp_cluster_size;
+    std::uint64_t width = tmp_block_size * tmp_cluster_size;
     std::uint64_t height =
       (tmp_entries % tmp_block_size == 0) ?
       (tmp_entries / tmp_block_size)      :
-      (tmp_entries / tmp_block_size) + 1;  
+      (tmp_entries / tmp_block_size) + 1;
+    //Pooria: This doesn't really define height cause it is been represented in bits (Should I consider precision here??)
     tmp_access_energy = pat::SRAMEnergy(height, width, specs.num_banks.Get(), specs.num_ports.Get()) / tmp_cluster_size;
     tmp_storage_area = pat::SRAMArea(height, width, specs.num_banks.Get(), specs.num_ports.Get()) / tmp_cluster_size;
     // std::cout << "Entries = " << tmp_entries
@@ -599,7 +576,7 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
   // Allow user to override the access energy.
   // Also store that the vector access energy is from the user rather than the PAT;
   // this will be referenced in UpdateOpEnergyViaERT() above.
-  bool user_specified_access_energy = buffer.lookupValue("vector_access_energy", tmp_access_energy);
+  bool user_specified_access_energy = buffer.lookupValue("vector-access-energy", tmp_access_energy);
   if (user_specified_access_energy)
   {
     specs.access_energy_source = "user";
@@ -610,7 +587,7 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
 
   // Allow user to override the addr gen energy.
   double tmp_addr_gen_energy = -0.1;
-  bool user_specified_addr_gen_energy = buffer.lookupValue("addr_gen_energy", tmp_addr_gen_energy);
+  bool user_specified_addr_gen_energy = buffer.lookupValue("addr-gen-energy", tmp_addr_gen_energy);
   specs.addr_gen_energy = tmp_addr_gen_energy;
   if (user_specified_addr_gen_energy)
   {
@@ -622,7 +599,7 @@ BufferLevel::Specs BufferLevel::ParseSpecs(config::CompoundConfigNode level, std
 
   // Allow user to override the cluster area.
   double tmp_cluster_area = 0;
-  buffer.lookupValue("cluster_area", tmp_cluster_area);
+  buffer.lookupValue("cluster-area", tmp_cluster_area);
   if (tmp_cluster_area > 0)
   {
     tmp_storage_area = tmp_cluster_area / specs.cluster_size.Get();
@@ -805,59 +782,66 @@ EvalStatus BufferLevel::PreEvaluationCheck(
   bool success = true;
   std::ostringstream fail_reason;
   
-  if (specs_.size.IsSpecified())
+  if (specs_.size_bits.IsSpecified())
   {
     // Ugh. If we can do a distributed multicast from this level,
     // then the required size may be smaller. However, that depends
     // on the multicast factor etc. that we don't know at this point.
     // Use a very loose filter and fail this check only if there's
     // no chance that this mapping can fit.
-    auto available_capacity = specs_.effective_size.Get();
+    auto available_capacity_bits = specs_.effective_size_bits.Get();
     if (network_read_->DistributedMulticastSupported())
     {
-      available_capacity *= specs_.instances.Get();
+      available_capacity_bits *= specs_.instances.Get();
     }
 
     // Find the total capacity required by all un-masked data types.
-    std::size_t required_capacity = 0;
+    // std::size_t required_capacity = 0;
+    std::size_t required_capacity_bits = 0;
     double confidence_constraint = ! specs_.allow_overbooking.Get() ? 1.0 : confidence_threshold;
     for (unsigned pvi = 0; pvi < unsigned(problem::GetShape()->NumDataSpaces); pvi++)
     {
       if (mask[pvi])
       {
-        auto dense_working_set_size = working_set_sizes.at(problem::Shape::DataSpaceID(pvi));
-        auto working_set_size = dense_working_set_size;
+        // Changed this to get accurate workload size for different data spaces
+        // dense_working_set_size is in bits
+        auto dense_working_set_size_bits = working_set_sizes.at(problem::Shape::DataSpaceID(pvi)) * workload->GetPrecision(pvi);
+        auto working_set_size_bits = dense_working_set_size_bits;
 
         std::string data_space_name = problem::GetShape()->DataSpaceIDToName.at(pvi);
 
         (void) workload;
         (void) per_level_compression_info;
-
          if (per_level_compression_info.find(pvi) != per_level_compression_info.end()
              && per_level_compression_info.at(pvi).tensor_compressed)
          {
-             working_set_size = workload->GetDensity(pvi)->GetMaxTileOccupancyByConfidence_LTW(dense_working_set_size, confidence_constraint);
+             working_set_size_bits = workload->GetDensity(pvi)->GetMaxTileOccupancyByConfidence_LTW(dense_working_set_size_bits, confidence_constraint) * workload->GetPrecision(pvi);
+             
          }
          else
          {
-            working_set_size = ceil(dense_working_set_size * confidence_constraint);
+            working_set_size_bits = ceil(dense_working_set_size_bits * confidence_constraint) * workload->GetPrecision(pvi);
          }
-        required_capacity += working_set_size;
+        // required_capacity += working_set_size;
+        required_capacity_bits += working_set_size_bits;
       }
     }
 
-    if (required_capacity > available_capacity)
+    // if (required_capacity > available_capacity_bits)
+    if (required_capacity_bits > available_capacity_bits)
     {
       success = false;
-      fail_reason << "mapped tile size " << required_capacity << " exceeds buffer capacity "
-                  << available_capacity;
+      fail_reason << "mapped tile size " << required_capacity_bits << " exceeds buffer capacity "
+                  << available_capacity_bits;
     }
-    else if (required_capacity < specs_.effective_size.Get()
+    // else if (required_capacity < specs_.effective_size_bits.Get()
+    else if (required_capacity_bits < specs_.effective_size_bits.Get()
              * specs_.min_utilization.Get())
     {
       success = false;
-      fail_reason << "mapped tile size " << required_capacity << " is less than constrained "
-                  << "minimum utilization " << specs_.effective_size.Get() * specs_.min_utilization.Get();
+      // fail_reason << "mapped tile size " << required_capacity << " is less than constrained "
+      fail_reason << "mapped tile size " << required_capacity_bits << " is less than constrained "
+                  << "minimum utilization " << specs_.effective_size_bits.Get() * specs_.min_utilization.Get();
     }
   }
 
@@ -919,19 +903,6 @@ void BufferLevel::ConnectDrain(std::shared_ptr<Network> network)
   network_drain_ = network;
 }
 
-void BufferLevel::SetPowerGatedAt(std::shared_ptr<BufferLevel> other)
-{
-  power_gated_at_ = other;
-  power_gated_at_other_ = true;
-}
-
-BufferLevel BufferLevel::GetPowerGater()
-{
-  if (!power_gated_at_other_) return *this;
-  return *power_gated_at_;
-}
-
-
 std::uint64_t BufferLevel::ComputeMetaDataTileSizeInBits(const tiling::MetaDataTileOccupancy metadata_occupancy) const
 {
 
@@ -963,9 +934,11 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
   // collect tile sizes (data + metadata) for all dataspaces stored at the storage level
   // used for better distribution storage capacity to different dataspaces stored at this level
   double all_dataspace_data_tile_size = 0;
+  // double all_dataspace_data_tile_size_bits = 0;
   // double all_dataspace_total_metadata_tile_size = 0;
   // double all_dataspace_metadata_tile_size_bits = 0; // Not used, removing for code hygiene.
   problem::PerDataSpace<double> expected_data_tile_sizes;
+  problem::PerDataSpace<double> expected_data_tile_sizes_bits;
   // problem::PerDataSpace<double> expected_metadata_tile_sizes;
   problem::PerDataSpace<double> expected_metadata_tile_sizes_bits;
   for (unsigned pvi = 0; pvi < unsigned(problem::GetShape()->NumDataSpaces); pvi++)
@@ -974,6 +947,7 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
     if (tile[pvi].shape == 0)
     {
       expected_data_tile_sizes[pvi] = 0;
+      // expected_data_tile_sizes_bits[pvi] = 0;
       // expected_metadata_tile_sizes[pvi] = 0;
       expected_metadata_tile_sizes_bits[pvi] = 0;
       continue;
@@ -982,12 +956,14 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
     if (tile[pvi].compressed)
     {
       expected_data_tile_sizes[pvi] = tile[pvi].expected_data_occupancy;
+      // expected_data_tile_sizes_bits[pvi] = tile[pvi].expected_data_occupancy * tile[pvi].GetTilePrecision();
       // expected_metadata_tile_sizes[pvi] = ComputeMetaDataTileSize(tile[pvi].expected_metadata_occupancy);
       expected_metadata_tile_sizes_bits[pvi] = ComputeMetaDataTileSizeInBits(tile[pvi].expected_metadata_occupancy);
     } 
     else
     {
       expected_data_tile_sizes[pvi] = tile[pvi].shape;
+      // expected_data_tile_sizes_bits[pvi] = tile[pvi].shape * tile[pvi].GetTilePrecision();
 
       if (tile[pvi].has_metadata)
       {
@@ -1001,6 +977,7 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
       }
     }
     all_dataspace_data_tile_size += expected_data_tile_sizes[pvi];
+    // all_dataspace_data_tile_size_bits = all_dataspace_data_tile_size * tile[pvi].GetTilePrecision();
     // all_dataspace_total_metadata_tile_size += expected_metadata_tile_sizes[pvi];
     // all_dataspace_metadata_tile_size_bits += expected_metadata_tile_sizes_bits[pvi]; // Not used, removing for code hygiene.
   }
@@ -1011,7 +988,8 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
 
     // initialize all necessary stats
     double tile_confidence = 1.0;
-    std::uint64_t data_tile_size = 0;
+    // std::uint64_t data_tile_size = 0;
+    std::uint64_t data_tile_size_bits = 0;
     tiling::MetaDataTileOccupancy metadata_tile_occupancy;
     // std::uint64_t metadata_tile_size = 0;
     std::uint64_t metadata_tile_size_bits = 0;
@@ -1020,20 +998,23 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
     // if the tile is not compressed, the confidence is just zero or one derived directly by a comparison of tile shape and allocated capacity
     if (tile[pvi].compressed || tile[pvi].has_metadata)
     {
-      if (specs_.effective_size.IsSpecified())
+      if (specs_.effective_size_bits.IsSpecified())
       {
         // buffer capacity allocated to this dataspace
-        std::uint64_t allocated_effective_buffer_size, allocated_effective_md_buffer_size_bits;
+        std::uint64_t allocated_effective_buffer_size_bits, allocated_effective_md_buffer_size_bits;
+        // std::uint64_t allocated_effective_buffer_size, allocated_effective_md_buffer_size;
         // std::uint64_t allocated_effective_md_buffer_size;
 
         // assign the dataspace storage capacity according to its data tile size and metadata tile size
         if (all_dataspace_data_tile_size != 0){
           double ratio = expected_data_tile_sizes[pvi]/all_dataspace_data_tile_size;
-          allocated_effective_buffer_size = ceil(specs_.effective_size.Get() * ratio);
+          // allocated_effective_buffer_size = ceil(specs_.effective_size.Get() * ratio);
+          allocated_effective_buffer_size_bits = ceil(specs_.effective_size_bits.Get() * ratio);
           // allocated_effective_md_buffer_size = ceil(specs_.effective_md_size.Get() * ratio);
           allocated_effective_md_buffer_size_bits = ceil(specs_.effective_md_size_bits.Get()*ratio);
         } else {
-          allocated_effective_buffer_size = specs_.effective_size.Get() ;
+          // allocated_effective_buffer_size = specs_.effective_size.Get() ;
+          allocated_effective_buffer_size_bits = specs_.effective_size_bits.Get() ;
           // allocated_effective_md_buffer_size = specs_.effective_md_size.Get();
           allocated_effective_md_buffer_size_bits = specs_.effective_md_size_bits.Get();
         }
@@ -1044,37 +1025,40 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
         tile_confidence = confidence_constraint;
 
         // get the most aggressive estimation
-        data_tile_size = tile[pvi].GetMaxDataTileOccupancyByConfidence(confidence_constraint);
+        // data_tile_size = tile[pvi].GetMaxDataTileOccupancyByConfidence(confidence_constraint);
+        data_tile_size_bits = tile[pvi].GetMaxDataTileOccupancyByConfidence(confidence_constraint) * tile[pvi].GetTilePrecision();
         metadata_tile_occupancy = tile[pvi].GetMaxMetaDataTileOccupancyByConfidence(confidence_constraint);
         // metadata_tile_size = ComputeMetaDataTileSize(metadata_tile_occupancy);
         metadata_tile_size_bits = ComputeMetaDataTileSizeInBits(metadata_tile_occupancy);
         
         if (tile_confidence < 1.0
-            && data_tile_size < allocated_effective_buffer_size && tile[pvi].compressed
+            // && data_tile_size < allocated_effective_buffer_size && tile[pvi].compressed
+            && data_tile_size_bits < allocated_effective_buffer_size_bits && tile[pvi].compressed
             && metadata_tile_size_bits < allocated_effective_md_buffer_size_bits)
            // && metadata_tile_size < allocated_effective_md_buffer_size)
         {
           // if it is compressed tile and we can fit more data in (i.e., smaller overbooking proportion)
           // perform binary search to get the smallest possible overbooking proportion
-          double tmp_data_tile_size, tmp_metadata_tile_size_bits;
-          // double tmp_metadata_tile_size;
+          double tmp_data_tile_size_bits, tmp_metadata_tile_size_bits;
+          // double tmp_data_tile_size, tmp_metadata_tile_size;
           tiling::MetaDataTileOccupancy tmp_metadata_tile_occupancy;
           double tmp_confidence;
           double confidence_lower_bound = confidence_constraint;
           double confidence_upper_bound = 1.0;
 
-          while((data_tile_size == allocated_effective_buffer_size ||
+          while((data_tile_size_bits == allocated_effective_buffer_size_bits ||
                 //  metadata_tile_size == allocated_effective_md_buffer_size) || 
                 metadata_tile_size_bits == allocated_effective_md_buffer_size_bits) || // stop when find the exact confidence value
                 confidence_upper_bound - confidence_lower_bound > 0.01) // stop when converging within one percent
           {
             tmp_confidence = 0.5 * (confidence_lower_bound + confidence_upper_bound);
-            tmp_data_tile_size = tile[pvi].GetMaxDataTileOccupancyByConfidence(tmp_confidence);
+            // tmp_data_tile_size = tile[pvi].GetMaxDataTileOccupancyByConfidence(tmp_confidence);
+            tmp_data_tile_size_bits = tile[pvi].GetMaxDataTileOccupancyByConfidence(tmp_confidence) * tile[pvi].GetTilePrecision();
             tmp_metadata_tile_occupancy = tile[pvi].GetMaxMetaDataTileOccupancyByConfidence(tmp_confidence);
             // tmp_metadata_tile_size = ComputeMetaDataTileSize(tmp_metadata_tile_occupancy);
             tmp_metadata_tile_size_bits = ComputeMetaDataTileSizeInBits(tmp_metadata_tile_occupancy);
             
-            if (tmp_data_tile_size > allocated_effective_buffer_size
+            if (tmp_data_tile_size_bits > allocated_effective_buffer_size_bits
             // || tmp_metadata_tile_size > allocated_effective_md_buffer_size)
             || tmp_metadata_tile_size_bits > allocated_effective_md_buffer_size_bits)
             {
@@ -1085,7 +1069,7 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
             {
               // record better confidence related data (i.e., lower overbooking proportion)
               confidence_lower_bound = tmp_confidence;
-              data_tile_size = tmp_data_tile_size;
+              data_tile_size_bits = tmp_data_tile_size_bits;
               metadata_tile_occupancy = tmp_metadata_tile_occupancy;
               // metadata_tile_size = tmp_metadata_tile_size;
               metadata_tile_size_bits = tmp_metadata_tile_size_bits;
@@ -1099,7 +1083,7 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
       {
         // infinite memory size, e.g., DRAM, can fit for sure, use the most conservative setting
         tile_confidence = 1.0;
-        data_tile_size = tile[pvi].GetMaxDataTileOccupancyByConfidence();
+        data_tile_size_bits = tile[pvi].GetMaxDataTileOccupancyByConfidence() * tile[pvi].GetTilePrecision();
         metadata_tile_occupancy = tile[pvi].GetMaxMetaDataTileOccupancyByConfidence();
         // metadata_tile_size = ComputeMetaDataTileSize(metadata_tile_occupancy);
         metadata_tile_size_bits = ComputeMetaDataTileSizeInBits(metadata_tile_occupancy);
@@ -1108,13 +1092,15 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
     }
     else
     { // no compression and no metadata: default dense tensor
-      data_tile_size = tile[pvi].shape;
+      // data_tile_size = tile[pvi].shape;
+      data_tile_size_bits = tile[pvi].shape * tile[pvi].GetTilePrecision();
     }
-
+    stats_.tile_precision[pv] = tile[pvi].GetTilePrecision();
     stats_.compressed[pv] = tile[pvi].compressed;
     stats_.tile_shape[pv] = tile[pvi].shape;
     stats_.tile_confidence[pv] = tile_confidence;
-    stats_.data_tile_size[pv] = data_tile_size;
+    // stats_.data_tile_size[pv] = data_tile_size;
+    stats_.data_tile_size_bits[pv] = data_tile_size_bits;
     // stats_.metadata_tile_size[pv] = (specs_.default_md_word_bits.Get() != 0) ?
     //                                  metadata_tile_size : 0;
     for (unsigned rid = 0; rid < metadata_tile_occupancy.size(); rid++)
@@ -1128,7 +1114,8 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
     stats_.metadata_tile_size_bits[pv] = metadata_tile_size_bits;
     stats_.tile_density_distribution[pv] = tile[pvi].GetDensityType();
     stats_.metadata_format[pv] = tile[pvi].GetMetaDataFormatName();
-    stats_.utilized_capacity[pv] = data_tile_size;
+    // stats_.utilized_capacity[pv] = data_tile_size_bits/tile[pvi].GetTilePrecision() ;
+    stats_.utilized_capacity_bits[pv] = data_tile_size_bits;
     // stats_.utilized_md_capacity[pv] = metadata_tile_size;
     stats_.utilized_md_capacity_bits[pv] = metadata_tile_size_bits;
   }
@@ -1157,7 +1144,6 @@ EvalStatus BufferLevel::ComputeScalarAccesses(const tiling::CompoundDataMovement
     auto pv = problem::Shape::DataSpaceID(pvi);
 
     stats_.keep[pv] = mask[pv];
-    stats_.no_coalesce[pv] = tile[pvi].no_coalesce;
 
     stats_.partition_size[pv] = tile[pvi].partition_size;
     stats_.tile_size[pv] = tile[pvi].size;
@@ -1278,9 +1264,13 @@ EvalStatus BufferLevel::ComputeScalarAccesses(const tiling::CompoundDataMovement
   //
   // 2. Derive/validate architecture specs based on stats.
   //
-  auto total_utilized_capacity = std::accumulate(stats_.utilized_capacity.begin(),
-                                                 stats_.utilized_capacity.end(),
+  auto total_utilized_capacity_bits = std::accumulate(stats_.utilized_capacity_bits.begin(),
+                                                 stats_.utilized_capacity_bits.end(),
                                                  0ULL);
+  // Pooria: we don't need this anymore                                             
+  // auto total_utilized_capacity = std::accumulate(stats_.utilized_capacity.begin(),
+  //                                                stats_.utilized_capacity.end(),
+  //                                                0ULL);                                                 
   // auto total_utilized_md_capacity = std::accumulate(stats_.utilized_md_capacity.begin(),
   //                                                stats_.utilized_md_capacity.end(),
   //                                                0ULL);
@@ -1288,18 +1278,18 @@ EvalStatus BufferLevel::ComputeScalarAccesses(const tiling::CompoundDataMovement
                                                          stats_.utilized_md_capacity_bits.end(),
                                                          0ULL);
 
-  if (!specs_.size.IsSpecified())
+  if (!specs_.size_bits.IsSpecified())
   {
 #ifdef UPDATE_UNSPECIFIED_SPECS
     specs_.size = std::ceil(total_utilized_capacity * specs_.multiple_buffering.Get());
     specs_.md_size = std::ceil(total_utilized_capacity * specs_.multiple_buffering.Get());
 #endif
   }
-  else if (total_utilized_capacity > specs_.effective_size.Get() && !specs_.allow_overbooking.Get() )
+  else if (total_utilized_capacity_bits > specs_.effective_size_bits.Get() && !specs_.allow_overbooking.Get() )
   {
     success = false;
-    fail_reason << "mapped tile size " << total_utilized_capacity << " exceeds buffer capacity "
-                << specs_.effective_size.Get();
+    fail_reason << "mapped tile size " << total_utilized_capacity_bits << " exceeds buffer capacity "
+                << specs_.effective_size_bits.Get();
   }
   else if (total_utilized_md_capacity_bits > specs_.effective_md_size_bits.Get() && !specs_.allow_overbooking.Get())
   {
@@ -1307,19 +1297,19 @@ EvalStatus BufferLevel::ComputeScalarAccesses(const tiling::CompoundDataMovement
     fail_reason << "mapped metadata tile size " << total_utilized_md_capacity_bits << " exceeds metadata buffer capacity "
                 << specs_.effective_md_size_bits.Get();
   }
-  else if (total_utilized_capacity < specs_.effective_size.Get()
+  else if (total_utilized_capacity_bits < specs_.effective_size_bits.Get()
            * specs_.min_utilization.Get())
   {
     success = false;
-    fail_reason << "mapped tile size " << total_utilized_capacity << " is less than constrained "
-                << "minimum utilization " << specs_.effective_size.Get() * specs_.min_utilization.Get();
+    fail_reason << "mapped tile size " << total_utilized_capacity_bits << " is less than constrained "
+                << "minimum utilization " << specs_.effective_size_bits.Get() * specs_.min_utilization.Get();
   }
 
   // check if tile confidence meets user-defined constraints
   for (unsigned pvi = 0; pvi < unsigned(problem::GetShape()->NumDataSpaces); pvi++)
   {
     if (confidence_threshold > stats_.tile_confidence[pvi] ||
-       (specs_.size.IsSpecified() && total_utilized_capacity > specs_.effective_size.Get() && specs_.allow_overbooking.Get())){
+       (specs_.size_bits.IsSpecified() && total_utilized_capacity_bits > specs_.effective_size_bits.Get() && specs_.allow_overbooking.Get())){
       success = false;
       fail_reason << "best tile confidence is less than constrained "
                   << "minimum tile confidence " << confidence_threshold;
@@ -1333,16 +1323,16 @@ EvalStatus BufferLevel::ComputeScalarAccesses(const tiling::CompoundDataMovement
   assert ((specs_.instances.Get() % specs_.cluster_size.Get()) == 0);
 
   // Compute address-generation bits.
-  if (specs_.size.IsSpecified())
+  if (specs_.size_bits.IsSpecified())
   {
-    double address_range = std::ceil(static_cast<double>(specs_.size.Get() / specs_.block_size.Get()));
+    double address_range = std::ceil(static_cast<double>(specs_.size_bits.Get() / specs_.block_size.Get()));
     address_range = std::max(address_range, 1.0);
     specs_.addr_gen_bits = static_cast<unsigned long>(std::ceil(std::log2(address_range)));
   }
   else if (specs_.technology.Get() == Technology::SRAM)
   {
     // Use utilized capacity as proxy for size.
-    double address_range = std::ceil(static_cast<double>(total_utilized_capacity / specs_.block_size.Get()));
+    double address_range = std::ceil(static_cast<double>(total_utilized_capacity_bits / specs_.block_size.Get()));
     address_range = std::max(address_range, 1.0);
     specs_.addr_gen_bits = static_cast<unsigned long>(std::ceil(std::log2(address_range)));
   }
@@ -1353,7 +1343,7 @@ EvalStatus BufferLevel::ComputeScalarAccesses(const tiling::CompoundDataMovement
     specs_.addr_gen_bits = 48;
 #else
     // Use utilized capacity as proxy for size.
-    double address_range = std::ceil(static_cast<double>(total_utilized_capacity / specs_.block_size.Get()));
+    double address_range = std::ceil(static_cast<double>(total_utilized_capacity_bits / specs_.block_size.Get()));
     address_range = std::max(address_range, 1.0);
     specs_.addr_gen_bits = static_cast<unsigned long>(std::ceil(std::log2(address_range)));
 #endif
@@ -1411,35 +1401,6 @@ EvalStatus BufferLevel::ComputeScalarAccesses(const tiling::CompoundDataMovement
   return eval_status;
 }
 
-void BufferLevel::ComputeLeaksPerCycle(){
-  auto power_gater = GetPowerGater();
-  auto stats_from = GetPowerGater().stats_;
-  double my_instances = specs_.instances.Get();
-  double from_instances = power_gater.specs_.instances.Get();
-  from_instances = from_instances > 0 ? from_instances : 1;
-  double max_my_utilized = 1;
-  double max_from_utilized = 1;
-  for (unsigned pvi = 0; pvi < unsigned(problem::GetShape()->NumDataSpaces); pvi++)
-  {
-    auto pv = problem::Shape::DataSpaceID(pvi);
-    max_my_utilized = std::max(max_my_utilized, (double) stats_.utilized_instances[pv]);
-    max_from_utilized = std::max(max_from_utilized, (double) stats_from.utilized_instances[pv]);
-  }
-  stats_.n_instances_sharing_power_gating = my_instances / from_instances;
-  
-  if (stats_.n_instances_sharing_power_gating > 1)
-  {
-    stats_.leaks_per_cycle = stats_.n_instances_sharing_power_gating * max_from_utilized;
-    if(stats_.leaks_per_cycle > 0) stats_.non_power_gated_utilization = max_my_utilized / stats_.leaks_per_cycle;
-    else stats_.non_power_gated_utilization = 0;
-  }
-  else // There are more power gates available than instances, so power gate each instance individually.
-  {
-    stats_.n_instances_sharing_power_gating = 1;
-    stats_.leaks_per_cycle = max_my_utilized;
-    stats_.non_power_gated_utilization = 1;
-  }
-}
 
 void BufferLevel::ComputeVectorAccesses(const tiling::CompoundDataMovementInfo& tile){
 
@@ -1510,7 +1471,7 @@ void BufferLevel::ComputeVectorAccesses(const tiling::CompoundDataMovementInfo& 
 
            double total_naive_accesses;
            if (!metadata_action) {
-            total_naive_accesses = (iter->second % block_size == 0) ? iter->second / block_size : iter->second / block_size + 1;
+            total_naive_accesses = (iter->second % (block_size/tile[pvi].GetTilePrecision()) == 0) ? iter->second / (block_size/tile[pvi].GetTilePrecision()) : iter->second / (block_size/tile[pvi].GetTilePrecision())+ 1;
             stats_.fine_grained_vector_accesses[pvi][iter->first] = total_naive_accesses * ratio;
            } 
        } else {
@@ -1599,17 +1560,17 @@ void BufferLevel::ComputeEnergyDueToChildLevelOverflow(Stats child_level_stats, 
 }
 
 
-double BufferLevel::OperationalIntensity(std::uint64_t total_ops) const {
+double BufferLevel::OperationalIntensity(std::uint64_t total_ops) {
   if (Accesses() > 0) {
-    return double(total_ops) / double((Accesses() * specs_.word_bits.Get() / 8));
+    // return double(total_ops) / double((Accesses() * specs_.word_bits.Get() / 8));
+    //Pooria: unfinished
+    return double(total_ops) / double((Accesses()));
   } else {
     return -1;
   }
 }
 
-
-void BufferLevel::FinalizeBufferEnergy(uint64_t total_cycles) {
-  stats_.leakage_energy = specs_.op_energy_map.at("leak") * total_cycles * stats_.leaks_per_cycle;
+void BufferLevel::FinalizeBufferEnergy() {
 
   for (unsigned pvi = 0; pvi < unsigned(problem::GetShape()->NumDataSpaces); pvi++) {
     auto pv = problem::Shape::DataSpaceID(pvi);
@@ -1627,7 +1588,6 @@ void BufferLevel::FinalizeBufferEnergy(uint64_t total_cycles) {
       stats_.energy_due_to_overflow[pv] = stats_.cluster_access_energy_due_to_overflow.at(pv) / cluster_utilization;
     } else {
       stats_.energy[pv] = 0;
-      stats_.energy_per_algorithmic_access[pv] = stats_.energy.at(pv);
       stats_.energy_per_access[pv] = 0;
       stats_.energy_due_to_overflow[pv] = 0;
     }
@@ -1645,8 +1605,11 @@ void BufferLevel::ComputeReductionEnergy()
     auto pv = problem::Shape::DataSpaceID(pvi);
     if (problem::GetShape()->IsReadWriteDataSpace.at(pv))
     {
+      // stats_.temporal_reduction_energy[pv] = stats_.temporal_reductions[pv] * 
+      //   pat::AdderEnergy(specs_.word_bits.Get(), network_update_->WordBits());
+      //Pooria : I am not sure if this is correct
       stats_.temporal_reduction_energy[pv] = stats_.temporal_reductions[pv] * 
-        pat::AdderEnergy(specs_.word_bits.Get(), network_update_->WordBits());
+        pat::AdderEnergy(stats_.tile_precision[pv], stats_.tile_precision[pv]);
     }
     else
     {
@@ -1711,13 +1674,13 @@ void BufferLevel::ComputePerformance(const std::uint64_t compute_cycles)
 
     // Required bandwidth when buffer holds a nonempty tile
     // i.e., average peak requirement
-    std::uint64_t total_read_accesses = total_data_read_accesses + ceil(total_format_read_accesses/specs_.word_bits.Get());
-    std::uint64_t total_write_accesses = total_data_write_accesses + ceil(total_format_write_accesses/specs_.word_bits.Get());
+    std::uint64_t total_read_accesses = total_data_read_accesses + ceil(total_format_read_accesses/stats_.tile_precision.at(pv));
+    std::uint64_t total_write_accesses = total_data_write_accesses + ceil(total_format_write_accesses/stats_.tile_precision.at(pv));
    
     stats_.format_shared_bandwidth_ratio[pv] = (total_read_accesses + total_write_accesses) == 0 ? 0.0 : double(ceil((total_format_read_accesses + total_format_write_accesses)
-        / specs_.word_bits.Get())) / (total_read_accesses + total_write_accesses);
-    stats_.format_read_bandwidth_ratio[pv] = total_read_accesses == 0 ? 0.0 : double(ceil(total_format_read_accesses/specs_.word_bits.Get()))/total_read_accesses;
-    stats_.format_write_bandwidth_ratio[pv] = total_write_accesses == 0 ? 0.0 : double(ceil(total_format_write_accesses/specs_.word_bits.Get()))/total_write_accesses;
+        / stats_.tile_precision.at(pv))) / (total_read_accesses + total_write_accesses);
+    stats_.format_read_bandwidth_ratio[pv] = total_read_accesses == 0 ? 0.0 : double(ceil(total_format_read_accesses/stats_.tile_precision.at(pv)))/total_read_accesses;
+    stats_.format_write_bandwidth_ratio[pv] = total_write_accesses == 0 ? 0.0 : double(ceil(total_format_write_accesses/stats_.tile_precision.at(pv)))/total_write_accesses;
     
     // Scale to obtain *Average* bandwidth required by each instance
     // i.e., global average bandwidth
@@ -1729,8 +1692,8 @@ void BufferLevel::ComputePerformance(const std::uint64_t compute_cycles)
     total_write_accesses =  ceil((double)total_write_accesses/scaling_ratio);
     
     // Convert to bandwidth requirement per cycle
-    unconstrained_read_bandwidth[pv] = (double(total_read_accesses) / compute_cycles) * specs_.bandwidth_consumption_scale[pv];
-    unconstrained_write_bandwidth[pv] = (double(total_write_accesses) / compute_cycles) * specs_.bandwidth_consumption_scale[pv]; 
+    unconstrained_read_bandwidth[pv] = (double(total_read_accesses) / compute_cycles);
+    unconstrained_write_bandwidth[pv] = (double(total_write_accesses) / compute_cycles);
   }
 
   //
@@ -1811,15 +1774,13 @@ STAT_ACCESSOR(double, BufferLevel, AddrGenEnergy, stats_.addr_gen_energy.at(pv) 
 STAT_ACCESSOR(double, BufferLevel, Energy,
               StorageEnergy(pv) +
               TemporalReductionEnergy(pv) +
-              AddrGenEnergy(pv) + 
-              LeakageEnergy(pv))
+              AddrGenEnergy(pv))
 
 STAT_ACCESSOR(std::uint64_t, BufferLevel, Accesses, stats_.utilized_instances.at(pv) * (stats_.reads.at(pv) + stats_.updates.at(pv) + stats_.fills.at(pv)))
-STAT_ACCESSOR(std::uint64_t, BufferLevel, UtilizedCapacity, stats_.utilized_capacity.at(pv))
+STAT_ACCESSOR(std::uint64_t, BufferLevel, UtilizedCapacity, stats_.utilized_capacity_bits.at(pv))
 STAT_ACCESSOR(std::uint64_t, BufferLevel, TileSize, stats_.tile_size.at(pv))
 STAT_ACCESSOR(std::uint64_t, BufferLevel, UtilizedInstances, stats_.utilized_instances.at(pv))
-STAT_ACCESSOR(std::uint64_t, BufferLevel, TotalUtilizedBytes, stats_.utilized_capacity.at(pv) * stats_.utilized_instances.at(pv) * specs_.word_bits.Get() / 8)
-STAT_ACCESSOR(double, BufferLevel, LeakageEnergy, stats_.leakage_energy / (pv == problem::GetShape()->NumDataSpaces ? 1 : problem::GetShape()->NumDataSpaces))
+STAT_ACCESSOR(std::uint64_t, BufferLevel, TotalUtilizedBytes, stats_.utilized_capacity_bits.at(pv)/8 * stats_.utilized_instances.at(pv) * stats_.tile_precision.at(pv) / 8)
 
 std::string BufferLevel::Name() const
 {
@@ -1840,28 +1801,28 @@ double BufferLevel::AreaPerInstance() const
   return area;
 }
 
-double BufferLevel::Size() const
+double BufferLevel::Size_bits() const
 {
   // FIXME: this is per-instance. This is inconsistent with the naming
   // convention of some of the other methods, which are summed across instances.
-  double size = 0;
-  size += specs_.size.Get();
-  return size;
+  double size_bits = 0;
+  size_bits += specs_.size_bits.Get();
+  return size_bits;
 }
 
 double BufferLevel::CapacityUtilization() const
 {
-  double utilized_capacity = 0;
+  double utilized_capacity_bits = 0;
   for (unsigned pvi = 0; pvi < unsigned(problem::GetShape()->NumDataSpaces); pvi++)
   {
     auto pv = problem::Shape::DataSpaceID(pvi);
-    utilized_capacity += stats_.utilized_capacity.at(pv) *
+    utilized_capacity_bits +=  stats_.utilized_capacity_bits.at(pv) *
       stats_.utilized_instances.at(pv);
   }
 
-  double total_capacity = Size() * specs_.instances.Get();
+  double total_capacity_bits = Size_bits() * specs_.instances.Get();
 
-  return utilized_capacity / total_capacity;
+  return utilized_capacity_bits / total_capacity_bits;
 }
 
 std::uint64_t BufferLevel::Cycles() const
@@ -1908,66 +1869,60 @@ void BufferLevel::Print(std::ostream& out) const
   if (specs_.is_sparse_module.Get())
   {
   
-    out << indent << indent << "Technology                      : " << specs.technology << std::endl;
-    out << indent << indent << "Data storage size               : " << specs.size << std::endl;
-    out << indent << indent << "Data word bits                  : " << specs.word_bits << std::endl;
-    out << indent << indent << "Data block size                 : " << specs.block_size << std::endl;
-    out << indent << indent << "Metadata storage width(bits)    : " << specs.metadata_storage_width << std::endl;
-    out << indent << indent << "Metadata storage depth          : " << specs.metadata_storage_depth << std::endl;
-    //out << indent << indent << "Metadata word bits            : " << specs.default_md_word_bits.Get() << std::endl;
-    //out << indent << indent << "Metadata block size           : " << specs.default_md_block_size.Get() << std::endl;
-    out << indent << indent << "Cluster size                    : " << specs.cluster_size << std::endl;
-    out << indent << indent << "Instances                       : " << specs.instances << " ("
+    out << indent << indent << "Technology                   : " << specs.technology << std::endl;
+    out << indent << indent << "Data storage size in bits            : " << specs.size_bits << std::endl;
+    // out << indent << indent << "Data word bits               : " << specs.word_bits << std::endl;
+    out << indent << indent << "Data block size              : " << specs.block_size << std::endl;
+    out << indent << indent << "Metadata storage width(bits) : " << specs.metadata_storage_width << std::endl;
+    out << indent << indent << "Metadata storage depth       : " << specs.metadata_storage_depth << std::endl;
+    //out << indent << indent << "Metadata word bits           : " << specs.default_md_word_bits.Get() << std::endl;
+    //out << indent << indent << "Metadata block size          : " << specs.default_md_block_size.Get() << std::endl;
+    out << indent << indent << "Cluster size                 : " << specs.cluster_size << std::endl;
+    out << indent << indent << "Instances                    : " << specs.instances << " ("
         << specs.meshX << "*" << specs.meshY << ")" << std::endl;
-    out << indent << indent << "Shared bandwidth                : " << specs.shared_bandwidth << std::endl;
-    out << indent << indent << "Read bandwidth                  : " << specs.read_bandwidth << std::endl;    
-    out << indent << indent << "Write bandwidth                 : " << specs.write_bandwidth << std::endl;    
-    out << indent << indent << "Multiple buffering              : " << specs.multiple_buffering << std::endl;
-    //out << indent << indent << "Allow overbooking             : " << specs.allow_overbooking << std::endl;
-    out << indent << indent << "Effective data storage size     : " << specs.effective_size << std::endl;
-    out << indent << indent << "Min utilization                 : " << specs.min_utilization << std::endl;
-    //out << indent << indent << "Vector access energy(max)     : " << specs.vector_access_energy << " pJ" << std::endl;
-    //out << indent << indent << "Vector gated read energy      : " << specs.op_energy_map.at("gated_read") << " pJ" << std::endl;
-    //out << indent << indent << "Vector skipped read energy    : " << specs.op_energy_map.at("skipped_read") << " pJ" << std::endl;
-    out << indent << indent << "Vector read energy              : " << specs.op_energy_map.at("random_read") << " pJ" << std::endl;
-    //out << indent << indent << "Vector gated write energy     : " << specs.op_energy_map.at("gated_fill") << " pJ" << std::endl;
-    //out << indent << indent << "Vector skipped write energy   : " << specs.op_energy_map.at("skipped_fill") << " pJ" << std::endl;
-    out << indent << indent << "Vector write energy             : " << specs.op_energy_map.at("random_fill") << " pJ" << std::endl;
-    //out << indent << indent << "Vector gated update energy    : " << specs.op_energy_map.at("gated_update") << " pJ" << std::endl;
-    //out << indent << indent << "Vector skipped update energy  : " << specs.op_energy_map.at("skipped_update") << " pJ" << std::endl;
-    //out << indent << indent << "Vector random update energy   : " << specs.op_energy_map.at("random_update") << " pJ" << std::endl;
-    out << indent << indent << "Vector metadata read energy     : " << specs.op_energy_map.at("random_metadata_read") << " pJ" << std::endl;
-    out << indent << indent << "Vector metadata write energy    : " << specs.op_energy_map.at("random_metadata_fill") << " pJ" << std::endl;
-    out << indent << indent << "(De)compression energy          : " << specs.op_energy_map.at("decompression_count") << " pJ" << std::endl;
-    out << indent << indent << "Per-instance-cycle leakage      : " << specs.op_energy_map.at("leak") << " pJ" << std::endl;
-    out << indent << indent << "Instances sharing power gating  : " << stats.n_instances_sharing_power_gating << std::endl;
-    out << indent << indent << "Non-power-gated utilization     : " << OUT_PERCENT(stats.non_power_gated_utilization) << std::endl;
-    out << indent << indent << "Leakage energy (total)          : " << stats.leakage_energy << " pJ" << std::endl;
-    out << indent << indent << "Area                            : " << specs.storage_area << " um^2" << std::endl;
+    out << indent << indent << "Shared bandwidth             : " << specs.shared_bandwidth << std::endl;
+    out << indent << indent << "Read bandwidth               : " << specs.read_bandwidth << std::endl;    
+    out << indent << indent << "Write bandwidth              : " << specs.write_bandwidth << std::endl;    
+    out << indent << indent << "Multiple buffering           : " << specs.multiple_buffering << std::endl;
+    //out << indent << indent << "Allow overbooking            : " << specs.allow_overbooking << std::endl;
+    out << indent << indent << "Effective data storage size(b) : " << specs.effective_size_bits << std::endl;
+    out << indent << indent << "Min utilization              : " << specs.min_utilization << std::endl;
+    //out << indent << indent << "Vector access energy(max)    : " << specs.vector_access_energy << " pJ" << std::endl;
+    //out << indent << indent << "Vector gated read energy     : " << specs.op_energy_map.at("gated_read") << " pJ" << std::endl;
+    //out << indent << indent << "Vector skipped read energy   : " << specs.op_energy_map.at("skipped_read") << " pJ" << std::endl;
+    out << indent << indent << "Vector read energy           : " << specs.op_energy_map.at("random_read") << " pJ" << std::endl;
+    //out << indent << indent << "Vector gated write energy    : " << specs.op_energy_map.at("gated_fill") << " pJ" << std::endl;
+    //out << indent << indent << "Vector skipped write energy  : " << specs.op_energy_map.at("skipped_fill") << " pJ" << std::endl;
+    out << indent << indent << "Vector write energy          : " << specs.op_energy_map.at("random_fill") << " pJ" << std::endl;
+    //out << indent << indent << "Vector gated update energy   : " << specs.op_energy_map.at("gated_update") << " pJ" << std::endl;
+    //out << indent << indent << "Vector skipped update energy : " << specs.op_energy_map.at("skipped_update") << " pJ" << std::endl;
+    //out << indent << indent << "Vector random update energy  : " << specs.op_energy_map.at("random_update") << " pJ" << std::endl;
+    out << indent << indent << "Vector metadata read energy  : " << specs.op_energy_map.at("random_metadata_read") << " pJ" << std::endl;
+    out << indent << indent << "Vector metadata write energy : " << specs.op_energy_map.at("random_metadata_fill") << " pJ" << std::endl;
+    out << indent << indent << "(De)compression energy       : " << specs.op_energy_map.at("decompression_count") << " pJ" << std::endl;
+    out << indent << indent << "Area                         : " << specs.storage_area << " um^2" << std::endl;
+
     out << std::endl;
   }
   else
   {
-    out << indent << indent << "Technology                      : " << specs.technology << std::endl;
-    out << indent << indent << "Size                            : " << specs.size << std::endl;
-    out << indent << indent << "Word bits                       : " << specs.word_bits << std::endl;
-    out << indent << indent << "Block size                      : " << specs.block_size << std::endl;
-    out << indent << indent << "Cluster size                    : " << specs.cluster_size << std::endl;
-    out << indent << indent << "Instances                       : " << specs.instances << " ("
+    out << indent << indent << "Technology                  : " << specs.technology << std::endl;
+    out << indent << indent << "Size in bits                : " << specs.size_bits << std::endl;
+    // out << indent << indent << "Word bits                   : " << specs.word_bits << std::endl;
+    out << indent << indent << "Block size                  : " << specs.block_size << std::endl;
+    out << indent << indent << "Cluster size                : " << specs.cluster_size << std::endl;
+    out << indent << indent << "Instances                   : " << specs.instances << " ("
         << specs.meshX << "*" << specs.meshY << ")" << std::endl;
-    out << indent << indent << "Shared bandwidth                : " << specs.shared_bandwidth << std::endl;
-    out << indent << indent << "Read bandwidth                  : " << specs.read_bandwidth << std::endl;
-    out << indent << indent << "Write bandwidth                 : " << specs.write_bandwidth << std::endl;
-    out << indent << indent << "Multiple buffering              : " << specs.multiple_buffering << std::endl;
-    out << indent << indent << "Effective size                  : " << specs.effective_size << std::endl;
-    out << indent << indent << "Min utilization                 : " << specs.min_utilization << std::endl;
-    out << indent << indent << "Vector access energy            : " << specs.vector_access_energy << " pJ" << std::endl;
-    out << indent << indent << "Vector access energy source     : " << specs.access_energy_source << std::endl;
-    out << indent << indent << "Per-instance-cycle leakage      : " << specs.op_energy_map.at("leak") << " pJ" << std::endl;
-    out << indent << indent << "Instances sharing power gating  : " << stats.n_instances_sharing_power_gating << std::endl;
-    out << indent << indent << "Non-power-gated utilization     : " << OUT_PERCENT(stats.non_power_gated_utilization) << std::endl;
-    out << indent << indent << "Leakage energy (total)          : " << stats.leakage_energy << " pJ" << std::endl;
-    out << indent << indent << "Area                            : " << specs.storage_area << " um^2" << std::endl;
+    out << indent << indent << "Shared bandwidth            : " << specs.shared_bandwidth << std::endl;
+    out << indent << indent << "Read bandwidth              : " << specs.read_bandwidth << std::endl;
+    out << indent << indent << "Write bandwidth             : " << specs.write_bandwidth << std::endl;
+    out << indent << indent << "Multiple buffering          : " << specs.multiple_buffering << std::endl;
+    out << indent << indent << "Effective size(b)              : " << specs.effective_size_bits << std::endl;
+    out << indent << indent << "Min utilization             : " << specs.min_utilization << std::endl;
+    out << indent << indent << "Vector access energy        : " << specs.vector_access_energy << " pJ" << std::endl;
+    out << indent << indent << "Vector access energy source : " << specs.access_energy_source << std::endl;
+    out << indent << indent << "Area                        : " << specs.storage_area << " um^2" << std::endl;
+
     out << std::endl;
   }
   
@@ -2015,8 +1970,10 @@ void BufferLevel::Print(std::ostream& out) const
         // out << indent + indent << "Parent level name                                           : " << stats.parent_level_name.at(pv) << std::endl;
         // out << indent + indent << "Overbooked proportion                                       : " << 100*(1.0 - stats.tile_confidence.at(pv)) << "%" << std::endl;
         out << indent + indent << "Tile density distribution                                   : " << stats.tile_density_distribution.at(pv) << std::endl;
+        out << indent + indent << "Tile precision                                              : " << stats.tile_precision.at(pv) << std::endl;
+        
         out << indent + indent << "Data tile shape                                             : " << stats.tile_shape.at(pv) << std::endl;
-        out << indent + indent << "Max utilized data storage capacity                          : " << stats.utilized_capacity.at(pv) << std::endl;
+        out << indent + indent << "Max utilized data storage capacity bits                     : " << stats.utilized_capacity_bits.at(pv) << std::endl;
         out << indent + indent << "Representation format                                       : " << stats.metadata_format.at(pv) << std::endl;
         out << indent + indent << "Max utilized Repr format storage capacity                   "  ;
         if (stats.metadata_format.at(pv) == "none") out << ": 0" << std::endl;
@@ -2166,26 +2123,25 @@ void BufferLevel::Print(std::ostream& out) const
 
         out << indent + indent << "Address Generation Energy (per-cluster)                     : " << stats.addr_gen_energy.at(pv) << " pJ" << std::endl;
         out << indent + indent << "Address Generation Energy (total)                           : " << stats.addr_gen_energy.at(pv) * stats.utilized_clusters.at(pv) << " pJ" << std::endl;
-        out << indent + indent << "Bandwidth Consumption Scale                                 : " << specs.bandwidth_consumption_scale.at(pv) << std::endl;
         out << indent + indent << "Average Shared Bandwidth (per-instance)                     : " << stats.shared_bandwidth.at(pv) << " words/cycle" << std::endl;
-        out << indent + indent + indent << "Breakdown (Data, Format): (" << OUT_PERCENT(1 - stats.format_shared_bandwidth_ratio.at(pv)) << ", " << OUT_PERCENT(stats.format_shared_bandwidth_ratio.at(pv)) << std::endl;
+        out << indent + indent + indent << "Breakdown (Data, Format): (" << 100 * (1 - stats.format_shared_bandwidth_ratio.at(pv)) << "%, " << 100 * (stats.format_shared_bandwidth_ratio.at(pv)) << "%)"<< std::endl;
         out << indent + indent << "Shared Bandwidth (total)                                    : " << stats.shared_bandwidth.at(pv) * stats.utilized_x_expansion.at(pv) * stats.utilized_y_expansion.at(pv) << " words/cycle" << std::endl;
         out << indent + indent << "Average Read Bandwidth (per-instance)                       : " << stats.read_bandwidth.at(pv) << " words/cycle" << std::endl;
-        out << indent + indent + indent << "Breakdown (Data, Format): (" << OUT_PERCENT(1 - stats.format_read_bandwidth_ratio.at(pv)) << ", " << OUT_PERCENT(stats.format_read_bandwidth_ratio.at(pv)) << ")"<< std::endl;
+        out << indent + indent + indent << "Breakdown (Data, Format): (" << 100 * (1 - stats.format_read_bandwidth_ratio.at(pv)) << "%, " << 100 * (stats.format_read_bandwidth_ratio.at(pv)) << "%)"<< std::endl;
         out << indent + indent << "Read Bandwidth (total)                                      : " << stats.read_bandwidth.at(pv) * stats.utilized_x_expansion.at(pv) * stats.utilized_y_expansion.at(pv) << " words/cycle" << std::endl;
         out << indent + indent << "Average Write Bandwidth (per-instance)                      : " << stats.write_bandwidth.at(pv) << " words/cycle" << std::endl;
-        out << indent + indent + indent << "Breakdown (Data, Format): (" << OUT_PERCENT(1 - stats.format_write_bandwidth_ratio.at(pv)) << ", " << OUT_PERCENT(stats.format_write_bandwidth_ratio.at(pv)) << ")"<< std::endl;
+        out << indent + indent + indent << "Breakdown (Data, Format): (" << 100 * (1 - stats.format_write_bandwidth_ratio.at(pv)) << "%, " << 100 * (stats.format_write_bandwidth_ratio.at(pv)) << "%)"<< std::endl;
         out << indent + indent << "Write Bandwidth (total)                                     : " << stats.write_bandwidth.at(pv) * stats.utilized_x_expansion.at(pv) * stats.utilized_y_expansion.at(pv) << " words/cycle" << std::endl;
       }
       else
       {
         out << indent + indent << "Partition size                           : " << stats.partition_size.at(pv) << std::endl;
-        out << indent + indent << "Utilized capacity                        : " << stats.utilized_capacity.at(pv) << std::endl;
+        out << indent + indent << "Utilized capacity bits                   : " << stats.utilized_capacity_bits.at(pv) << std::endl;
         out << indent + indent << "Utilized instances (max)                 : " << int(stats.utilized_instances.at(pv)) << std::endl;
         out << indent + indent << "Utilized clusters (max)                  : " << stats.utilized_clusters.at(pv) << std::endl;
         out << indent + indent << "Scalar reads (per-instance)              : " << stats.reads.at(pv) << std::endl;
-        out << indent + indent << "Scalar fills (per-instance)              : " << stats.fills.at(pv) << std::endl;
         out << indent + indent << "Scalar updates (per-instance)            : " << stats.updates.at(pv) << std::endl;
+        out << indent + indent << "Scalar fills (per-instance)              : " << stats.fills.at(pv) << std::endl;
         out << indent + indent << "Temporal reductions (per-instance)       : " << stats.temporal_reductions.at(pv) << std::endl;
         out << indent + indent << "Address generations (per-cluster)        : " << stats.address_generations.at(pv) << std::endl;
 
@@ -2196,7 +2152,6 @@ void BufferLevel::Print(std::ostream& out) const
         out << indent + indent << "Temporal Reduction Energy (total)        : " << stats.temporal_reduction_energy.at(pv) * stats.utilized_instances.at(pv) << " pJ" << std::endl;
         out << indent + indent << "Address Generation Energy (per-cluster)  : " << stats.addr_gen_energy.at(pv) << " pJ" << std::endl;
         out << indent + indent << "Address Generation Energy (total)        : " << stats.addr_gen_energy.at(pv) * stats.utilized_clusters.at(pv) << " pJ" << std::endl;
-        out << indent + indent << "Bandwidth Consumption Scale              : " << specs.bandwidth_consumption_scale.at(pv) << std::endl;
         out << indent + indent << "Shared Bandwidth (per-instance)          : " << stats.shared_bandwidth.at(pv) << " words/cycle" << std::endl;
         out << indent + indent << "Shared Bandwidth (total)                 : " << stats.shared_bandwidth.at(pv) * stats.utilized_instances.at(pv) << " words/cycle" << std::endl;
         out << indent + indent << "Read Bandwidth (per-instance)            : " << stats.read_bandwidth.at(pv) << " words/cycle" << std::endl;

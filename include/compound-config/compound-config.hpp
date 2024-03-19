@@ -33,9 +33,6 @@
 #include <yaml-cpp/yaml.h>
 #include <cassert>
 
-#include "compound-config/compound-config.hpp"
-#include "compound-config/hyphens-to-underscores.hpp"
-
 namespace config
 {
 
@@ -83,8 +80,6 @@ class CompoundConfigNode
   /// @brief Scalar setter (template).
   template <typename T>
   bool setScalar(const T value);
-  /// @brief Node setter (template).
-  bool set(CompoundConfigNode& node);
   /// @brief Creates/appends to Sequence (template).
   template <typename T>
   bool push_back(const T value);

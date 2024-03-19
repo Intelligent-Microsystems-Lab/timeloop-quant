@@ -37,10 +37,6 @@
 #include "model/network-simple-multicast.hpp"
 BOOST_CLASS_EXPORT(model::SimpleMulticastNetwork)
 
-bool gHideInconsequentialStatsNetworkMulticast =
-  (getenv("TIMELOOP_HIDE_INCONSEQUENTIAL_STATS") == NULL) ||
-  (strcmp(getenv("TIMELOOP_HIDE_INCONSEQUENTIAL_STATS"), "0") != 0);
-
 namespace model
 {
 
@@ -79,11 +75,11 @@ SimpleMulticastNetwork::Specs SimpleMulticastNetwork::ParseSpecs(config::Compoun
 
   // Word Bits.
   std::uint32_t word_bits;
-  if (network.lookupValue("network_word_bits", word_bits))
+  if (network.lookupValue("network-word-bits", word_bits))
   {
     specs.word_bits = word_bits;
   }
-  else if (network.lookupValue("word_bits", word_bits) ||
+  else if (network.lookupValue("word-bits", word_bits) ||
            network.lookupValue("word_width", word_bits) ||
            network.lookupValue("datawidth", word_bits) )
   {
@@ -317,7 +313,6 @@ void SimpleMulticastNetwork::Print(std::ostream& out) const
   for (unsigned pvi = 0; pvi < unsigned(problem::GetShape()->NumDataSpaces); pvi++)
   {
     auto pv = problem::Shape::DataSpaceID(pvi);
-    if(gHideInconsequentialStatsNetworkMulticast && stats_.ingresses.at(pv).TotalAccesses() == 0) continue;
     out << indent << problem::GetShape()->DataSpaceIDToName.at(pv) << ":" << std::endl;
     out << indent + indent << "Fanout                                  : "
     << stats_.fanout.at(pv) << std::endl;
@@ -335,10 +330,10 @@ void SimpleMulticastNetwork::Print(std::ostream& out) const
   out << std::endl;
 }
 
-std::uint64_t SimpleMulticastNetwork::WordBits() const
-{
-  return 0;
-}
+// std::uint64_t SimpleMulticastNetwork::WordBits() const
+// {
+//   return 0;
+// }
 
 std::uint64_t SimpleMulticastNetwork::FillLatency() const
 {

@@ -266,5 +266,12 @@ double DataMovementInfo::GetExpectedTileDensity() const
 {
   return expected_density;
 }
-
+int DataMovementInfo::GetTilePrecision() const
+{
+  return tile_precision;
+}
+void DataMovementInfo::SetTilePrecision(int tile_precision_)
+{
+  tile_precision = tile_precision_;
+}
 }

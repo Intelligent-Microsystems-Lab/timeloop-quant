@@ -195,7 +195,7 @@ class ReductionTreeNetwork : public Network
   void Print(std::ostream& out) const override;
 
   // Ugly abstraction-breaking probes that should be removed.
-  std::uint64_t WordBits() const override;
+  // std::uint64_t WordBits() const override;
   std::uint64_t FillLatency() const override;
   std::uint64_t DrainLatency() const override;
   void SetFillLatency(std::uint64_t fill_latency) override;

@@ -128,15 +128,12 @@ void Nest::PrettyPrint(std::ostream& out, const std::vector<std::string>& storag
   unsigned inv_storage_level = storage_tiling_boundaries.size()-1; // Skip printing the first boundary.
 
   std::string indent = _indent + "| ";
-  std::string pre_loop_dashes = "";
-  std::string pre_level_newline = "";
   for (unsigned loop_level = num_loops-1; loop_level != static_cast<unsigned>(-1); loop_level--)
   {
     if (inv_storage_level != static_cast<unsigned>(-1) &&
         storage_tiling_boundaries.at(inv_storage_level) == loop_level)
     {
-      out << pre_level_newline;
-      pre_level_newline = "";
+      out << std::endl;
 
       std::ostringstream str;
       str << storage_level_names.at(inv_storage_level) << " [ ";
@@ -161,26 +158,19 @@ void Nest::PrettyPrint(std::ostream& out, const std::vector<std::string>& storag
       str << "] " << std::endl;
       
       out << _indent << str.str();
-      pre_loop_dashes = "";
-      pre_loop_dashes += _indent;
+      out << _indent;
       for (unsigned i = 0; i < str.str().length()-2; i++)
-        pre_loop_dashes += "-";
-      pre_loop_dashes += "\n";
+        out << "-";
+      out << std::endl;
 
       inv_storage_level--;
     }
-    if(loops.at(loop_level).end - loops.at(loop_level).start > 1)
-    {
-      out << pre_loop_dashes;
-      pre_loop_dashes = "";
-      out << indent;
-      indent += "  ";
-      loops.at(loop_level).Print(out, true);
-      out << std::endl;
-      pre_level_newline = "\n";
-    }
+    out << indent;
+    indent += "  ";
+    loops.at(loop_level).Print(out, true);
+    out << std::endl;
   }
-  out << pre_loop_dashes << indent << "<< Compute >>" << std::endl;
+  out << std::endl;
 }
 
 void Nest::PrintWhoopNest(std::ostream& out, const std::vector<std::string>& storage_level_names,
@@ -485,7 +475,7 @@ void Nest::PrintWhoopNest(std::ostream& out, const std::vector<std::string>& sto
       out << "[" << varname << "]";
     out << ";";
     if (problem::GetShape()->IsReadWriteDataSpace.at(d))
-      out << " // read_write";
+      out << " // read-write";
     else
       out << " // read-only";
     out << std::endl;

@@ -35,11 +35,6 @@
 #include <boost/archive/xml_oarchive.hpp>
 
 #include "model/network-legacy.hpp"
-
-auto gMulticastModel =
-  getenv("TIMELOOP_MULTICAST_MODEL") != NULL ?
-  std::string(getenv("TIMELOOP_MULTICAST_MODEL")) : "PROBABILISTIC";
-
 BOOST_CLASS_EXPORT(model::LegacyNetwork)
 
 namespace model
@@ -79,7 +74,7 @@ LegacyNetwork::Specs LegacyNetwork::ParseSpecs(config::CompoundConfigNode networ
   }
 
   std::string legacy_subtype;
-  if (network.lookupValue("network_type", legacy_subtype))
+  if (network.lookupValue("network-type", legacy_subtype))
   {
     if (legacy_subtype.compare("1:1") == 0)
       specs.legacy_subtype = "1_1";
@@ -94,41 +89,39 @@ LegacyNetwork::Specs LegacyNetwork::ParseSpecs(config::CompoundConfigNode networ
     }
   }
     
-  // Word Bits.
-  std::uint32_t word_bits;
-  if (network.lookupValue("network_word_bits", word_bits))
-  {
-    specs.word_bits = word_bits;
-  }
-  else if (network.lookupValue("word_bits", word_bits) ||
-           network.lookupValue("word_width", word_bits) ||
-           network.lookupValue("datawidth", word_bits) )
-  {
-    // FIXME. Derive this from the buffer I'm connected to in the topology
-    // instead of cheating and reading it directly from its specs config.
-    specs.word_bits = word_bits;
-  }
-  else
-  {
-    specs.word_bits = Specs::kDefaultWordBits;
-  }
+  // // Word Bits.
+  // std::uint32_t word_bits;
+  // if (network.lookupValue("network-word-bits", word_bits))
+  // {
+  //   specs.word_bits = word_bits;
+  // }
+  // else if (network.lookupValue("word-bits", word_bits) ||
+  //          network.lookupValue("word_width", word_bits) ||
+  //          network.lookupValue("datawidth", word_bits) )
+  // {
+  //   // FIXME. Derive this from the buffer I'm connected to in the topology
+  //   // instead of cheating and reading it directly from its specs config.
+  //   specs.word_bits = word_bits;
+  // }
+  // else
+  // {
+  //   specs.word_bits = Specs::kDefaultWordBits;
+  // }
 
   // Router energy.
   double router_energy;
-  if (network.lookupValue("router_energy", router_energy)) {specs.router_energy = router_energy;}
+  if (network.lookupValue("router-energy", router_energy)) {specs.router_energy = router_energy;}
 
   // Wire energy.
   double wire_energy;
-  if (network.lookupValue("wire_energy", wire_energy)) {specs.wire_energy = wire_energy;}
+  if (network.lookupValue("wire-energy", wire_energy)) {specs.wire_energy = wire_energy;}
 
   // Tile width.
   double tile_width;
-  if (network.lookupValue("tile_width", tile_width)) {specs.tile_width = tile_width;}
+  if (network.lookupValue("tile-width", tile_width)) {specs.tile_width = tile_width;}
 
   double energy_per_hop;
-  if (network.lookupValue("energy_per_hop", energy_per_hop)) {
-      specs.energy_per_hop = energy_per_hop;
-  }
+  if (network.lookupValue("energy-per-hop", energy_per_hop)) specs.energy_per_hop = energy_per_hop;
 
   double ingress_energy;
   if (network.lookupValue("energy-per-ingress", ingress_energy)) specs.ingress_energy = ingress_energy;
@@ -236,7 +229,7 @@ EvalStatus LegacyNetwork::ComputeAccesses(const tiling::CompoundDataMovementInfo
     auto pv = problem::Shape::DataSpaceID(pvi);
       
     stats_.utilized_instances[pv] = tile[pvi].replication_factor;      
-
+    stats_.tile_precision[pv] = tile[pvi].tile_precision;
     if (problem::GetShape()->IsReadWriteDataSpace.at(pv))
     {
       // Network access-count calculation for Read-Modify-Write datatypes depends on
@@ -409,10 +402,11 @@ void LegacyNetwork::ComputeNetworkEnergy()
   {
     auto pv = problem::Shape::DataSpaceID(pvi);
     // WireEnergyPerHop checks if wire energy is 0.0 before using default pat
-    double wire_energy = specs_.wire_energy.IsSpecified() ? specs_.wire_energy.Get() : 0.0;
+    double wire_energy = specs_.wire_energy.IsSpecified() ? specs_.wire_energy.Get() : 0.0;    
     double energy_per_hop =
       specs_.energy_per_hop.IsSpecified() ?
-      specs_.energy_per_hop.Get() : WireEnergyPerHop(specs_.word_bits.Get(), specs_.tile_width.Get(), wire_energy);
+      // specs_.energy_per_hop.Get() : WireEnergyPerHop(specs_.word_bits.Get(), specs_.tile_width.Get(), wire_energy);
+      specs_.energy_per_hop.Get() : WireEnergyPerHop(stats_.tile_precision[pvi], specs_.tile_width.Get(), wire_energy);
     double energy_per_router = specs_.router_energy.IsSpecified() ? specs_.router_energy.Get() : 0.0; // Set to 0 since no internal model yet
     double ingress_energy = specs_.ingress_energy.IsSpecified() ? specs_.ingress_energy.Get() : 0.0;
 
@@ -497,7 +491,8 @@ void LegacyNetwork::ComputeSpatialReductionEnergy()
             && (specs_.cType & ConnectionType::UpdateDrain)) // also used for UpdateDrain connections
     {
       stats_.spatial_reduction_energy[pv] = stats_.spatial_reductions[pv] * 
-        pat::AdderEnergy(specs_.word_bits.Get(), specs_.word_bits.Get());
+        // pat::AdderEnergy(specs_.word_bits.Get(), specs_.word_bits.Get());
+        pat::AdderEnergy(stats_.tile_precision[pvi], stats_.tile_precision[pvi]);
     }
     else
     {
@@ -522,11 +517,11 @@ void LegacyNetwork::ComputePerformance()
 
 // We need the following method so that the connected buffer can
 // query it to find the cost of temporal reductions. Ugh.
-std::uint64_t LegacyNetwork::WordBits() const
-{
-  assert(is_specced_);
-  return specs_.word_bits.Get();
-}
+// std::uint64_t LegacyNetwork::WordBits() const
+// {
+//   assert(is_specced_);
+//   return specs_.word_bits.Get();
+// }
 
 std::uint64_t LegacyNetwork::FillLatency() const
 {
@@ -567,7 +562,7 @@ void LegacyNetwork::Print(std::ostream& out) const
   out << indent << indent << "Type            : " << specs_.type << std::endl;
   out << indent << indent << "Legacy sub-type : " << specs_.legacy_subtype << std::endl;
   out << indent << indent << "ConnectionType  : " << specs_.cType << std::endl;
-  out << indent << indent << "Word bits       : " << specs_.word_bits << std::endl;
+  // out << indent << indent << "Word bits       : " << specs_.word_bits << std::endl;
   out << indent << indent << "Router energy   : " << specs_.router_energy << " pJ" << std::endl;
   out << indent << indent << "Wire energy     : " << specs_.wire_energy << " pJ/b/mm" << std::endl;
   out << indent << indent << "Ingress energy  : " << specs_.ingress_energy << " pJ" << std::endl;
@@ -583,6 +578,7 @@ void LegacyNetwork::Print(std::ostream& out) const
   {
     auto pv = problem::Shape::DataSpaceID(pvi);
     out << indent << problem::GetShape()->DataSpaceIDToName.at(pv) << ":" << std::endl;
+    out << indent << stats_.tile_precision.at(pv)                  << ":" << std::endl;
 
     out << indent + indent << "Fanout                                  : "
         << stats_.fanout.at(pv) << std::endl;
@@ -662,7 +658,7 @@ double LegacyNetwork::WireEnergyPerHop(std::uint64_t word_bits, const double hop
   double hop_distance_mm = hop_distance / 1000;
   if (wire_energy_override != 0.0)
   {
-    // Internal wire model using user-provided average wire_energy/b/mm.
+    // Internal wire model using user-provided average wire-energy/b/mm.
     return word_bits * hop_distance_mm * wire_energy_override;
   }
   else

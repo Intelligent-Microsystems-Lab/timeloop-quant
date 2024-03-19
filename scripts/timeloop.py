@@ -112,6 +112,7 @@ def run_timeloop(dirname, configfile, logfile='timeloop.log', workload_bounds=No
     else:
         subprocess.check_call(['cp', configfile, configfile_path])
 
+    import pdb;pdb.set_trace()
     print('Running timeloop to get mapping')
     def stmt():
         with open(logfile_path, "w") as outfile:

@@ -65,11 +65,13 @@ class Workload
   typedef std::map<Shape::FlattenedDimensionID, Coordinate> FlattenedBounds;
   typedef std::map<Shape::CoefficientID, int> Coefficients;
   typedef std::map<Shape::DataSpaceID, std::shared_ptr<DensityDistribution>> Densities;
-
+  typedef std::map<Shape::DataSpaceID, int> Precisions;
+  
  protected:
   FactorizedBounds factorized_bounds_;
   FlattenedBounds flattened_bounds_;
   Coefficients coefficients_;
+  Precisions precisions_;
   Densities densities_;
   bool workload_tensor_size_set_ = false;
   bool default_dense_ = true;
@@ -125,7 +127,10 @@ class Workload
   {
     return coefficients_.at(p);
   }
-
+  int GetPrecision(Shape::DataSpaceID pv) const
+  {
+    return precisions_.at(pv);
+  }
   std::shared_ptr<DensityDistribution> GetDensity(Shape::DataSpaceID pv) const
   {
     return densities_.at(pv);
@@ -161,6 +166,11 @@ class Workload
   void SetCoefficients(const Coefficients& coefficients)
   {
     coefficients_ = coefficients;
+  }
+
+  void SetPrecisions(const Precisions& precisions)
+  {
+    precisions_ = precisions;
   }
   
   void SetDensities(const Densities& densities)
@@ -203,7 +213,9 @@ class Workload
     {
       ar& BOOST_SERIALIZATION_NVP(factorized_bounds_);
       ar& BOOST_SERIALIZATION_NVP(coefficients_);
+      ar& BOOST_SERIALIZATION_NVP(precisions_);
       ar& BOOST_SERIALIZATION_NVP(densities_);
+      
     }
   }
 };

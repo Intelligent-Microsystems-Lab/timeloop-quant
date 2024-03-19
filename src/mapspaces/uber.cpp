@@ -614,8 +614,6 @@ std::vector<Status> Uber::ConstructMapping(
   mapping->loop_nest.no_link_transfer = constraints_.NoLinkTransfers();
   mapping->loop_nest.no_multicast = constraints_.NoMulticast();
   mapping->loop_nest.no_temporal_reuse = constraints_.NoTemporalReuse();
-  mapping->loop_nest.rmw_first_update = constraints_.RMWOnFirstWriteback();
-  mapping->loop_nest.no_coalesce = constraints_.no_coalesce();
 
   return status;
 }

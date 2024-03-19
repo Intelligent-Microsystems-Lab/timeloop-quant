@@ -50,13 +50,11 @@ std::vector<std::string> storageOperationTypes = {"random_read",
                                                   "gated_metadata_update",
                                                   "skipped_metadata_update",
                                                   "decompression_count",
-                                                  "compression_count",
-                                                  "leak"};
+                                                  "compression_count"};
 
 std::vector<std::string> arithmeticOperationTypes = {"random_compute",
                                                      "skipped_compute",
-                                                     "gated_compute",
-                                                    };
+                                                     "gated_compute"};
 
 std::vector<std::string> networkOperationTypes = {"random_transfer"};
 

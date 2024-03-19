@@ -31,7 +31,6 @@
 #include <streambuf>
 
 #include "compound-config/compound-config.hpp"
-#include "compound-config/hyphens-to-underscores.hpp"
 
 #define EXCEPTION_PROLOGUE                                                          \
     try { 
@@ -124,7 +123,7 @@ bool CompoundConfigNode::lookupValue(const char *name, bool &value) const {
       if (cConfig->getVariableRoot().exists(variableName)) {
         cConfig->getVariableRoot().lookupValue(variableName, value);
       } else {
-        std::cerr << "Cannot find " << variableName << " for " << name << " under root key: variables" << std::endl;
+        std::cerr << "Cannot find " << variableName << " under root key: variables" << std::endl;
         throw e;
       }
     }
@@ -157,7 +156,7 @@ bool CompoundConfigNode::lookupValue(const char *name, int &value) const {
       if (cConfig->getVariableRoot().exists(variableName)) {
         cConfig->getVariableRoot().lookupValue(variableName, value);
       } else {
-        std::cerr << "Cannot find " << variableName << " for " << name << " under root key: variables" << std::endl;
+        std::cerr << "Cannot find " << variableName << " under root key: variables" << std::endl;
         throw e;
       }
     }
@@ -190,7 +189,7 @@ bool CompoundConfigNode::lookupValue(const char *name, unsigned int &value) cons
       if (cConfig->getVariableRoot().exists(variableName)) {
         cConfig->getVariableRoot().lookupValue(variableName, value);
       } else {
-        std::cerr << "Cannot find " << variableName << " for " << name << " under root key: variables" << std::endl;
+        std::cerr << "Cannot find " << variableName << " under root key: variables" << std::endl;
         throw e;
       }
     }
@@ -224,7 +223,7 @@ bool CompoundConfigNode::lookupValueLongOnly(const char *name, long long &value)
       if (cConfig->getVariableRoot().exists(variableName)) {
         cConfig->getVariableRoot().lookupValue(variableName, value);
       } else {
-        std::cerr << "Cannot find " << variableName << " for " << name << " under root key: variables" << std::endl;
+        std::cerr << "Cannot find " << variableName << " under root key: variables" << std::endl;
         throw e;
       }
     }
@@ -267,7 +266,7 @@ bool CompoundConfigNode::lookupValueLongOnly(const char *name, unsigned long lon
       if (cConfig->getVariableRoot().exists(variableName)) {
         cConfig->getVariableRoot().lookupValue(variableName, value);
       } else {
-        std::cerr << "Cannot find " << variableName << " for " << name << " under root key: variables" << std::endl;
+        std::cerr << "Cannot find " << variableName << " under root key: variables" << std::endl;
         throw e;
       }
     }
@@ -314,7 +313,7 @@ bool CompoundConfigNode::lookupValue(const char *name, double &value) const {
       if (cConfig->getVariableRoot().exists(variableName)) {
         cConfig->getVariableRoot().lookupValue(variableName, value);
       } else {
-        std::cerr << "Cannot find " << variableName << " for " << name << " under root key: variables" << std::endl;
+        std::cerr << "Cannot find " << variableName << " under root key: variables" << std::endl;
         throw e;
       }
     }
@@ -351,7 +350,7 @@ bool CompoundConfigNode::lookupValue(const char *name, float &value) const {
       if (cConfig->getVariableRoot().exists(variableName)) {
         cConfig->getVariableRoot().lookupValue(variableName, value);
       } else {
-        std::cerr << "Cannot find " << variableName << " for " << name << " under root key: variables" << std::endl;
+        std::cerr << "Cannot find " << variableName << " under root key: variables" << std::endl;
         throw e;
       }
     }
@@ -484,23 +483,6 @@ bool CompoundConfigNode::setScalar(const T scalar) {
   {
     return false;
   }
-  EXCEPTION_EPILOGUE;
-}
-
-/**
- * Sets a Node to another node.
- * 
- * @param node The node you want to set here.
- * 
- */
-bool CompoundConfigNode::set(CompoundConfigNode& node)
-{
-  EXCEPTION_PROLOGUE;
-  
-  // Sets our YNode to that of the other node.
-  YNode = node.getYNode();
-  return true;
-
   EXCEPTION_EPILOGUE;
 }
 
@@ -671,19 +653,18 @@ bool CompoundConfigNode::getMapKeys(std::vector<std::string> &mapKeys) const {
 /* CompoundConfig */
 
 CompoundConfig::CompoundConfig(const char* inputFile) {
-  std::string contents = hyphens2underscores::hyphens2underscores_from_file(inputFile);
-
   if (std::strstr(inputFile, ".cfg")) {
-    // LConfig.readFile(inputFile);
-    LConfig.readString(contents);
+    LConfig.readFile(inputFile);
     auto& lroot = LConfig.getRoot();
     useLConfig = true;
     root = CompoundConfigNode(&lroot, YAML::Node(), this);
   } else if (std::strstr(inputFile, ".yml") || std::strstr(inputFile, ".yaml")) {
-    std::istringstream combinedStream(contents);
-    YConfig = YAML::Load(combinedStream);
+    std::ifstream f;
+    f.open(inputFile);
+    YConfig = YAML::Load(f);
     root = CompoundConfigNode(nullptr, YConfig, this);
     useLConfig = false;
+    f.close();
     // std::cout << YConfig << std::endl;
   } else {
     std::cerr << "ERROR: Input configuration file does not end with .cfg, .yml, or .yaml" << std::endl;
@@ -693,14 +674,13 @@ CompoundConfig::CompoundConfig(const char* inputFile) {
 
 CompoundConfig::CompoundConfig(std::string input, std::string format) {
   // we only accept yaml version as a string input
-  std::string contents = hyphens2underscores::hyphens2underscores(input);
   if (format.compare("cfg") == 0) {
-    LConfig.readString(contents);
+    LConfig.readString(input);
     auto& lroot = LConfig.getRoot();
     useLConfig = true;
     root = CompoundConfigNode(&lroot, YAML::Node(), this);
   } else if (format.compare("yml") == 0 || format.compare("yaml") == 0) {
-    std::istringstream combinedStream(contents);
+    std::istringstream combinedStream(input);
     YConfig = YAML::Load(combinedStream);
     root = CompoundConfigNode(nullptr, YConfig, this);
     useLConfig = false;
@@ -732,12 +712,12 @@ CompoundConfig::CompoundConfig(std::vector<std::string> inputFiles) {
   }
   
   if (std::strstr(inputFiles[0].c_str(), ".cfg")) {
-    LConfig.readString(hyphens2underscores::hyphens2underscores(combinedString));
+    LConfig.readString(combinedString);
     auto& lroot = LConfig.getRoot();
     useLConfig = true;
     root = CompoundConfigNode(&lroot, YAML::Node(), this);
   } else if (std::strstr(inputFiles[0].c_str(), ".yml") || std::strstr(inputFiles[0].c_str(), ".yaml")) {
-    std::istringstream combinedStream(hyphens2underscores::hyphens2underscores(combinedString));
+    std::istringstream combinedStream(combinedString);
     YConfig = YAML::Load(combinedStream);
     root = CompoundConfigNode(nullptr, YConfig, this);
     useLConfig = false;
