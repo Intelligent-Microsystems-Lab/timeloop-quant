@@ -336,7 +336,7 @@ bool ComputeIneffectualReadImpact(const SparseAnalysisState& state,
     
     // Without considering the co-iteration factos, compare the default granularity to block size
     target_optimization_granularity = default_target_operation_space_mold.GetSize(target_dspace_id);
-    auto target_dspace_level_block_size = topology_specs.GetStorageLevel(target_dspace_level)->block_size.Get();
+    auto target_dspace_level_block_size = topology_specs.GetStorageLevel(target_dspace_level)->block_size.Get()/compound_data_movement_nest[target_dspace_id][target_dspace_level].tile_precision;
    
     double scaling_needed_to_fit_block_size = ceil((double)target_dspace_level_block_size/
         (target_optimization_granularity/aggregated_co_iteration_factor)); 
@@ -405,7 +405,7 @@ bool ComputeIneffectualReadImpact(const SparseAnalysisState& state,
   unsigned l = child_level == -1 ? target_dspace_level : child_level;
   auto level_specs = topology_specs.GetStorageLevel(target_dspace_level);
   // auto ratio = level_specs->default_md_word_bits.Get()/level_specs->word_bits.Get();kDefaultWordBits
-  auto ratio = level_specs->default_md_word_bits.Get()/level_specs->kDefaultWordBits;
+  auto ratio = level_specs->default_md_word_bits.Get()/compound_data_movement_nest[target_dspace_id][l].GetTilePrecision();
   double equivalent_metadata_occupancy =
     compound_data_movement_nest[target_dspace_id][l].GetExpectedAggregatedMetaDataTileOccupancy() * ratio;
   expected_target_tile_occupancy += equivalent_metadata_occupancy;
@@ -462,7 +462,7 @@ bool DefineIneffectualReadImpact(SparseAnalysisState& state,
     auto& impact = possible_impact[i];
 
     access_cost = topology_specs.GetStorageLevel(impact.target_dspace_level)->op_energy_map.at("random_read");
-    auto block_size = topology_specs.GetStorageLevel(impact.target_dspace_level)->block_size.Get();
+    auto block_size = topology_specs.GetStorageLevel(impact.target_dspace_level)->block_size.Get()/compound_data_movement_nest[impact.target_dspace_id][impact.target_dspace_level].tile_precision;
     double savings = (access_cost / block_size) * impact.expected_target_tile_occupancy * impact.optimization_prob;
     max_savings = savings >= max_savings ? savings : max_savings;
     option_id = savings >= max_savings ? i : option_id;

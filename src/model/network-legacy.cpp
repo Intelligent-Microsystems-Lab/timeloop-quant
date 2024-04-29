@@ -578,7 +578,8 @@ void LegacyNetwork::Print(std::ostream& out) const
   {
     auto pv = problem::Shape::DataSpaceID(pvi);
     out << indent << problem::GetShape()->DataSpaceIDToName.at(pv) << ":" << std::endl;
-    out << indent << stats_.tile_precision.at(pv)                  << ":" << std::endl;
+    out << indent + indent << "Tile Precision                          : "
+        << int(stats_.tile_precision.at(pv)) << std::endl;    
 
     out << indent + indent << "Fanout                                  : "
         << stats_.fanout.at(pv) << std::endl;

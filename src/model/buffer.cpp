@@ -815,12 +815,13 @@ EvalStatus BufferLevel::PreEvaluationCheck(
          if (per_level_compression_info.find(pvi) != per_level_compression_info.end()
              && per_level_compression_info.at(pvi).tensor_compressed)
          {
-             working_set_size_bits = workload->GetDensity(pvi)->GetMaxTileOccupancyByConfidence_LTW(dense_working_set_size_bits, confidence_constraint) * workload->GetPrecision(pvi);
+             working_set_size_bits = workload->GetDensity(pvi)->GetMaxTileOccupancyByConfidence_LTW(dense_working_set_size_bits/workload->GetPrecision(pvi), confidence_constraint) * workload->GetPrecision(pvi);
              
          }
          else
          {
-            working_set_size_bits = ceil(dense_working_set_size_bits * confidence_constraint) * workload->GetPrecision(pvi);
+          // It is already in bits so no need to multiply by tile_precision
+            working_set_size_bits = ceil(dense_working_set_size_bits * confidence_constraint);
          }
         // required_capacity += working_set_size;
         required_capacity_bits += working_set_size_bits;
@@ -1114,7 +1115,8 @@ void BufferLevel::ComputeTileOccupancyAndConfidence(const tiling::CompoundDataMo
     stats_.metadata_tile_size_bits[pv] = metadata_tile_size_bits;
     stats_.tile_density_distribution[pv] = tile[pvi].GetDensityType();
     stats_.metadata_format[pv] = tile[pvi].GetMetaDataFormatName();
-    // stats_.utilized_capacity[pv] = data_tile_size_bits/tile[pvi].GetTilePrecision() ;
+    if (tile[pvi].GetTilePrecision())
+      stats_.utilized_capacity[pv] = data_tile_size_bits/tile[pvi].GetTilePrecision() ;
     stats_.utilized_capacity_bits[pv] = data_tile_size_bits;
     // stats_.utilized_md_capacity[pv] = metadata_tile_size;
     stats_.utilized_md_capacity_bits[pv] = metadata_tile_size_bits;
@@ -1403,38 +1405,39 @@ EvalStatus BufferLevel::ComputeScalarAccesses(const tiling::CompoundDataMovement
 
 
 void BufferLevel::ComputeVectorAccesses(const tiling::CompoundDataMovementInfo& tile){
-
   // calculate fine-grained vector accesses
-  auto block_size = specs_.block_size.Get();
+  auto block_size = specs_.block_size.Get(); 
   // auto metadata_block_size = specs_.default_md_block_size.Get();
 
   for (unsigned pvi = 0; pvi < unsigned(problem::GetShape()->NumDataSpaces); pvi++)
   {
-    double tile_mean_density = tile[pvi].GetExpectedTileDensity();
+    // We don't need to process zero sized tiles, right? I made sure we are not going through masked data
+      double tile_mean_density = tile[pvi].GetExpectedTileDensity();
 
-    // flag to signify choice of vector access calculations
-    bool data_storage_naive = true;
+      // flag to signify choice of vector access calculations
+      bool data_storage_naive = true;
 
-    uint64_t tile_shape = tile[pvi].shape;
+      uint64_t tile_shape = tile[pvi].shape;
+      // for access counts I need to make decisions based on the number of entries not bits
+      // Pooria: this is bad because I am just trying to avoid division by 0 
+      auto entries_per_block = tile[pvi].GetTilePrecision() == 0 ? block_size : block_size/tile[pvi].GetTilePrecision();
+      // determine whether naive model is enough
+      // naive calculation of vector accesses is applicable if
+      //    (1) tile is uncompressed
+      //    (2) tile is dense
+      //    (3) vector width is 1
+      //    (4) tile shape/vector width exceed certain threshold values (see model::VectorWidthCoefficientTable)
+      if (tile[pvi].compressed && tile_shape != 0 && entries_per_block > 1 && tile_mean_density < 1.0){
 
-    // determine whether naive model is enough
-    // naive calculation of vector accesses is applicable if
-    //    (1) tile is uncompressed
-    //    (2) tile is dense
-    //    (3) vector width is 1
-    //    (4) tile shape/vector width exceed certain threshold values (see model::VectorWidthCoefficientTable)
-    if (tile[pvi].compressed && tile_shape != 0 && block_size > 1 && tile_mean_density < 1.0){
+        assert(entries_per_block % 2 == 0);
 
-      assert(block_size % 2 == 0);
+        double lookup_density_idx = tile_mean_density >= 0.1 ? floor(tile_mean_density/0.1)-1 : 0; // 0.1 is at idx 0
+        double vector_width_threshold = VectorWidthCoefficientTable.at(entries_per_block).at(lookup_density_idx);
 
-      double lookup_density_idx = tile_mean_density >= 0.1 ? floor(tile_mean_density/0.1)-1 : 0; // 0.1 is at idx 0
-      double vector_width_threshold = VectorWidthCoefficientTable.at(block_size).at(lookup_density_idx);
-
-      if (vector_width_threshold > tile_shape/block_size){
-        data_storage_naive = false;
+        if (vector_width_threshold > tile_shape/entries_per_block){
+          data_storage_naive = false;
+        }
       }
-    }
-
     // calculate the scaling factor based on the tile distribution
     double ratio = 1.0;
     if (!data_storage_naive){
@@ -1455,9 +1458,9 @@ void BufferLevel::ComputeVectorAccesses(const tiling::CompoundDataMovementInfo& 
         double prob = tile[pvi].GetDataTileOccupancyProbability(nnz);
         #endif
 
-        total += ceil(double(nnz)/block_size) * prob;
+        total += ceil(double(nnz)/entries_per_block) * prob;
       }
-      double naive_total = tile_shape * tile_mean_density/block_size;
+      double naive_total = tile_shape * tile_mean_density/entries_per_block;
       ratio = total/naive_total;
     }
 
@@ -1471,7 +1474,7 @@ void BufferLevel::ComputeVectorAccesses(const tiling::CompoundDataMovementInfo& 
 
            double total_naive_accesses;
            if (!metadata_action) {
-            total_naive_accesses = (iter->second % (block_size/tile[pvi].GetTilePrecision()) == 0) ? iter->second / (block_size/tile[pvi].GetTilePrecision()) : iter->second / (block_size/tile[pvi].GetTilePrecision())+ 1;
+            total_naive_accesses = (iter->second % (entries_per_block) == 0) ? iter->second / (entries_per_block) : iter->second / (entries_per_block)+ 1;
             stats_.fine_grained_vector_accesses[pvi][iter->first] = total_naive_accesses * ratio;
            } 
        } else {
@@ -1505,35 +1508,36 @@ void BufferLevel::ComputeVectorAccesses(const tiling::CompoundDataMovementInfo& 
       stats_.fine_grained_fromat_accesses_bits[pvi][op_name] = accessed_bits_accumulator; 
       stats_.fine_grained_vector_accesses[pvi][op_name] = total_naive_accesses;
     }
+  
   }
 }
 
 // Compute buffer energy.
 void BufferLevel::ComputeBufferEnergy(const tiling::CompoundDataMovementInfo& data_movement_info) {
   // NOTE! Stats are always maintained per-DataSpaceID
-  for (unsigned pvi = 0; pvi < unsigned(problem::GetShape()->NumDataSpaces); pvi++) {
-    auto pv = problem::Shape::DataSpaceID(pvi);
-    // move all original number of vector access computation to the ComputeVectorAccesses function
-    // prepare for speculation energy calculation
-    stats_.parent_level_name[pvi] = "none";
-    stats_.parent_level_id[pvi] = data_movement_info[pvi].parent_level;
-    if (data_movement_info[pvi].parent_level != std::numeric_limits<unsigned>::max()) {
-      stats_.parent_level_name[pvi] = data_movement_info[pvi].parent_level_name;
-    }
+  for (unsigned pvi = 0; pvi < unsigned(problem::GetShape()->NumDataSpaces); pvi++) {  
+      auto pv = problem::Shape::DataSpaceID(pvi);
+      // move all original number of vector access computation to the ComputeVectorAccesses function
+      // prepare for speculation energy calculation
+      stats_.parent_level_name[pvi] = "none";
+      stats_.parent_level_id[pvi] = data_movement_info[pvi].parent_level;
+      if (data_movement_info[pvi].parent_level != std::numeric_limits<unsigned>::max()) {
+        stats_.parent_level_name[pvi] = data_movement_info[pvi].parent_level_name;
+      }
 
-    // compute in terms of fine-grained action types
-    std::string op_name;
-    double cluster_access_energy = 0;
-    for (unsigned op_id = 0; op_id < tiling::storageOperationTypes.size(); op_id++) 
-    {
-      op_name = tiling::storageOperationTypes[op_id];
-      // directly fetch the populated vector access numbers instead of using explicit action names
-      cluster_access_energy += stats_.fine_grained_vector_accesses[pv].at(op_name) * specs_.op_energy_map.at(op_name)
-                               * stats_.tile_confidence[pvi];
-    }
-    stats_.cluster_access_energy[pv] = cluster_access_energy;
-    stats_.cluster_access_energy_due_to_overflow[pv] = 0; // will be populated (if any) in the ComputeEnergyDueToChildLevelOverflow
-    // per-instance energy will be finalized in the FinalizeBufferEnergy function
+      // compute in terms of fine-grained action types
+      std::string op_name;
+      double cluster_access_energy = 0;
+      for (unsigned op_id = 0; op_id < tiling::storageOperationTypes.size(); op_id++) 
+      {
+        op_name = tiling::storageOperationTypes[op_id];
+        // directly fetch the populated vector access numbers instead of using explicit action names
+        cluster_access_energy += stats_.fine_grained_vector_accesses[pv].at(op_name) * specs_.op_energy_map.at(op_name)
+                                * stats_.tile_confidence[pvi];
+      }
+      stats_.cluster_access_energy[pv] = cluster_access_energy;
+      stats_.cluster_access_energy_due_to_overflow[pv] = 0; // will be populated (if any) in the ComputeEnergyDueToChildLevelOverflow
+      // per-instance energy will be finalized in the FinalizeBufferEnergy function
   }
 }
 
@@ -1674,13 +1678,15 @@ void BufferLevel::ComputePerformance(const std::uint64_t compute_cycles)
 
     // Required bandwidth when buffer holds a nonempty tile
     // i.e., average peak requirement
-    std::uint64_t total_read_accesses = total_data_read_accesses + ceil(total_format_read_accesses/stats_.tile_precision.at(pv));
-    std::uint64_t total_write_accesses = total_data_write_accesses + ceil(total_format_write_accesses/stats_.tile_precision.at(pv));
-   
-    stats_.format_shared_bandwidth_ratio[pv] = (total_read_accesses + total_write_accesses) == 0 ? 0.0 : double(ceil((total_format_read_accesses + total_format_write_accesses)
-        / stats_.tile_precision.at(pv))) / (total_read_accesses + total_write_accesses);
-    stats_.format_read_bandwidth_ratio[pv] = total_read_accesses == 0 ? 0.0 : double(ceil(total_format_read_accesses/stats_.tile_precision.at(pv)))/total_read_accesses;
-    stats_.format_write_bandwidth_ratio[pv] = total_write_accesses == 0 ? 0.0 : double(ceil(total_format_write_accesses/stats_.tile_precision.at(pv)))/total_write_accesses;
+    if (stats_.tile_precision.at(pv))
+    {
+      std::uint64_t total_read_accesses = total_data_read_accesses + ceil(total_format_read_accesses/stats_.tile_precision.at(pv));
+      std::uint64_t total_write_accesses = total_data_write_accesses + ceil(total_format_write_accesses/stats_.tile_precision.at(pv));
+    
+      stats_.format_shared_bandwidth_ratio[pv] = (total_read_accesses + total_write_accesses) == 0 ? 0.0 : double(ceil((total_format_read_accesses + total_format_write_accesses)
+          / stats_.tile_precision.at(pv))) / (total_read_accesses + total_write_accesses);
+      stats_.format_read_bandwidth_ratio[pv] = total_read_accesses == 0 ? 0.0 : double(ceil(total_format_read_accesses/stats_.tile_precision.at(pv)))/total_read_accesses;
+      stats_.format_write_bandwidth_ratio[pv] = total_write_accesses == 0 ? 0.0 : double(ceil(total_format_write_accesses/stats_.tile_precision.at(pv)))/total_write_accesses;
     
     // Scale to obtain *Average* bandwidth required by each instance
     // i.e., global average bandwidth
@@ -1694,6 +1700,7 @@ void BufferLevel::ComputePerformance(const std::uint64_t compute_cycles)
     // Convert to bandwidth requirement per cycle
     unconstrained_read_bandwidth[pv] = (double(total_read_accesses) / compute_cycles);
     unconstrained_write_bandwidth[pv] = (double(total_write_accesses) / compute_cycles);
+    }
   }
 
   //
@@ -1777,10 +1784,12 @@ STAT_ACCESSOR(double, BufferLevel, Energy,
               AddrGenEnergy(pv))
 
 STAT_ACCESSOR(std::uint64_t, BufferLevel, Accesses, stats_.utilized_instances.at(pv) * (stats_.reads.at(pv) + stats_.updates.at(pv) + stats_.fills.at(pv)))
-STAT_ACCESSOR(std::uint64_t, BufferLevel, UtilizedCapacity, stats_.utilized_capacity_bits.at(pv))
+STAT_ACCESSOR(std::uint64_t, BufferLevel, UtilizedCapacity, stats_.utilized_capacity.at(pv))
+STAT_ACCESSOR(std::uint64_t, BufferLevel, UtilizedCapacityBits, stats_.utilized_capacity_bits.at(pv))
 STAT_ACCESSOR(std::uint64_t, BufferLevel, TileSize, stats_.tile_size.at(pv))
 STAT_ACCESSOR(std::uint64_t, BufferLevel, UtilizedInstances, stats_.utilized_instances.at(pv))
-STAT_ACCESSOR(std::uint64_t, BufferLevel, TotalUtilizedBytes, stats_.utilized_capacity_bits.at(pv)/8 * stats_.utilized_instances.at(pv) * stats_.tile_precision.at(pv) / 8)
+// STAT_ACCESSOR(std::uint64_t, BufferLevel, TotalUtilizedBytes, stats_.utilized_capacity_bits.at(pv)* stats_.utilized_instances.at(pv) / 8)
+STAT_ACCESSOR(std::uint64_t, BufferLevel, TotalUtilizedBytes, stats_.utilized_capacity.at(pv)* stats_.utilized_instances.at(pv) / 8)
 
 std::string BufferLevel::Name() const
 {
@@ -1870,10 +1879,10 @@ void BufferLevel::Print(std::ostream& out) const
   {
   
     out << indent << indent << "Technology                   : " << specs.technology << std::endl;
-    out << indent << indent << "Data storage size in bits            : " << specs.size_bits << std::endl;
+    out << indent << indent << "Data storage size b          : " << specs.size_bits << std::endl;
     // out << indent << indent << "Data word bits               : " << specs.word_bits << std::endl;
-    out << indent << indent << "Data block size              : " << specs.block_size << std::endl;
-    out << indent << indent << "Metadata storage width(bits) : " << specs.metadata_storage_width << std::endl;
+    out << indent << indent << "Data block size b            : " << specs.block_size << std::endl;
+    out << indent << indent << "Metadata storage width b     : " << specs.metadata_storage_width << std::endl;
     out << indent << indent << "Metadata storage depth       : " << specs.metadata_storage_depth << std::endl;
     //out << indent << indent << "Metadata word bits           : " << specs.default_md_word_bits.Get() << std::endl;
     //out << indent << indent << "Metadata block size          : " << specs.default_md_block_size.Get() << std::endl;
@@ -1885,7 +1894,7 @@ void BufferLevel::Print(std::ostream& out) const
     out << indent << indent << "Write bandwidth              : " << specs.write_bandwidth << std::endl;    
     out << indent << indent << "Multiple buffering           : " << specs.multiple_buffering << std::endl;
     //out << indent << indent << "Allow overbooking            : " << specs.allow_overbooking << std::endl;
-    out << indent << indent << "Effective data storage size(b) : " << specs.effective_size_bits << std::endl;
+    out << indent << indent << "Effective data storage size b: " << specs.effective_size_bits << std::endl;
     out << indent << indent << "Min utilization              : " << specs.min_utilization << std::endl;
     //out << indent << indent << "Vector access energy(max)    : " << specs.vector_access_energy << " pJ" << std::endl;
     //out << indent << indent << "Vector gated read energy     : " << specs.op_energy_map.at("gated_read") << " pJ" << std::endl;
@@ -1907,7 +1916,7 @@ void BufferLevel::Print(std::ostream& out) const
   else
   {
     out << indent << indent << "Technology                  : " << specs.technology << std::endl;
-    out << indent << indent << "Size in bits                : " << specs.size_bits << std::endl;
+    out << indent << indent << "Size b                      : " << specs.size_bits << std::endl;
     // out << indent << indent << "Word bits                   : " << specs.word_bits << std::endl;
     out << indent << indent << "Block size                  : " << specs.block_size << std::endl;
     out << indent << indent << "Cluster size                : " << specs.cluster_size << std::endl;
@@ -1917,7 +1926,7 @@ void BufferLevel::Print(std::ostream& out) const
     out << indent << indent << "Read bandwidth              : " << specs.read_bandwidth << std::endl;
     out << indent << indent << "Write bandwidth             : " << specs.write_bandwidth << std::endl;
     out << indent << indent << "Multiple buffering          : " << specs.multiple_buffering << std::endl;
-    out << indent << indent << "Effective size(b)              : " << specs.effective_size_bits << std::endl;
+    out << indent << indent << "Effective size b            : " << specs.effective_size_bits << std::endl;
     out << indent << indent << "Min utilization             : " << specs.min_utilization << std::endl;
     out << indent << indent << "Vector access energy        : " << specs.vector_access_energy << " pJ" << std::endl;
     out << indent << indent << "Vector access energy source : " << specs.access_energy_source << std::endl;

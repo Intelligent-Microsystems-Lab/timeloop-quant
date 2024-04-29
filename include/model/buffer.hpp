@@ -207,7 +207,7 @@ class BufferLevel : public Level
   {
     problem::PerDataSpace<bool> keep;
     problem::PerDataSpace<std::uint64_t> partition_size;
-    // problem::PerDataSpace<std::uint64_t> utilized_capacity;
+    problem::PerDataSpace<std::uint64_t> utilized_capacity;
     problem::PerDataSpace<std::uint64_t> utilized_capacity_bits;
     problem::PerDataSpace<std::uint64_t> utilized_md_capacity_bits;
     problem::PerDataSpace<std::uint64_t> tile_size;
@@ -233,7 +233,7 @@ class BufferLevel : public Level
     problem::PerDataSpace<double> cluster_access_energy_due_to_overflow;
     problem::PerDataSpace<double> energy_due_to_overflow;
 
-    problem::PerDataSpace<double> tile_precision;
+    problem::PerDataSpace<std::uint64_t> tile_precision;
     problem::PerDataSpace<std::uint64_t> tile_shape;
     // problem::PerDataSpace<std::uint64_t> data_tile_size;
     problem::PerDataSpace<std::uint64_t> data_tile_size_bits;
@@ -311,7 +311,7 @@ class BufferLevel : public Level
       {
         ar& BOOST_SERIALIZATION_NVP(keep);
         ar& BOOST_SERIALIZATION_NVP(partition_size);
-        // ar& BOOST_SERIALIZATION_NVP(utilized_capacity);
+        ar& BOOST_SERIALIZATION_NVP(utilized_capacity);
         ar& BOOST_SERIALIZATION_NVP(utilized_capacity_bits);
         ar& BOOST_SERIALIZATION_NVP(utilized_instances);
         ar& BOOST_SERIALIZATION_NVP(utilized_clusters);
@@ -486,6 +486,7 @@ class BufferLevel : public Level
   std::uint64_t Accesses(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const override;
   double CapacityUtilization() const override;
   std::uint64_t UtilizedCapacity(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const override;
+  std::uint64_t UtilizedCapacityBits(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const;
   std::uint64_t TileSize(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const override;
   std::uint64_t UtilizedInstances(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const override;
   std::uint64_t TotalUtilizedBytes(problem::Shape::DataSpaceID pv = problem::GetShape()->NumDataSpaces) const;

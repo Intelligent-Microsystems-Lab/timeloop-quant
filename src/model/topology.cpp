@@ -400,6 +400,7 @@ out << "---------------------------" << std::endl;
 std::string indent = "    ";
 
 std::uint64_t total_min_traffic = 0;
+std::uint64_t total_min_traffic_bits = 0;
 std::uint64_t total_output_size = 0;
 
 for (unsigned pvi = 0; pvi < problem::GetShape()->NumDataSpaces; pvi++)
@@ -407,10 +408,12 @@ for (unsigned pvi = 0; pvi < problem::GetShape()->NumDataSpaces; pvi++)
   auto pv = problem::Shape::DataSpaceID(pvi);
 
   std::uint64_t utilized_capacity = -1;
+  std::uint64_t utilized_capacity_bits = -1;
   for (unsigned storage_level_id = 0; storage_level_id < topology.NumStorageLevels(); storage_level_id++)
   {
     unsigned inv_storage_level = topology.NumStorageLevels() - 1 - storage_level_id;
-    utilized_capacity = topology.GetStats().utilized_capacities.at(inv_storage_level).at(pv);
+    utilized_capacity = topology.GetStats().utilized_capacities.at(inv_storage_level).at(pv); 
+    utilized_capacity_bits = topology.GetStats().utilized_capacities_bits.at(inv_storage_level).at(pv); 
     // use the last non-bypassed level with capacity size not equal to 0
     if (utilized_capacity > 0)
     {
@@ -419,6 +422,7 @@ for (unsigned pvi = 0; pvi < problem::GetShape()->NumDataSpaces; pvi++)
   }
   assert(utilized_capacity > 0);
   total_min_traffic += utilized_capacity;
+  total_min_traffic_bits += utilized_capacity_bits;
   if (problem::GetShape()->IsReadWriteDataSpace.at(pv)) {
     total_output_size += utilized_capacity;
   }
@@ -449,7 +453,7 @@ unsigned inv_storage_level = topology.NumStorageLevels() - 1;
 std::shared_ptr<BufferLevel> buffer_level = topology.GetStorageLevel(inv_storage_level);
 // auto op_per_byte = float(total_ops) / (buffer_level->GetSpecs().word_bits.Get() * total_min_traffic / 8);
 //Pooria : missing
-auto op_per_byte = float(total_ops) / ( total_min_traffic / 8);
+auto op_per_byte = float(total_ops) / ( total_min_traffic_bits/8);
 out << indent << std::left << std::setw(40) << "Optimal Op per Byte";
 out << ": " << op_per_byte << std::endl << std::endl;
 
@@ -461,16 +465,31 @@ for (unsigned i = 0; i < topology.NumStorageLevels(); i++)
   out << "=== " << buffer_level->Name() << " ===" << std::endl;
   uint64_t total_scalar_access = buffer_level->Accesses();
   float op_per_byte = -1;
+  // if (total_scalar_access > 0)
+  // {
+  //   out << indent << std::left << std::setw(40) << "Total scalar accesses";
+  //   out << ": " << total_scalar_access << std::endl;
+  //   // op_per_byte = float(total_ops) / (buffer_level->GetSpecs().word_bits.Get() * total_scalar_access / 8);
+  //   //Pooria : missing
+  //   op_per_byte = float(total_ops) / (total_scalar_access / 8);
+
+  //   out << indent << std::left << std::setw(40) << "Op per Byte";
+  //   out << ": " << op_per_byte << std::endl;
+  // }
   if (total_scalar_access > 0)
   {
     out << indent << std::left << std::setw(40) << "Total scalar accesses";
-    out << ": " << total_scalar_access << std::endl;
-    // op_per_byte = float(total_ops) / (buffer_level->GetSpecs().word_bits.Get() * total_scalar_access / 8);
-    //Pooria : missing
-    op_per_byte = float(total_ops) / (total_scalar_access / 8);
-
+    out << ": " << total_scalar_access << std::endl;    
+    auto total_accesses_bytes = 0;
+    for (unsigned pvi = 0; pvi < problem::GetShape()->NumDataSpaces; pvi++)
+    {
+      auto pv = problem::Shape::DataSpaceID(pvi);
+      total_accesses_bytes += (buffer_level->GetStats().tile_precision.at(pv) * buffer_level->Accesses(pv) / 8);
+    }
+    op_per_byte = float(total_ops) / total_accesses_bytes;
     out << indent << std::left << std::setw(40) << "Op per Byte";
-    out << ": " << op_per_byte << std::endl;
+    out << ": " << op_per_byte << std::endl;    
+
   }
 }
 
@@ -1494,18 +1513,23 @@ void Topology::ComputeStats(bool eval_success)
   // Tile sizes.
   stats_.tile_sizes.clear();
   stats_.utilized_capacities.clear();
+  stats_.utilized_capacities_bits.clear();
   for (unsigned storage_level_id = 0; storage_level_id < NumStorageLevels(); storage_level_id++)
   {
     problem::PerDataSpace<std::uint64_t> ts;
     problem::PerDataSpace<std::uint64_t> utilized_cap;
+    // Added utilized_cap_bits to calculate the total_min_traffic for operation intensity which is op/byte
+    problem::PerDataSpace<std::uint64_t> utilized_cap_bits;
     for (unsigned pvi = 0; pvi < problem::GetShape()->NumDataSpaces; pvi++)
     {
       auto pv = problem::Shape::DataSpaceID(pvi);
       ts[pv] = GetStorageLevel(storage_level_id)->TileSize(pv);
       utilized_cap[pv] = GetStorageLevel(storage_level_id)->UtilizedCapacity(pv);
+      utilized_cap_bits[pv] = GetStorageLevel(storage_level_id)->UtilizedCapacityBits(pv);
     }
     stats_.tile_sizes.push_back(ts);
     stats_.utilized_capacities.push_back(utilized_cap);
+    stats_.utilized_capacities_bits.push_back(utilized_cap_bits);
   }
 
   // Utilized instances.

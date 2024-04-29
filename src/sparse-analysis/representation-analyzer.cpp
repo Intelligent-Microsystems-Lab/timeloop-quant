@@ -614,7 +614,6 @@ bool DefineCompressionFormatModels(SparseAnalysisState& state,
 
   bool success = true;
   auto compression_info = state.sparse_optimization_info_->compression_info;
-
   // nothing needs to be done if no metadata involved
   if (compression_info.all_ranks_default_dense) return success;
 

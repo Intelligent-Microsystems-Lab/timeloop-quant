@@ -194,6 +194,7 @@ class Topology : public Module
     double utilization;
     std::vector<problem::PerDataSpace<std::uint64_t>> tile_sizes;
     std::vector<problem::PerDataSpace<std::uint64_t>> utilized_capacities;
+    std::vector<problem::PerDataSpace<std::uint64_t>> utilized_capacities_bits;
     std::vector<problem::PerDataSpace<std::uint64_t>> utilized_instances;
     std::uint64_t algorithmic_computes;
     std::uint64_t actual_computes;
@@ -213,6 +214,7 @@ class Topology : public Module
       utilization = 0;
       tile_sizes.clear();
       utilized_capacities.clear();
+      utilized_capacities_bits.clear();
       utilized_instances.clear();
       algorithmic_computes = 0;
       actual_computes = 0;
@@ -337,6 +339,7 @@ class Topology : public Module
   double Utilization() const { return stats_.utilization; }
   std::vector<problem::PerDataSpace<std::uint64_t>> TileSizes() const { return stats_.tile_sizes; }
   std::vector<problem::PerDataSpace<std::uint64_t>> UtilizedCapacities() const { return stats_.utilized_capacities; }
+  std::vector<problem::PerDataSpace<std::uint64_t>> UtilizedCapacities_bits() const { return stats_.utilized_capacities_bits; }
   std::vector<problem::PerDataSpace<std::uint64_t>> UtilizedInstances() const { return stats_.utilized_instances; }
   std::uint64_t AlgorithmicComputes() const { return stats_.algorithmic_computes; }
   std::uint64_t ActualComputes() const { return stats_.actual_computes; }

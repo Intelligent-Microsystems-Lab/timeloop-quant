@@ -219,9 +219,9 @@ void ParseWorkloadInstance(config::CompoundConfigNode config, Workload& workload
 
       if (config_densities.exists(GetShape()->DataSpaceIDToName.at(i)))
       {
-		    config_densities.lookupValue(GetShape()->DataSpaceIDToName.at(i), dataspace_avg_density);
+		config_densities.lookupValue(GetShape()->DataSpaceIDToName.at(i), dataspace_avg_density);
         
-		    // if the specific dataspace's density is specified
+		// if the specific dataspace's density is specified
         if (!config_densities.lookup(GetShape()->DataSpaceIDToName.at(i)).isMap())
         {
           // single number for density is given, default to fixed density distribution
@@ -265,52 +265,6 @@ void ParseWorkloadInstance(config::CompoundConfigNode config, Workload& workload
     }
   }
   workload.SetDensities(densities);
-/* Pooria edited for adding precision*/
-  Workload::Precisions precisions;
-  // std::string density_distribution;
-
-  // shared pointer for parsed density distribution specs
-  // std::shared_ptr<DensityDistributionSpecs> density_distribution_specs;
-  // YAML::Node ynode;
-
-  // 1) Precision specifications for each dataspace
-  if (config.exists("precisions"))
-  {
-    auto config_precisions = config.lookup("precisions");
-    for (unsigned i = 0; i < GetShape()->NumDataSpaces; i++){
-      double dataspace_precision;
-      config::CompoundConfigNode precision_config;
-      std::string dataspace_name = GetShape()->DataSpaceIDToName.at(i);
-
-      if (config_precisions.exists(GetShape()->DataSpaceIDToName.at(i)))
-      {
-        config_precisions.lookupValue(GetShape()->DataSpaceIDToName.at(i), dataspace_precision);
-          
-        // if the specific dataspace's density is specified
-        if (!config_precisions.lookup(GetShape()->DataSpaceIDToName.at(i)).isMap())
-        {
-          // single number for density is given, default to fixed density distribution
-          assert(config_precisions.lookupValue(GetShape()->DataSpaceIDToName.at(i), dataspace_precision));
-          // ynode["distribution"] = "fixed-structured";
-          ynode["precision"] = dataspace_precision;
-          precision_config = config::CompoundConfigNode(nullptr, ynode, new config::CompoundConfig("dummy.yaml"));
-        } else
-        {
-          precision_config = config_precisions.lookup(GetShape()->DataSpaceIDToName.at(i));
-        }
-        precisions[i] = dataspace_precision;
-      }
-      else
-      {
-        std::cout<<"Precision is not defined"<<std::endl;
-      }
-
-      // make sure the density model is correctly set
-      assert (precisions[i] != 0);
-    }
-
-    workload.SetPrecisions(precisions);
-
-  }
 }
+
 } // namespace problem

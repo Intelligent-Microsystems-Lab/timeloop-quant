@@ -347,9 +347,9 @@ void PropagateImpactOfExplicitlyOptimizedRead(SparseAnalysisState& state,
       {
         if (!fine_grained_action_finalized[l][pv])
         {
-          // std::cout << "!!! fine grained action counts not finalized "
-          // << topology_specs.GetStorageLevel(l)->level_name << ": dspace: " 
-          // << problem::GetShape()->DataSpaceIDToName.at(pv) << std::endl;
+          std::cout << "!!! fine grained action counts not finalized "
+          << topology_specs.GetStorageLevel(l)->level_name << ": dspace: " 
+          << problem::GetShape()->DataSpaceIDToName.at(pv) << std::endl;
           assert(fine_grained_action_finalized[l][pv]);
         }
       }
