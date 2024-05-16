@@ -1,0 +1,9 @@
+mapper:
+  optimization-metrics:  [ edp ]
+  live-status: False
+  diagnostics: False
+  num-threads: 1
+  timeout: 15000
+  victory-condition: 300
+  algorithm: random
+  max-permutations-per-if-visit: 16

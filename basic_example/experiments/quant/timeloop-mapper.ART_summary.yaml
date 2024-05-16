@@ -1,0 +1,29 @@
+ART_summary:
+  version: 0.3
+  table_summary:
+  - name: System.ws.GlobalBuffer
+    area: 52307.2
+    primitive_estimations: Cacti
+  - name: System.ws.WeightRes[0..14]
+    area: 939.5
+    primitive_estimations: Cacti
+  - name: System.ws.MAC[0..14]
+    area: 2389.0
+    primitive_estimations: table-based-plug-ins
+  - name: System.Wire
+    area: 0.0
+    primitive_estimations: table-based-plug-ins
+  - name: System.Router
+    area: 0.0
+    primitive_estimations: table-based-plug-ins
+  - name: System.DRAM
+    area: 85637.92
+    primitive_estimations:
+    - name: storage
+      estimator: table-based-plug-ins
+    - name: metadata_counters[0..1]
+      estimator: table-based-plug-ins
+    - name: metadata_storage
+      estimator: Cacti
+    - name: intersection_unit
+      estimator: dummy_table

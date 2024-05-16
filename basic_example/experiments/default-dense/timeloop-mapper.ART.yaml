@@ -1,0 +1,11 @@
+ART:
+  version: 0.3
+  tables:
+  - name: System.ws.GlobalBuffer
+    area: 52307.2
+  - name: System.ws.WeightRes[0..14]
+    area: 939.5
+  - name: System.ws.MAC[0..14]
+    area: 2389.0
+  - name: System.DRAM
+    area: 85637.92

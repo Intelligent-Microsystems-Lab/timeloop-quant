@@ -1,0 +1,79 @@
+ERT_summary:
+  version: 0.3
+  table_summary:
+  - name: System.ws.GlobalBuffer
+    actions:
+    - name: read
+      average_energy: 7.629
+      max_energy: 15.256
+      min_energy: 0.002
+    - name: write
+      average_energy: 14.3
+      max_energy: 28.598
+      min_energy: 0.002
+    - name: idle
+      energy: 0.002
+    primitive_estimation(s):
+    - name: System.ws.GlobalBuffer
+      estimator: Cacti
+  - name: System.ws.WeightRes[0..14]
+    actions:
+    - name: read
+      average_energy: 0.192
+      max_energy: 0.384
+      min_energy: 0.0
+    - name: write
+      average_energy: 0.291
+      max_energy: 0.583
+      min_energy: 0.0
+    - name: idle
+      energy: 0.0
+    primitive_estimation(s):
+    - name: System.ws.WeightRes[0..14]
+      estimator: Cacti
+  - name: System.ws.MAC[0..14]
+    actions:
+    - name: mac_random
+      energy: 2.13
+    - name: mac_reused
+      energy: 1.42
+    - name: mac_gated
+      energy: 0.72
+    - name: idle
+      energy: 0.72
+    primitive_estimation(s):
+    - name: System.ws.MAC[0..14]
+      estimator: table-based-plug-ins
+  - name: System.DRAM
+    actions:
+    - name: write
+      energy: 58.1
+    - name: read
+      energy: 58.1
+    - name: gated_write
+      energy: 0.0
+    - name: gated_read
+      energy: 0.0
+    - name: metadata_read
+      energy: 1.03
+    - name: metadata_write
+      energy: 2.619
+    - name: gated_metadata_read
+      energy: 0.0
+    - name: gated_metadata_write
+      energy: 0.0
+    - name: decompression_count
+      energy: 0.12
+    - name: compression_count
+      energy: 0.12
+    - name: idle
+      energy: 0.0
+    primitive_estimation(s):
+    - name: storage
+      estimator: table-based-plug-ins
+    - name: metadata_storage
+      estimator: Cacti
+    - name: metadata_counters[1]
+      estimator: table-based-plug-ins
+    - name: metadata_counters[0]
+      estimator: table-based-plug-ins

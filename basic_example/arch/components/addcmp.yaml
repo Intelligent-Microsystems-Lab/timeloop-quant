@@ -1,0 +1,35 @@
+compound_components:
+  version: 0.3
+  classes:
+    - name: addcmp
+      attributes:
+        technology: must_specify
+        datawidth: must_specify
+      subcomponents:
+        - name: adder
+          class: intadder
+          attributes:
+            technology: technology
+            datawidth: datawidth
+        - name: cmp
+          class: comparator
+          attributes:
+            technology: technology
+            datawidth: datawidth
+      actions:
+        - name: mac_random
+          subcomponents:
+            - name: cmp
+              actions:
+                - name: compare
+            - name: adder
+              actions:
+                - name: add
+        - name: mac_gated
+          subcomponents:
+            - name: cmp
+              actions:
+                - name: idle
+            - name: adder
+              actions:
+                - name: idle

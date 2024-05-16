@@ -1,0 +1,68 @@
+architecture:
+  version: 0.3
+  subtree:
+    - name: System
+      attributes:
+        datawidth: 16
+        word-bits: 16
+        technology: 32nm
+      local:
+        - name: Wire # to work with the current timeloop hack...
+          class: wire
+          attributes:
+            technology: 32nm
+            length: 1
+            datawidth: 1
+            latency: 1ns
+        - name: Router # to work with the current timeloop hack...
+          class: router
+          attributes:
+            technology: 32nm
+            latency: 1ns
+            datawidth: 1    
+        # - name: DRAM
+        #   class: DRAM
+        #   attributes:
+        #     type: LPDDR4
+        #     width: 256
+        #     block_size: 16
+        - name: DRAM
+          class: DRAM
+          subclass: dram_smartbuffer_metadata
+          attributes:
+            width: 256
+            block_size: 16
+            # datawidth: 8
+            metadata_storage_depth: 200
+            metadata_storage_width: 64
+            metadata_block_size: 8
+            metadata_datawidth: 8
+            metadata_counter_width: 4
+            decompression_supported: true  # from DRAM decompression
+            compression_supported: true    # to DRAM compression
+            writes: True
+            reads: True           
+      subtree:
+        - name: ws
+          local:
+            - name: GlobalBuffer
+              class: storage
+              subclass: SRAM
+              attributes:
+                depth: 1024
+                width: 256
+                word_bits: 16
+                block_size: 16
+            - name: WeightRes[0..14]
+              class: storage
+              subclass: SRAM
+              attributes:
+                depth: 256
+                width: 16
+                word_bits: 16
+                block_size: 1
+            - name: MAC[0..14]
+              class: compute
+              subclass: intmac
+              attributes:
+                datawidth: 8

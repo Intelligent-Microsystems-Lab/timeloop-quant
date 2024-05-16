@@ -1,0 +1,34 @@
+#timeloop-model arch/basic.yaml model/model_base.yaml prob/*.yaml
+#timeloop-mapper arch/basic.yaml mapper/*.yaml prob/*.yaml constraints/*.yaml
+mapspace_constraints:
+  targets:
+  - target: GlobalBuffer
+    type: bypass
+    keep: [Inputs, Outputs]
+    bypass: [Weights]
+  - target: DRAM
+    type: bypass
+    keep: [Weights, Inputs, Outputs]
+  - target: WeightRes
+    type: bypass
+    keep: [Weights]
+    bypass: [Inputs, Outputs]
+
+  - target: DRAM
+    type: temporal
+    permutation: PQRSMCN
+    factors: P=1 Q=32 R=1 S=1  N=1 M=8
+  - target: GlobalBuffer
+    type: temporal
+    permutation: PQRSCMN
+    factors: P=32  R=1 S=1 N=1 M=2 C=4
+    permutation: PQRSCMN
+  - target: GlobalBuffer
+    type: spatial
+    permutation: PQRSCMN
+    factors: P=1 Q=1 R=1 S=1 M=2 C=4 N=1
+    permutation: PQRSCMN
+  - target: WeightRes
+    type: temporal
+    factors: P=1 Q=1 R=3 S=3 N=1
+    permutation: PQRSCMN

@@ -1,0 +1,142 @@
+ERT:
+  version: 0.3
+  tables:
+  - name: System.ws.GlobalBuffer
+    actions:
+    - name: read
+      arguments:
+        address_delta: 0
+        data_delta: 0
+      energy: 0.002
+    - name: read
+      arguments:
+        address_delta: 0
+        data_delta: 1
+      energy: 10.68
+    - name: read
+      arguments:
+        address_delta: 1
+        data_delta: 0
+      energy: 4.578
+    - name: read
+      arguments:
+        address_delta: 1
+        data_delta: 1
+      energy: 15.256
+    - name: write
+      arguments:
+        address_delta: 0
+        data_delta: 0
+      energy: 0.002
+    - name: write
+      arguments:
+        address_delta: 0
+        data_delta: 1
+      energy: 20.019
+    - name: write
+      arguments:
+        address_delta: 1
+        data_delta: 0
+      energy: 8.581
+    - name: write
+      arguments:
+        address_delta: 1
+        data_delta: 1
+      energy: 28.598
+    - name: idle
+      arguments: null
+      energy: 0.002
+  - name: System.ws.WeightRes[0..14]
+    actions:
+    - name: read
+      arguments:
+        address_delta: 0
+        data_delta: 0
+      energy: 0.0
+    - name: read
+      arguments:
+        address_delta: 0
+        data_delta: 1
+      energy: 0.269
+    - name: read
+      arguments:
+        address_delta: 1
+        data_delta: 0
+      energy: 0.115
+    - name: read
+      arguments:
+        address_delta: 1
+        data_delta: 1
+      energy: 0.384
+    - name: write
+      arguments:
+        address_delta: 0
+        data_delta: 0
+      energy: 0.0
+    - name: write
+      arguments:
+        address_delta: 0
+        data_delta: 1
+      energy: 0.408
+    - name: write
+      arguments:
+        address_delta: 1
+        data_delta: 0
+      energy: 0.175
+    - name: write
+      arguments:
+        address_delta: 1
+        data_delta: 1
+      energy: 0.583
+    - name: idle
+      arguments: null
+      energy: 0.0
+  - name: System.ws.MAC[0..14]
+    actions:
+    - name: mac_random
+      arguments: null
+      energy: 2.13
+    - name: mac_reused
+      arguments: null
+      energy: 1.42
+    - name: mac_gated
+      arguments: null
+      energy: 0.72
+    - name: idle
+      arguments: null
+      energy: 0.72
+  - name: System.DRAM
+    actions:
+    - name: write
+      arguments: null
+      energy: 58.1
+    - name: read
+      arguments: null
+      energy: 58.1
+    - name: gated_write
+      arguments: null
+      energy: 0.0
+    - name: gated_read
+      arguments: null
+      energy: 0.0
+    - name: metadata_read
+      arguments: null
+      energy: 1.03
+    - name: metadata_write
+      arguments: null
+      energy: 2.619
+    - name: gated_metadata_read
+      arguments: null
+      energy: 0.0
+    - name: gated_metadata_write
+      arguments: null
+      energy: 0.0
+    - name: decompression_count
+      arguments: null
+      energy: 0.12
+    - name: compression_count
+      arguments: null
+      energy: 0.12
+    - name: idle
+      arguments: null
+      energy: 0.0
