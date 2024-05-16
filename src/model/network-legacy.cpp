@@ -437,8 +437,8 @@ void LegacyNetwork::ComputeNetworkEnergy()
         (void)scatter_factor;
 
         auto num_hops = hops / ingresses;
-
-        total_routers_touched += (1 + std::uint64_t(std::floor(num_hops))) * ingresses;
+        if (num_hops)
+          total_routers_touched += (1 + std::uint64_t(std::floor(num_hops))) * ingresses;
         total_wire_hops += num_hops * ingresses;
       }
     }
@@ -460,7 +460,8 @@ void LegacyNetwork::ComputeNetworkEnergy()
         (void)multicast_factor;
 
         auto num_hops = hops / ingresses;
-        total_routers_touched += (1 + std::uint64_t(std::floor(num_hops))) * ingresses;
+        if(num_hops)
+          total_routers_touched += (1 + std::uint64_t(std::floor(num_hops))) * ingresses;
 
         total_wire_hops += num_hops * ingresses;
       }

@@ -156,6 +156,41 @@ void Topology::Specs::ParseAccelergyERT(config::CompoundConfigNode ert)
 
     // update levels by name and the type of it
     // std::cout << "componentName: " << componentName << std::endl;
+    if (componentName == "router" || componentName == "Router") { // special case, update interal wire model
+      auto actionERT = componentERT.lookup("transfer_random");
+      float transferEnergy = 0.0;
+      float argEnergy = 0.0;
+      // consider the formats that are possible in both ERT v0.2 and v0.3
+      if (actionERT.isList()) { // v2 ERT and action support argument and all v3 ERT actions
+        for (int i = 0; i < actionERT.getLength(); i ++) {
+          if (actionERT[i].lookupValue("energy", argEnergy)) {
+              transferEnergy = std::max(argEnergy, transferEnergy);
+          }
+        }
+      } else { // v2 ERT and no arg actions
+          if (actionERT.lookupValue("energy", argEnergy)) {
+            transferEnergy = std::max(argEnergy, transferEnergy);
+          }
+        }
+      //std::cout << "interpreted wire energy: " << transferEnergy << std::endl;
+      if (transferEnergy!=0.0) {
+        // Nellie's UPDATE: go through the inferred NoC, important for legacy NoC class
+        for (unsigned i = 0; i < NumStorageLevels(); i++) { // update wire energy for all storage levels
+          auto bufferSpec = GetStorageLevel(i);
+          auto networkSpec = GetInferredNetwork(i); // (FIXME) See Nellie's UPDATE
+          if (std::static_pointer_cast<LegacyNetwork::Specs>(networkSpec)){
+            std::static_pointer_cast<LegacyNetwork::Specs>(networkSpec)->router_energy = transferEnergy;   
+            //std::cout << "set wire energy: " << componentName << std::endl;
+          }
+        }
+        for (unsigned i = 0; i < NumNetworks(); i++) {
+            // only check the user-defined Legacy networks
+            auto networkSpec = GetNetwork(i);
+            if (networkSpec->Type() == "Legacy")
+              std::static_pointer_cast<LegacyNetwork::Specs>(networkSpec)->router_energy = transferEnergy; 
+          }        
+      }
+    }      
     if (componentName == "wire" || componentName == "Wire") { // special case, update interal wire model
       auto actionERT = componentERT.lookup("transfer_random");
       float transferEnergy = 0.0;
@@ -182,6 +217,12 @@ void Topology::Specs::ParseAccelergyERT(config::CompoundConfigNode ert)
             std::static_pointer_cast<LegacyNetwork::Specs>(networkSpec)->wire_energy = transferEnergy;
             //std::cout << "set wire energy: " << componentName << std::endl;
           }
+        for (unsigned i = 0; i < NumNetworks(); i++) {
+            // only check the user-defined Legacy networks
+            auto networkSpec = GetNetwork(i);
+            if (networkSpec->Type() == "Legacy")
+              std::static_pointer_cast<LegacyNetwork::Specs>(networkSpec)->wire_energy = transferEnergy;
+          }          
         }
       }
     } else {
