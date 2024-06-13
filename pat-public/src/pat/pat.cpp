@@ -100,9 +100,13 @@ double MultiplierArea(std::uint64_t bits_A, std::uint64_t bits_B)
 
 double AdderEnergy(std::uint64_t bits_A, std::uint64_t bits_B)
 {
-  (void) bits_A;
+  // (void) bits_A;
   (void) bits_B;
-  return 0;
+  /* Energy for a FA: 30.6 nW/MHz 
+     For adding two 8b values the energy consumption is 30 * 10e-15 * 8  
+    */
+  double energy = (bits_A)/8 * 0.24;
+  return energy;
 }
 
 double AdderArea(std::uint64_t bits_A, std::uint64_t bits_B)
