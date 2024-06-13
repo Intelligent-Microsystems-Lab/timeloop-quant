@@ -28,7 +28,10 @@
 #include <cassert>
 #include <iostream>
 
-#include "pat.hpp"
+#include "pat.hpp"index 88297df..0000000
+--- a/include/pat
++++ /dev/null
+
 
 namespace pat
 {

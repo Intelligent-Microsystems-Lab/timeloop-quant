@@ -33,21 +33,21 @@ Info: estimator plug-in identified by:  /home/ptaheri/.local/share/accelergy/est
 Info: estimator plug-in identified by:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/dummy_tables/dummy.estimator.yaml 
 Info: estimator plug-in identified by:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti.estimator.yaml 
 Info: CACTI plug-in... Querying CACTI for request:
- {'class_name': 'SRAM', 'attributes': {'depth': 1024000, 'width': 256, 'block_size': 256, 'word-bits': 16, 'technology': '32nm', 'n_rd_ports': 0, 'n_wr_ports': 0, 'n_rdwr_ports': 1, 'n_banks': 1, 'latency': '5ns'}, 'action_name': 'read', 'arguments': {'data_delta': 0, 'address_delta': 0}}
-copy  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.05_16_09_52_53_SRAM.cfg
-CACTI plug-in removing temp file:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.05_16_09_52_53_SRAM.cfg
+ {'class_name': 'SRAM', 'attributes': {'depth': 1024, 'width': 256, 'block_size': 256, 'word-bits': 16, 'technology': '32nm', 'n_rd_ports': 0, 'n_wr_ports': 0, 'n_rdwr_ports': 1, 'n_banks': 1, 'latency': '5ns'}, 'action_name': 'read', 'arguments': {'data_delta': 0, 'address_delta': 0}}
+copy  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
+CACTI plug-in removing temp file:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
 Info: CACTI plug-in... Querying CACTI for request:
  {'class_name': 'SRAM', 'attributes': {'depth': 256, 'width': 16, 'block_size': 16, 'word-bits': 16, 'technology': '32nm', 'n_rd_ports': 0, 'n_wr_ports': 0, 'n_rdwr_ports': 1, 'n_banks': 1, 'latency': '5ns'}, 'action_name': 'read', 'arguments': {'data_delta': 0, 'address_delta': 0}}
-copy  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.05_16_09_52_56_SRAM.cfg
-CACTI plug-in removing temp file:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.05_16_09_52_56_SRAM.cfg
+copy  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
+CACTI plug-in removing temp file:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
 Info: CACTI plug-in... Querying CACTI for request:
  {'class_name': 'SRAM', 'attributes': OrderedDict([('technology', '32nm'), ('width', 64), ('depth', 200), ('datawidth', 64), ('writes', True), ('reads', True), ('n_rd_ports', 0), ('n_wr_ports', 0), ('n_rdwr_ports', 1), ('n_banks', 1), ('latency', '5ns')]), 'action_name': 'read', 'arguments': None}
-copy  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.05_16_09_52_56_SRAM.cfg
-CACTI plug-in removing temp file:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.05_16_09_52_56_SRAM.cfg
+copy  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
+CACTI plug-in removing temp file:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
 Warn: No action counts are specified as yaml input 
-Info: flattened architecture is saved to: experiments/test//timeloop-mapper.flattened_architecture.yaml 
-Info: energy reference table is saved to: experiments/test//timeloop-mapper.ERT.yaml 
-Info: energy reference table summary is saved to: experiments/test//timeloop-mapper.ERT_summary.yaml 
+Info: flattened architecture is saved to: experiments/quant//timeloop-mapper.flattened_architecture.yaml 
+Info: energy reference table is saved to: experiments/quant//timeloop-mapper.ERT.yaml 
+Info: energy reference table summary is saved to: experiments/quant//timeloop-mapper.ERT_summary.yaml 
 Warn: no runtime energy estimations are generated... not generating energy_estimation.yaml 
-Info: area reference table is saved to: experiments/test//timeloop-mapper.ART.yaml 
-Info: area reference table summary is saved to: experiments/test//timeloop-mapper.ART_summary.yaml 
+Info: area reference table is saved to: experiments/quant//timeloop-mapper.ART.yaml 
+Info: area reference table summary is saved to: experiments/quant//timeloop-mapper.ART_summary.yaml 
