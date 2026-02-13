@@ -1335,10 +1335,15 @@ std::vector<EvalStatus> Topology::Evaluate(Mapping& mapping,
 
   // Collapse tiles into a specified number of tiling levels. The solutions are
   // received in a set of per-problem::Shape::DataSpaceID arrays.
-  auto collapsed_tiles = tiling::CollapseTiles(tile_info_nest, specs_.NumStorageLevels(),
-                                               mapping.datatype_bypass_nest,
-                                               distribution_supported,
-                                               analysis->GetWorkload());
+  const auto& tensor_precisions_per_storage_level =
+    specs_.TensorPrecisionsPerStorageLevel();
+  auto collapsed_tiles = tiling::CollapseTiles(
+    tile_info_nest,
+    specs_.NumStorageLevels(),
+    mapping.datatype_bypass_nest,
+    distribution_supported,
+    analysis->GetWorkload(),
+    tensor_precisions_per_storage_level.empty() ? nullptr : &tensor_precisions_per_storage_level);
 
   try
   {

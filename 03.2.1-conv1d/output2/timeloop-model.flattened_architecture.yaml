@@ -1,0 +1,54 @@
+architecture:
+  version: 0.3
+  local:
+  - name: system.PE.Buffer
+    class: storage
+    subclass: smartbuffer_metadata
+    attributes:
+      ag_datawidth: 7
+      block_size: 8
+      compression_supported: true
+      data_storage_depth: 128
+      data_storage_width: 64
+      datawidth: 8
+      decompression_supported: true
+      meshX: 1
+      metadata_block_size: 12
+      metadata_counter_width: 4
+      metadata_datawidth: 5
+      metadata_storage_depth: 128
+      metadata_storage_width: 60
+      n_banks: 4
+      n_rdwr_ports: 2
+      reads: true
+      technology: 32nm
+      writes: true
+  - name: system.PE.MACC
+    class: intmac
+    attributes:
+      datawidth: 8
+      latency: 5ns
+      num_pipeline_stages: 2
+      technology: 32nm
+  - name: system.BackingStorage
+    class: storage
+    subclass: smartbuffer_metadata
+    attributes:
+      ag_datawidth: 14
+      block_size: 8
+      compression_supported: true
+      data_storage_depth: 8196
+      data_storage_width: 64
+      datawidth: 8
+      decompression_supported: true
+      meshX: 1
+      metadata_block_size: 12
+      metadata_counter_width: 4
+      metadata_datawidth: 5
+      metadata_storage_depth: 8196
+      metadata_storage_width: 60
+      n_banks: 4
+      n_rdwr_ports: 2
+      reads: true
+      technology: 32nm
+      writes: true

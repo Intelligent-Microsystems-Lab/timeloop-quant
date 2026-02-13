@@ -1,0 +1,32 @@
+ART_summary:
+    version: '0.4'
+    table_summary:
+      - name: system.PE.MACC
+        area: 1.0
+        primitive_estimations: dummy
+      - name: system.PE.Buffer
+        area: 10326.14375
+        primitive_estimations:
+          - name: storage
+            estimator: CactiSRAM
+          - name: address_generators[0..1]
+            estimator: dummy
+          - name: metadata_counters[0..1]
+            estimator: dummy
+          - name: metadata_storage
+            estimator: CactiSRAM
+          - name: intersection_unit
+            estimator: Aladdin_table
+      - name: system.BackingStorage
+        area: 425305.8125
+        primitive_estimations:
+          - name: storage
+            estimator: CactiSRAM
+          - name: address_generators[0..1]
+            estimator: dummy
+          - name: metadata_counters[0..1]
+            estimator: dummy
+          - name: metadata_storage
+            estimator: CactiSRAM
+          - name: intersection_unit
+            estimator: Aladdin_table

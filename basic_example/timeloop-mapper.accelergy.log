@@ -1,53 +1,759 @@
-    _                _                      
-   / \   ___ ___ ___| | ___ _ __ __ _ _   _ 
-  / _ \ / __/ __/ _ \ |/ _ \ '__/ _` | | | |
- / ___ \ (_| (_|  __/ |  __/ | | (_| | |_| |
-/_/   \_\___\___\___|_|\___|_|  \__, |\__, |
-                                |___/ |___/ 
-
-Info: generating outputs according to the following specified output flags... 
- Please use the -f flag to update the preference (default to all output files) 
-{'ERT': 1, 'ERT_summary': 1, 'ART': 1, 'ART_summary': 1, 'energy_estimation': 1, 'flattened_arch': 1}
-Warn: Cannot recognize the top key "problem" in file prob/quant-cnn-layer.prob.yaml 
-Warn: Cannot recognize the top key "mapper" in file mapper/mapper.yaml 
-Warn: Cannot recognize the top key "mapspace_constraints" in file model/model_base.yaml 
-Warn: Cannot recognize the top key "sparse_optimizations" in file sparse-opt/eyeriss_v1.yaml 
-Info: Parsing file arch/quant_DRAM_meta.yaml for architecture info 
-Info: Parsing file arch/components/addcmp.yaml for compound_components info 
-Info: Parsing file arch/components/DRAM_metadata.yaml for compound_components info 
-Info: Parsing file arch/components/regfile_metadata.yaml for compound_components info 
-Info: Parsing file arch/components/reg_storage.yaml for compound_components info 
-Info: Parsing file arch/components/ReRAM_metadata.yaml for compound_components info 
-Info: Parsing file arch/components/smartbuffer_metadata.yaml for compound_components info 
-Info: Parsing file arch/components/smartbuffer.yaml for compound_components info 
-Info: config file located: /home/ptaheri/.config/accelergy/accelergy_config.yaml 
-config file content: 
- {'estimator_plug_ins': ['/home/ptaheri/.local/share/accelergy/estimation_plug_ins'], 'primitive_components': ['/home/ptaheri/.local/share/accelergy/primitive_component_libs'], 'table_plug_ins': {'roots': ['/home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-table-based-plug-ins/set_of_table_templates', '/home/ptaheri/Projects/timeloop-dev-crc/snn_hw_eval/timeloopTables/32nm_data_digital/']}, 'version': 0.3}
-Info: primitive component file parsed:  /home/ptaheri/.local/share/accelergy/primitive_component_libs/primitive_component.lib.yaml 
-Info: primitive component file parsed:  /home/ptaheri/.local/share/accelergy/primitive_component_libs/soc_primitives.lib.yaml 
-Info: primitive component file parsed:  /home/ptaheri/.local/share/accelergy/primitive_component_libs/pim_primitive_component.lib.yaml 
-Info: estimator plug-in identified by:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-table-based-plug-ins/table.estimator.yaml 
-table-based-plug-ins Identifies a set of tables named:  test_tables
-table-based-plug-ins Identifies a set of tables named:  32nm_tables_Digital
-Info: estimator plug-in identified by:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-aladdin-plug-in/aladdin.estimator.yaml 
-Info: estimator plug-in identified by:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/dummy_tables/dummy.estimator.yaml 
-Info: estimator plug-in identified by:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti.estimator.yaml 
-Info: CACTI plug-in... Querying CACTI for request:
- {'class_name': 'SRAM', 'attributes': {'depth': 1024, 'width': 256, 'block_size': 256, 'word-bits': 16, 'technology': '32nm', 'n_rd_ports': 0, 'n_wr_ports': 0, 'n_rdwr_ports': 1, 'n_banks': 1, 'latency': '5ns'}, 'action_name': 'read', 'arguments': {'data_delta': 0, 'address_delta': 0}}
-copy  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
-CACTI plug-in removing temp file:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
-Info: CACTI plug-in... Querying CACTI for request:
- {'class_name': 'SRAM', 'attributes': {'depth': 256, 'width': 16, 'block_size': 16, 'word-bits': 16, 'technology': '32nm', 'n_rd_ports': 0, 'n_wr_ports': 0, 'n_rdwr_ports': 1, 'n_banks': 1, 'latency': '5ns'}, 'action_name': 'read', 'arguments': {'data_delta': 0, 'address_delta': 0}}
-copy  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
-CACTI plug-in removing temp file:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
-Info: CACTI plug-in... Querying CACTI for request:
- {'class_name': 'SRAM', 'attributes': OrderedDict([('technology', '32nm'), ('width', 64), ('depth', 200), ('datawidth', 64), ('writes', True), ('reads', True), ('n_rd_ports', 0), ('n_wr_ports', 0), ('n_rdwr_ports', 1), ('n_banks', 1), ('latency', '5ns')]), 'action_name': 'read', 'arguments': None}
-copy  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
-CACTI plug-in removing temp file:  /home/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/timeloop-mapper.06_13_14_30_21_SRAM.cfg
-Warn: No action counts are specified as yaml input 
-Info: flattened architecture is saved to: experiments/quant//timeloop-mapper.flattened_architecture.yaml 
-Info: energy reference table is saved to: experiments/quant//timeloop-mapper.ERT.yaml 
-Info: energy reference table summary is saved to: experiments/quant//timeloop-mapper.ERT_summary.yaml 
-Warn: no runtime energy estimations are generated... not generating energy_estimation.yaml 
-Info: area reference table is saved to: experiments/quant//timeloop-mapper.ART.yaml 
-Info: area reference table summary is saved to: experiments/quant//timeloop-mapper.ART_summary.yaml 
+2024-10-01 14:38:44 INFO            _                _                      
+2024-10-01 14:38:44 INFO           / \   ___ ___ ___| | ___ _ __ __ _ _   _ 
+2024-10-01 14:38:44 INFO          / _ \ / __/ __/ _ \ |/ _ \ '__/ _` | | | |
+2024-10-01 14:38:44 INFO         / ___ \ (_| (_|  __/ |  __/ | | (_| | |_| |
+2024-10-01 14:38:44 INFO        /_/   \_\___\___\___|_|\___|_|  \__, |\__, |
+2024-10-01 14:38:44 INFO                                        |___/ |___/ 
+2024-10-01 14:38:44 INFO        generating outputs according to the following specified output flags... 
+2024-10-01 14:38:44 INFO         Please use the -f flag to update the preference (default to all output files)
+2024-10-01 14:38:44 INFO        {'ERT': 1, 'ERT_summary': 1, 'ART': 1, 'ART_summary': 1, 'energy_estimation': 1, 'flattened_arch': 1}
+2024-10-01 14:38:44 INFO        Located config file at /home/ptaheri/.config/accelergy/accelergy_config.yaml.
+2024-10-01 14:38:44 INFO        config file located:
+2024-10-01 14:38:44 INFO        /home/ptaheri/.config/accelergy/accelergy_config.yaml
+2024-10-01 14:38:44 INFO        Parsing file arch/quant.yaml for architecture info
+2024-10-01 14:38:44 WARNING     File arch/quant.yaml is outdated. File version is 0.3, while the latest version is 0.4. 
+2024-10-01 14:38:44 WARNING      Please update the file to the latest version.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	depth = 1024
+2024-10-01 14:38:44 WARNING     	width = 256
+2024-10-01 14:38:44 WARNING     	block_size = 256
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	depth = 256
+2024-10-01 14:38:44 WARNING     	width = 16
+2024-10-01 14:38:44 WARNING     	block_size = 16
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	datawidth = 8
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "1ns" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 1ns
+2024-10-01 14:38:44 WARNING     Location: arch attribute "latency"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	technology = 32nm
+2024-10-01 14:38:44 WARNING     	length = 1
+2024-10-01 14:38:44 WARNING     	datawidth = 1
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 1ns
+2024-10-01 14:38:44 WARNING     Location: arch attribute "latency"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	ns = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 1ns
+2024-10-01 14:38:44 WARNING         Expression as valid string: "1ns"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "1ns" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 1ns
+2024-10-01 14:38:44 WARNING     Location: arch attribute "latency"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	technology = 32nm
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 1ns
+2024-10-01 14:38:44 WARNING     Location: arch attribute "latency"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	ns = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 1ns
+2024-10-01 14:38:44 WARNING         Expression as valid string: "1ns"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	width = 256
+2024-10-01 14:38:44 WARNING     	block_size = 256
+2024-10-01 14:38:44 WARNING     	metadata_storage_depth = 200
+2024-10-01 14:38:44 WARNING     	metadata_storage_width = 64
+2024-10-01 14:38:44 WARNING     	metadata_block_size = 8
+2024-10-01 14:38:44 WARNING     	metadata_datawidth = 8
+2024-10-01 14:38:44 WARNING     	metadata_counter_width = 4
+2024-10-01 14:38:44 WARNING     	decompression_supported = True
+2024-10-01 14:38:44 WARNING     	compression_supported = True
+2024-10-01 14:38:44 WARNING     	writes = True
+2024-10-01 14:38:44 WARNING     	reads = True
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: arch attribute "technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 INFO        Parsing file arch/components/addcmp.yaml for compound_components info
+2024-10-01 14:38:44 WARNING     File arch/components/addcmp.yaml is outdated. File version is 0.3, while the latest version is 0.4. 
+2024-10-01 14:38:44 WARNING      Please update the file to the latest version.
+2024-10-01 14:38:44 INFO        Parsing file arch/components/DRAM_metadata.yaml for compound_components info
+2024-10-01 14:38:44 WARNING     File arch/components/DRAM_metadata.yaml is outdated. File version is 0.3, while the latest version is 0.4. 
+2024-10-01 14:38:44 WARNING      Please update the file to the latest version.
+2024-10-01 14:38:44 INFO        Parsing file arch/components/regfile_metadata.yaml for compound_components info
+2024-10-01 14:38:44 WARNING     File arch/components/regfile_metadata.yaml is outdated. File version is 0.3, while the latest version is 0.4. 
+2024-10-01 14:38:44 WARNING      Please update the file to the latest version.
+2024-10-01 14:38:44 INFO        Parsing file arch/components/reg_storage.yaml for compound_components info
+2024-10-01 14:38:44 WARNING     File arch/components/reg_storage.yaml is outdated. File version is 0.3, while the latest version is 0.4. 
+2024-10-01 14:38:44 WARNING      Please update the file to the latest version.
+2024-10-01 14:38:44 INFO        Parsing file arch/components/ReRAM_metadata.yaml for compound_components info
+2024-10-01 14:38:44 WARNING     File arch/components/ReRAM_metadata.yaml is outdated. File version is 0.3, while the latest version is 0.4. 
+2024-10-01 14:38:44 WARNING      Please update the file to the latest version.
+2024-10-01 14:38:44 INFO        Parsing file arch/components/smartbuffer_metadata.yaml for compound_components info
+2024-10-01 14:38:44 WARNING     File arch/components/smartbuffer_metadata.yaml is outdated. File version is 0.3, while the latest version is 0.4. 
+2024-10-01 14:38:44 WARNING      Please update the file to the latest version.
+2024-10-01 14:38:44 INFO        Parsing file arch/components/smartbuffer.yaml for compound_components info
+2024-10-01 14:38:44 WARNING     File arch/components/smartbuffer.yaml is outdated. File version is 0.3, while the latest version is 0.4. 
+2024-10-01 14:38:44 WARNING      Please update the file to the latest version.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class SRAM attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	depth = 1024
+2024-10-01 14:38:44 WARNING     	width = 256
+2024-10-01 14:38:44 WARNING     	block_size = 256
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class SRAM attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class SRAM attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	depth = 256
+2024-10-01 14:38:44 WARNING     	width = 16
+2024-10-01 14:38:44 WARNING     	block_size = 16
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class SRAM attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class intmac attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	datawidth = 8
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class intmac attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class wire attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class wire attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "1ns" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 1ns
+2024-10-01 14:38:44 WARNING     Location: Architecture class wire attributes"latency"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	technology = 32nm
+2024-10-01 14:38:44 WARNING     	length = 1
+2024-10-01 14:38:44 WARNING     	datawidth = 1
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 1ns
+2024-10-01 14:38:44 WARNING     Location: Architecture class wire attributes"latency"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	ns = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 1ns
+2024-10-01 14:38:44 WARNING         Expression as valid string: "1ns"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class router attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class router attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "1ns" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 1ns
+2024-10-01 14:38:44 WARNING     Location: Architecture class router attributes"latency"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	technology = 32nm
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 1ns
+2024-10-01 14:38:44 WARNING     Location: Architecture class router attributes"latency"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	ns = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 1ns
+2024-10-01 14:38:44 WARNING         Expression as valid string: "1ns"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "32nm" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class dram_smartbuffer_metadata attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	width = 256
+2024-10-01 14:38:44 WARNING     	block_size = 256
+2024-10-01 14:38:44 WARNING     	metadata_storage_depth = 200
+2024-10-01 14:38:44 WARNING     	metadata_storage_width = 64
+2024-10-01 14:38:44 WARNING     	metadata_block_size = 8
+2024-10-01 14:38:44 WARNING     	metadata_datawidth = 8
+2024-10-01 14:38:44 WARNING     	metadata_counter_width = 4
+2024-10-01 14:38:44 WARNING     	decompression_supported = True
+2024-10-01 14:38:44 WARNING     	compression_supported = True
+2024-10-01 14:38:44 WARNING     	writes = True
+2024-10-01 14:38:44 WARNING     	reads = True
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     Failed to evaluate: 32nm
+2024-10-01 14:38:44 WARNING     Location: Architecture class dram_smartbuffer_metadata attributes"technology"
+2024-10-01 14:38:44 WARNING     Problem encountered: SyntaxError: invalid decimal literal (<string>, line 1)
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	nm = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: 32nm
+2024-10-01 14:38:44 WARNING         Expression as valid string: "32nm"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "datawidth" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: datawidth
+2024-10-01 14:38:44 WARNING     Location: Architecture class dram_smartbuffer_metadata attributes"datawidth"
+2024-10-01 14:38:44 WARNING     Problem encountered: NameError: Name 'datawidth' is not defined.
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	width = 256
+2024-10-01 14:38:44 WARNING     	block_size = 256
+2024-10-01 14:38:44 WARNING     	metadata_storage_depth = 200
+2024-10-01 14:38:44 WARNING     	metadata_storage_width = 64
+2024-10-01 14:38:44 WARNING     	metadata_block_size = 8
+2024-10-01 14:38:44 WARNING     	metadata_datawidth = 8
+2024-10-01 14:38:44 WARNING     	metadata_counter_width = 4
+2024-10-01 14:38:44 WARNING     	decompression_supported = True
+2024-10-01 14:38:44 WARNING     	compression_supported = True
+2024-10-01 14:38:44 WARNING     	writes = True
+2024-10-01 14:38:44 WARNING     	reads = True
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     	technology = 32nm
+2024-10-01 14:38:44 WARNING     	global_cycle_seconds = 1e-09
+2024-10-01 14:38:44 WARNING     	n_rdwr_ports = 2
+2024-10-01 14:38:44 WARNING     Failed to evaluate: datawidth
+2024-10-01 14:38:44 WARNING     Location: Architecture class dram_smartbuffer_metadata attributes"datawidth"
+2024-10-01 14:38:44 WARNING     Problem encountered: NameError: Name 'datawidth' is not defined.
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	datawidth = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: datawidth
+2024-10-01 14:38:44 WARNING         Expression as valid string: "datawidth"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 INFO        Estimator plug-in identified by: /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-neurosim-plugin/neurosim.estimator.yaml
+2024-10-01 14:38:44 INFO        Estimator plug-in identified by: /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-table-based-plug-ins/table.estimator.yaml
+2024-10-01 14:38:44 INFO        Estimator plug-in identified by: /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-aladdin-plug-in/aladdin.estimator.yaml
+2024-10-01 14:38:44 INFO        Estimator plug-in identified by: /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-adc-plug-in/adc.estimator.yaml
+2024-10-01 14:38:44 INFO        Estimator plug-in identified by: /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-library-plugin/library.estimator.yaml
+2024-10-01 14:38:44 INFO        Estimator plug-in identified by: /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/dummy_tables/dummy.estimator.yaml
+2024-10-01 14:38:44 INFO        Estimator plug-in identified by: /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti.estimator.yaml
+2024-10-01 14:38:44 INFO        Getting all estimators in module <module 'python_plug_in' from '/home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_wrapper.py'>
+2024-10-01 14:38:44 INFO        Added estimator CactiCache that estimates cache with actions idle, read, read_access, update, update_access, write, write_access, leak
+2024-10-01 14:38:44 INFO        Added estimator CactiDRAM that estimates ['DRAM', 'dram'] with actions idle, read, update, write, leak
+2024-10-01 14:38:44 INFO        Added estimator CactiSRAM that estimates ['SRAM', 'sram'] with actions idle, read, update, write, leak
+2024-10-01 14:38:44 INFO        Found estimator plug-in: Neurosim Plug-In (<NeuroWrapper.NeuroWrapper object at 0x78a566361bd0>)
+2024-10-01 14:38:44 INFO        Found estimator plug-in: DEPRECATED table-based-plug-ins. Use the Library plug-in instead. (<SetsOfTables.SetsOfTables object at 0x78a566361b90>)
+2024-10-01 14:38:44 INFO        Found estimator plug-in: Aladdin_table (<AladdinTable.AladdinTable object at 0x78a566361f90>)
+2024-10-01 14:38:44 INFO        Found estimator plug-in: ADC Plug-In (<ADCEstimator.ADCEstimator object at 0x78a5664f5410>)
+2024-10-01 14:38:44 INFO        Found estimator plug-in: Library (<LibraryEstimator.LibraryEstimator object at 0x78a566391050>)
+2024-10-01 14:38:44 INFO        Found estimator plug-in: dummy (<DummyTable.DummyTable object at 0x78a56629f750>)
+2024-10-01 14:38:44 INFO        Found estimator plug-in: CactiCache (<accelergy.plug_in_interface.estimator_wrapper.EstimatorWrapper object at 0x78a566bfb5d0>)
+2024-10-01 14:38:44 INFO        Found estimator plug-in: CactiDRAM (<accelergy.plug_in_interface.estimator_wrapper.EstimatorWrapper object at 0x78a5662dd110>)
+2024-10-01 14:38:44 INFO        Found estimator plug-in: CactiSRAM (<accelergy.plug_in_interface.estimator_wrapper.EstimatorWrapper object at 0x78a566315290>)
+2024-10-01 14:38:44 INFO        Calculated storage."technology" as "technology" = 32nm.
+2024-10-01 14:38:44 INFO        Calculated storage."width" as "width" = 256.
+2024-10-01 14:38:44 WARNING     Evaluation of "data_storage_depth" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: data_storage_depth
+2024-10-01 14:38:44 WARNING     Location: storage."depth"
+2024-10-01 14:38:44 WARNING     Problem encountered: NameError: Name 'data_storage_depth' is not defined.
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	width = 256
+2024-10-01 14:38:44 WARNING     	block_size = 256
+2024-10-01 14:38:44 WARNING     	metadata_storage_depth = 200
+2024-10-01 14:38:44 WARNING     	metadata_storage_width = 64
+2024-10-01 14:38:44 WARNING     	metadata_block_size = 8
+2024-10-01 14:38:44 WARNING     	metadata_datawidth = 8
+2024-10-01 14:38:44 WARNING     	metadata_counter_width = 4
+2024-10-01 14:38:44 WARNING     	decompression_supported = True
+2024-10-01 14:38:44 WARNING     	compression_supported = True
+2024-10-01 14:38:44 WARNING     	writes = True
+2024-10-01 14:38:44 WARNING     	reads = True
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     	technology = 32nm
+2024-10-01 14:38:44 WARNING     	global_cycle_seconds = 1e-09
+2024-10-01 14:38:44 WARNING     	n_rdwr_ports = 2
+2024-10-01 14:38:44 WARNING     	datawidth = datawidth
+2024-10-01 14:38:44 WARNING     Failed to evaluate: data_storage_depth
+2024-10-01 14:38:44 WARNING     Location: storage."depth"
+2024-10-01 14:38:44 WARNING     Problem encountered: NameError: Name 'data_storage_depth' is not defined.
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	data_storage_depth = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: data_storage_depth
+2024-10-01 14:38:44 WARNING         Expression as valid string: "data_storage_depth"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 INFO        Calculated storage."datawidth" as "datawidth" = datawidth.
+2024-10-01 14:38:44 INFO        Calculated storage."n_rdwr_ports" as "n_rdwr_ports" = 2.
+2024-10-01 14:38:44 WARNING     Evaluation of "avg_sparsity" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: avg_sparsity
+2024-10-01 14:38:44 WARNING     Location: storage."avg_sparsity"
+2024-10-01 14:38:44 WARNING     Problem encountered: NameError: Name 'avg_sparsity' is not defined.
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	width = 256
+2024-10-01 14:38:44 WARNING     	block_size = 256
+2024-10-01 14:38:44 WARNING     	metadata_storage_depth = 200
+2024-10-01 14:38:44 WARNING     	metadata_storage_width = 64
+2024-10-01 14:38:44 WARNING     	metadata_block_size = 8
+2024-10-01 14:38:44 WARNING     	metadata_datawidth = 8
+2024-10-01 14:38:44 WARNING     	metadata_counter_width = 4
+2024-10-01 14:38:44 WARNING     	decompression_supported = True
+2024-10-01 14:38:44 WARNING     	compression_supported = True
+2024-10-01 14:38:44 WARNING     	writes = True
+2024-10-01 14:38:44 WARNING     	reads = True
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     	technology = 32nm
+2024-10-01 14:38:44 WARNING     	global_cycle_seconds = 1e-09
+2024-10-01 14:38:44 WARNING     	n_rdwr_ports = 2
+2024-10-01 14:38:44 WARNING     	datawidth = datawidth
+2024-10-01 14:38:44 WARNING     	depth = data_storage_depth
+2024-10-01 14:38:44 WARNING     Failed to evaluate: avg_sparsity
+2024-10-01 14:38:44 WARNING     Location: storage."avg_sparsity"
+2024-10-01 14:38:44 WARNING     Problem encountered: NameError: Name 'avg_sparsity' is not defined.
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	avg_sparsity = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: avg_sparsity
+2024-10-01 14:38:44 WARNING         Expression as valid string: "avg_sparsity"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "data_storage_depth" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: data_storage_depth
+2024-10-01 14:38:44 WARNING     Location: storage."depth"
+2024-10-01 14:38:44 WARNING     Problem encountered: NameError: Name 'data_storage_depth' is not defined.
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	width = 256
+2024-10-01 14:38:44 WARNING     	block_size = 256
+2024-10-01 14:38:44 WARNING     	metadata_storage_depth = 200
+2024-10-01 14:38:44 WARNING     	metadata_storage_width = 64
+2024-10-01 14:38:44 WARNING     	metadata_block_size = 8
+2024-10-01 14:38:44 WARNING     	metadata_datawidth = 8
+2024-10-01 14:38:44 WARNING     	metadata_counter_width = 4
+2024-10-01 14:38:44 WARNING     	decompression_supported = True
+2024-10-01 14:38:44 WARNING     	compression_supported = True
+2024-10-01 14:38:44 WARNING     	writes = True
+2024-10-01 14:38:44 WARNING     	reads = True
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     	technology = 32nm
+2024-10-01 14:38:44 WARNING     	global_cycle_seconds = 1e-09
+2024-10-01 14:38:44 WARNING     	n_rdwr_ports = 2
+2024-10-01 14:38:44 WARNING     	datawidth = datawidth
+2024-10-01 14:38:44 WARNING     Failed to evaluate: data_storage_depth
+2024-10-01 14:38:44 WARNING     Location: storage."depth"
+2024-10-01 14:38:44 WARNING     Problem encountered: NameError: Name 'data_storage_depth' is not defined.
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	data_storage_depth = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: data_storage_depth
+2024-10-01 14:38:44 WARNING         Expression as valid string: "data_storage_depth"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 WARNING     Evaluation of "avg_sparsity" failed.
+2024-10-01 14:38:44 WARNING     Failed to evaluate: avg_sparsity
+2024-10-01 14:38:44 WARNING     Location: storage."avg_sparsity"
+2024-10-01 14:38:44 WARNING     Problem encountered: NameError: Name 'avg_sparsity' is not defined.
+2024-10-01 14:38:44 WARNING     Available bindings: 
+2024-10-01 14:38:44 WARNING     	width = 256
+2024-10-01 14:38:44 WARNING     	block_size = 256
+2024-10-01 14:38:44 WARNING     	metadata_storage_depth = 200
+2024-10-01 14:38:44 WARNING     	metadata_storage_width = 64
+2024-10-01 14:38:44 WARNING     	metadata_block_size = 8
+2024-10-01 14:38:44 WARNING     	metadata_datawidth = 8
+2024-10-01 14:38:44 WARNING     	metadata_counter_width = 4
+2024-10-01 14:38:44 WARNING     	decompression_supported = True
+2024-10-01 14:38:44 WARNING     	compression_supported = True
+2024-10-01 14:38:44 WARNING     	writes = True
+2024-10-01 14:38:44 WARNING     	reads = True
+2024-10-01 14:38:44 WARNING     	word-bits = 16
+2024-10-01 14:38:44 WARNING     	technology = 32nm
+2024-10-01 14:38:44 WARNING     	global_cycle_seconds = 1e-09
+2024-10-01 14:38:44 WARNING     	n_rdwr_ports = 2
+2024-10-01 14:38:44 WARNING     	datawidth = datawidth
+2024-10-01 14:38:44 WARNING     	depth = data_storage_depth
+2024-10-01 14:38:44 WARNING     Failed to evaluate: avg_sparsity
+2024-10-01 14:38:44 WARNING     Location: storage."avg_sparsity"
+2024-10-01 14:38:44 WARNING     Problem encountered: NameError: Name 'avg_sparsity' is not defined.
+2024-10-01 14:38:44 WARNING     Please ensure that the expression used is a valid Python expression.
+2024-10-01 14:38:44 WARNING     The following may have been used in the expression:
+2024-10-01 14:38:44 WARNING     	avg_sparsity = UNDEFINED
+2024-10-01 14:38:44 WARNING     Strings are allowed here. If you meant to enter a string, please wrap the
+2024-10-01 14:38:44 WARNING     expression in single or double quotes:
+2024-10-01 14:38:44 WARNING         Found expression: avg_sparsity
+2024-10-01 14:38:44 WARNING         Expression as valid string: "avg_sparsity"
+2024-10-01 14:38:44 WARNING     Expression will be treated as a string. This will be deprecated in version
+2024-10-01 14:38:44 WARNING     0.4. Please wrap quotes around the expression to specify a string.
+2024-10-01 14:38:44 INFO        Calculated metadata_counters[0..1]."technology" as "technology" = 32nm.
+2024-10-01 14:38:44 INFO        Calculated metadata_counters[0..1]."datawidth" as "metadata_counter_width" = 4.
+2024-10-01 14:38:44 INFO        Calculated metadata_storage."technology" as "technology" = 32nm.
+2024-10-01 14:38:44 INFO        Calculated metadata_storage."width" as "metadata_storage_width" = 64.
+2024-10-01 14:38:44 INFO        Calculated metadata_storage."depth" as "metadata_storage_depth" = 200.
+2024-10-01 14:38:44 INFO        Calculated metadata_storage."datawidth" as "metadata_datawidth * metadata_block_size" = 64.
+2024-10-01 14:38:44 INFO        Calculated intersection_unit."technology" as "technology" = 32nm.
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for DRAM(technology=32nm, width=256, depth=data_storage_depth, datawidth=datawidth, n_rdwr_ports=2, avg_sparsity=avg_sparsity, global_cycle_seconds=1e-09).write(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiDRAM estimated 2.048e-09 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (technology, depth, datawidth, n_rdwr_ports, avg_sparsity, global_cycle_seconds) provided for ['DRAM', 'dram'].__init__. Arguments used: (width)
+2024-10-01 14:38:44 INFO        | Unused arguments (global_cycle_seconds) provided for ['DRAM', 'dram'].write. Arguments used: ()
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for DRAM(technology=32nm, width=256, depth=data_storage_depth, datawidth=datawidth, n_rdwr_ports=2, avg_sparsity=avg_sparsity, global_cycle_seconds=1e-09).read(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiDRAM estimated 2.048e-09 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (technology, depth, datawidth, n_rdwr_ports, avg_sparsity, global_cycle_seconds) provided for ['DRAM', 'dram'].__init__. Arguments used: (width)
+2024-10-01 14:38:44 INFO        | Unused arguments (global_cycle_seconds) provided for ['DRAM', 'dram'].read. Arguments used: ()
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for DRAM(technology=32nm, width=256, depth=data_storage_depth, datawidth=datawidth, n_rdwr_ports=2, avg_sparsity=avg_sparsity, global_cycle_seconds=1e-09).idle(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiDRAM estimated 0 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (technology, depth, datawidth, n_rdwr_ports, avg_sparsity, global_cycle_seconds) provided for ['DRAM', 'dram'].__init__. Arguments used: (width)
+2024-10-01 14:38:44 INFO        | Unused arguments (global_cycle_seconds) provided for ['DRAM', 'dram'].idle. Arguments used: ()
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for DRAM(technology=32nm, width=256, depth=data_storage_depth, datawidth=datawidth, n_rdwr_ports=2, avg_sparsity=avg_sparsity, global_cycle_seconds=1e-09).idle(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiDRAM estimated 0 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (technology, depth, datawidth, n_rdwr_ports, avg_sparsity, global_cycle_seconds) provided for ['DRAM', 'dram'].__init__. Arguments used: (width)
+2024-10-01 14:38:44 INFO        | Unused arguments (global_cycle_seconds) provided for ['DRAM', 'dram'].idle. Arguments used: ()
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for SRAM(technology=32nm, width=64, depth=200, datawidth=64, writes=True, reads=True, global_cycle_seconds=1e-09).read(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiSRAM estimated 1.02983e-12 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (datawidth, writes, reads, global_cycle_seconds) provided for ['SRAM', 'sram'].__init__. Arguments used: (technology, width, depth)
+2024-10-01 14:38:44 INFO        | Unused arguments (global_cycle_seconds) provided for ['SRAM', 'sram'].read. Arguments used: ()
+2024-10-01 14:38:44 INFO        | Calling CACTI with cache_size=1600 n_rw_ports=1 block_size=8 tech_node_um=0.032 n_banks=1 tag_size=0 associativity=1
+2024-10-01 14:38:44 INFO        | Calling CACTI with input path /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpe4_xkqsh
+2024-10-01 14:38:44 INFO        | CACTI output will be written to /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpw0t_slyc
+2024-10-01 14:38:44 INFO        | CACTI executable not found at /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/cacti
+2024-10-01 14:38:44 INFO        | Calling: cd /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in ; ./cacti -infile /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpe4_xkqsh >> /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpw0t_slyc 2>&1
+2024-10-01 14:38:44 INFO        | Cache bandwidth: 8.0 bytes/cycle
+2024-10-01 14:38:44 INFO        | Cache bandwidth: 116872990104.14479 bits/second
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for SRAM(technology=32nm, width=64, depth=200, datawidth=64, writes=True, reads=True, global_cycle_seconds=1e-09).write(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiSRAM estimated 2.6185100000000003e-12 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (datawidth, writes, reads, global_cycle_seconds) provided for ['SRAM', 'sram'].__init__. Arguments used: (technology, width, depth)
+2024-10-01 14:38:44 INFO        | Unused arguments (global_cycle_seconds) provided for ['SRAM', 'sram'].write. Arguments used: ()
+2024-10-01 14:38:44 INFO        | Calling CACTI with cache_size=1600 n_rw_ports=1 block_size=8 tech_node_um=0.032 n_banks=1 tag_size=0 associativity=1
+2024-10-01 14:38:44 INFO        | Calling CACTI with input path /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmp48aio7cn
+2024-10-01 14:38:44 INFO        | CACTI output will be written to /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpjhh8ui84
+2024-10-01 14:38:44 INFO        | CACTI executable not found at /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/cacti
+2024-10-01 14:38:44 INFO        | Calling: cd /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in ; ./cacti -infile /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmp48aio7cn >> /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpjhh8ui84 2>&1
+2024-10-01 14:38:44 INFO        | Cache bandwidth: 8.0 bytes/cycle
+2024-10-01 14:38:44 INFO        | Cache bandwidth: 116872990104.14479 bits/second
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for SRAM(technology=32nm, width=64, depth=200, datawidth=64, writes=True, reads=True, global_cycle_seconds=1e-09).idle(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiSRAM estimated 0 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (datawidth, writes, reads, global_cycle_seconds) provided for ['SRAM', 'sram'].__init__. Arguments used: (technology, width, depth)
+2024-10-01 14:38:44 INFO        | Unused arguments (global_cycle_seconds) provided for ['SRAM', 'sram'].idle. Arguments used: ()
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for SRAM(technology=32nm, width=64, depth=200, datawidth=64, writes=True, reads=True, global_cycle_seconds=1e-09).idle(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiSRAM estimated 0 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (datawidth, writes, reads, global_cycle_seconds) provided for ['SRAM', 'sram'].__init__. Arguments used: (technology, width, depth)
+2024-10-01 14:38:44 INFO        | Unused arguments (global_cycle_seconds) provided for ['SRAM', 'sram'].idle. Arguments used: ()
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for intadder(technology=32nm, datawidth=4, global_cycle_seconds=1e-09).add(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        dummy estimated 1p with accuracy 1%. 
+2024-10-01 14:38:44 INFO        Plug-ins provided accuracy, but failed to estimate:
+2024-10-01 14:38:44 INFO        | Neurosim Plug-In with accuracy 70% estimating value: AssertionError: Failed to generate intadder. Required parameter not found: n_bits. Usage: 
+2024-10-01 14:38:44 INFO        |  
+2024-10-01 14:38:44 INFO        |  	n_bits: REQUIRED: # Bits of the adder.
+2024-10-01 14:38:44 INFO        |  	global_cycle_seconds: REQUIRED: Duration of one cycle in seconds
+2024-10-01 14:38:44 INFO        |  	technology: REQUIRED: Technology node. Must be between 130  and 7nm.
+2024-10-01 14:38:44 INFO        |  
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for intadder(technology=32nm, datawidth=4, global_cycle_seconds=1e-09).add(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        dummy estimated 1p with accuracy 1%. 
+2024-10-01 14:38:44 INFO        Plug-ins provided accuracy, but failed to estimate:
+2024-10-01 14:38:44 INFO        | Neurosim Plug-In with accuracy 70% estimating value: AssertionError: Failed to generate intadder. Required parameter not found: n_bits. Usage: 
+2024-10-01 14:38:44 INFO        |  
+2024-10-01 14:38:44 INFO        |  	n_bits: REQUIRED: # Bits of the adder.
+2024-10-01 14:38:44 INFO        |  	global_cycle_seconds: REQUIRED: Duration of one cycle in seconds
+2024-10-01 14:38:44 INFO        |  	technology: REQUIRED: Technology node. Must be between 130  and 7nm.
+2024-10-01 14:38:44 INFO        |  
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        ENERGY ESTIMATION for DRAM(technology=32nm, width=256, depth=data_storage_depth, datawidth=datawidth, n_rdwr_ports=2, avg_sparsity=avg_sparsity, global_cycle_seconds=1e-09).idle(global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiDRAM estimated 0 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (technology, depth, datawidth, n_rdwr_ports, avg_sparsity, global_cycle_seconds) provided for ['DRAM', 'dram'].__init__. Arguments used: (width)
+2024-10-01 14:38:44 INFO        | Unused arguments (global_cycle_seconds) provided for ['DRAM', 'dram'].idle. Arguments used: ()
+2024-10-01 14:38:44 WARNING     No action counts are specified as yaml input
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        AREA ESTIMATION for SRAM(depth=1024, width=256, block_size=256, word-bits=16, technology=32nm, global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiSRAM estimated 5.23072e-08 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (block_size, word-bits, global_cycle_seconds) provided for ['SRAM', 'sram'].__init__. Arguments used: (depth, width, technology)
+2024-10-01 14:38:44 INFO        | Calling CACTI with cache_size=32768 n_rw_ports=1 block_size=32 tech_node_um=0.032 n_banks=1 tag_size=0 associativity=1
+2024-10-01 14:38:44 INFO        | Calling CACTI with input path /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmp65_9j5bh
+2024-10-01 14:38:44 INFO        | CACTI output will be written to /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpcgbc5qum
+2024-10-01 14:38:44 INFO        | CACTI executable not found at /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/cacti
+2024-10-01 14:38:44 INFO        | Calling: cd /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in ; ./cacti -infile /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmp65_9j5bh >> /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpcgbc5qum 2>&1
+2024-10-01 14:38:44 INFO        | Cache bandwidth: 32.0 bytes/cycle
+2024-10-01 14:38:44 INFO        | Cache bandwidth: 234791301715.99423 bits/second
+2024-10-01 14:38:44 INFO        | Multiplying by n_instances 1
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        AREA ESTIMATION for SRAM(depth=256, width=16, block_size=16, word-bits=16, technology=32nm, global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiSRAM estimated 8.67925e-10 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (block_size, word-bits, global_cycle_seconds) provided for ['SRAM', 'sram'].__init__. Arguments used: (depth, width, technology)
+2024-10-01 14:38:44 INFO        | Calling CACTI with cache_size=1024 n_rw_ports=1 block_size=4 tech_node_um=0.032 n_banks=1 tag_size=0 associativity=1
+2024-10-01 14:38:44 INFO        | Calling CACTI with input path /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpic25nwok
+2024-10-01 14:38:44 INFO        | CACTI output will be written to /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpp2v8zc49
+2024-10-01 14:38:44 INFO        | CACTI executable not found at /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/cacti
+2024-10-01 14:38:44 INFO        | Calling: cd /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in ; ./cacti -infile /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpic25nwok >> /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpp2v8zc49 2>&1
+2024-10-01 14:38:44 INFO        | Cache bandwidth: 2.0 bytes/cycle
+2024-10-01 14:38:44 INFO        | Cache bandwidth: 32755874561.37837 bits/second
+2024-10-01 14:38:44 INFO        | Multiplying by n_instances 1
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        AREA ESTIMATION for intmac(datawidth=8, word-bits=16, technology=32nm, global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        dummy estimated 1u^2 with accuracy 1%. Messages:
+2024-10-01 14:38:44 INFO        | Multiplying by n_instances 1
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        AREA ESTIMATION for wire(technology=32nm, length=1, datawidth=1, latency=1ns, word-bits=16, global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        dummy estimated 1u^2 with accuracy 1%. Messages:
+2024-10-01 14:38:44 INFO        | Multiplying by n_instances 1
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        AREA ESTIMATION for router(technology=32nm, latency=1ns, datawidth=1, word-bits=16, global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        dummy estimated 1u^2 with accuracy 1%. Messages:
+2024-10-01 14:38:44 INFO        | Multiplying by n_instances 1
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        AREA ESTIMATION for DRAM(technology=32nm, width=256, depth=data_storage_depth, datawidth=datawidth, n_rdwr_ports=2, avg_sparsity=avg_sparsity, global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiDRAM estimated 0 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (technology, depth, datawidth, n_rdwr_ports, avg_sparsity, global_cycle_seconds) provided for ['DRAM', 'dram'].__init__. Arguments used: (width)
+2024-10-01 14:38:44 INFO        | Multiplying by n_instances 1
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        AREA ESTIMATION for intadder(technology=32nm, datawidth=4, global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        dummy estimated 1u^2 with accuracy 1%. Messages:
+2024-10-01 14:38:44 INFO        | Multiplying by n_instances 1
+2024-10-01 14:38:44 INFO        Plug-ins provided accuracy, but failed to estimate:
+2024-10-01 14:38:44 INFO        | Neurosim Plug-In with accuracy 70% estimating value: AssertionError: Failed to generate intadder. Required parameter not found: n_bits. Usage: 
+2024-10-01 14:38:44 INFO        |  
+2024-10-01 14:38:44 INFO        |  	n_bits: REQUIRED: # Bits of the adder.
+2024-10-01 14:38:44 INFO        |  	global_cycle_seconds: REQUIRED: Duration of one cycle in seconds
+2024-10-01 14:38:44 INFO        |  	technology: REQUIRED: Technology node. Must be between 130  and 7nm.
+2024-10-01 14:38:44 INFO        |  
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        AREA ESTIMATION for SRAM(technology=32nm, width=64, depth=200, datawidth=64, writes=True, reads=True, global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        CactiSRAM estimated 2.6226199999999998e-09 with accuracy 80%. Messages:
+2024-10-01 14:38:44 INFO        | Unused arguments (datawidth, writes, reads, global_cycle_seconds) provided for ['SRAM', 'sram'].__init__. Arguments used: (technology, width, depth)
+2024-10-01 14:38:44 INFO        | Calling CACTI with cache_size=1600 n_rw_ports=1 block_size=8 tech_node_um=0.032 n_banks=1 tag_size=0 associativity=1
+2024-10-01 14:38:44 INFO        | Calling CACTI with input path /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpatt0cy55
+2024-10-01 14:38:44 INFO        | CACTI output will be written to /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpuons_xn0
+2024-10-01 14:38:44 INFO        | CACTI executable not found at /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/cacti
+2024-10-01 14:38:44 INFO        | Calling: cd /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in ; ./cacti -infile /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpatt0cy55 >> /home/ptaheri/miniconda3/envs/timeloop/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpuons_xn0 2>&1
+2024-10-01 14:38:44 INFO        | Cache bandwidth: 8.0 bytes/cycle
+2024-10-01 14:38:44 INFO        | Cache bandwidth: 116872990104.14479 bits/second
+2024-10-01 14:38:44 INFO        | Multiplying by n_instances 1
+2024-10-01 14:38:44 INFO        
+2024-10-01 14:38:44 INFO        AREA ESTIMATION for intadder(technology=32nm, width=0, global_cycle_seconds=1e-09)
+2024-10-01 14:38:44 INFO        dummy estimated 1u^2 with accuracy 1%. Messages:
+2024-10-01 14:38:44 INFO        | Multiplying by n_instances 1
+2024-10-01 14:38:44 INFO        Plug-ins provided accuracy, but failed to estimate:
+2024-10-01 14:38:44 INFO        | Neurosim Plug-In with accuracy 70% estimating value: AssertionError: Failed to generate intadder. Required parameter not found: n_bits. Usage: 
+2024-10-01 14:38:44 INFO        |  
+2024-10-01 14:38:44 INFO        |  	n_bits: REQUIRED: # Bits of the adder.
+2024-10-01 14:38:44 INFO        |  	global_cycle_seconds: REQUIRED: Duration of one cycle in seconds
+2024-10-01 14:38:44 INFO        |  	technology: REQUIRED: Technology node. Must be between 130  and 7nm.
+2024-10-01 14:38:44 INFO        |  
+2024-10-01 14:38:44 INFO        flattened architecture is saved to:
+2024-10-01 14:38:44 INFO        experiments/test//timeloop-mapper.flattened_architecture.yaml
+2024-10-01 14:38:44 INFO        energy reference table is saved to:
+2024-10-01 14:38:44 INFO        experiments/test//timeloop-mapper.ERT.yaml
+2024-10-01 14:38:44 INFO        energy reference table summary is saved to:
+2024-10-01 14:38:44 INFO        experiments/test//timeloop-mapper.ERT_summary.yaml
+2024-10-01 14:38:44 WARNING     no runtime energy estimations are generated... not generating energy_estimation.yaml
+2024-10-01 14:38:44 INFO        area reference table is saved to:
+2024-10-01 14:38:44 INFO        experiments/test//timeloop-mapper.ART.yaml
+2024-10-01 14:38:44 INFO        area reference table summary is saved to:
+2024-10-01 14:38:44 INFO        experiments/test//timeloop-mapper.ART_summary.yaml

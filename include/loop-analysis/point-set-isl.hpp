@@ -32,6 +32,7 @@
 #include <barvinok/isl.h>
 #include <unordered_map>
 #include <mutex>
+#include <cassert>
 
 #include "loop-analysis/point.hpp"
 

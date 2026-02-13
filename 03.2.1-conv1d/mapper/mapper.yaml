@@ -1,0 +1,9 @@
+mapper:
+  algorithm: hybrid
+  live-status: False
+  max-permutations-per-if-visit: 16
+  num-threads: 1
+  optimization-metrics:
+  - energy
+  timeout: 10000
+  victory-condition: 3000

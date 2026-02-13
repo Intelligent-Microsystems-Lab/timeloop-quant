@@ -28,6 +28,7 @@
 #pragma once
 
 #include <bitset>
+#include <map>
 
 #include "mapping/loop.hpp"
 #include "util/numeric.hpp"
@@ -49,12 +50,14 @@ CompoundTileNest CollapseTiles(analysis::CompoundTileNest& tiles,
                                int num_tiling_levels,
                                const CompoundMaskNest& tile_mask,
                                const CompoundMaskNest& distribution_supported,
-                               problem::Workload* workload);
+                               problem::Workload* workload,
+                               const std::map<unsigned, problem::PerDataSpace<int>>* tensor_precisions_per_storage_level = nullptr);
 CompoundDataMovementNest CollapseDataMovementNest(analysis::CompoundDataMovementNest& tiles, 
                                                   int num_tiling_levels,
                                                   const CompoundMaskNest& tile_mask,
                                                   const CompoundMaskNest& distribution_supported,
-                                                  problem::Workload* workload);
+                                                  problem::Workload* workload,
+                                                  const std::map<unsigned, problem::PerDataSpace<int>>* tensor_precisions_per_storage_level = nullptr);
 ComputeNest CollapseComputeNest(analysis::CompoundComputeNest& tiles, int num_tiling_levels);
 
 

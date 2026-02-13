@@ -3,14 +3,14 @@
 mapspace_constraints:
   targets:
   - target: GlobalBuffer
-    type: bypass
+    type: dataspace
     keep: [Inputs, Outputs]
     bypass: [Weights]
   - target: DRAM
-    type: bypass
+    type: dataspace
     keep: [Weights, Inputs, Outputs]
   - target: WeightRes
-    type: bypass
+    type: dataspace
     keep: [Weights]
     bypass: [Inputs, Outputs]
 
@@ -18,16 +18,17 @@ mapspace_constraints:
     type: temporal
     permutation: PQRSMCN
     factors: P=1 Q=32 R=1 S=1  N=1 M=8
+    
   - target: GlobalBuffer
     type: temporal
     permutation: PQRSCMN
     factors: P=32  R=1 S=1 N=1 M=2 C=4
-    permutation: PQRSCMN
+    
   - target: GlobalBuffer
     type: spatial
     permutation: PQRSCMN
     factors: P=1 Q=1 R=1 S=1 M=2 C=4 N=1
-    permutation: PQRSCMN
+    
   - target: WeightRes
     type: temporal
     factors: P=1 Q=1 R=3 S=3 N=1

@@ -65,6 +65,10 @@ class Constraints
   std::unordered_map<unsigned, problem::PerDataSpace<bool>> no_link_transfer_;
   std::unordered_map<unsigned, problem::PerDataSpace<bool>> no_multicast_;
   std::unordered_map<unsigned, problem::PerDataSpace<bool>> no_temporal_reuse_;
+  // Optional per-storage-level tensor precisions (bits per element) specified
+  // in architecture_constraints targets (e.g., tensor_precision under bypass).
+  // Indexed by storage level ID, then by dataspace ID.
+  std::map<unsigned, problem::PerDataSpace<int>> tensor_precisions_per_storage_level_;
 
  public:
   Constraints() = delete;
@@ -86,6 +90,10 @@ class Constraints
   const std::unordered_map<unsigned, problem::PerDataSpace<bool>> NoLinkTransfers() const;
   const std::unordered_map<unsigned, problem::PerDataSpace<bool>> NoMulticast() const;
   const std::unordered_map<unsigned, problem::PerDataSpace<bool>> NoTemporalReuse() const;
+  const std::map<unsigned, problem::PerDataSpace<int>>& TensorPrecisionsPerStorageLevel() const
+  {
+    return tensor_precisions_per_storage_level_;
+  }
 
   // Create a constraints object from a given mapping object. The resultant
   // constraints will *only* be satisfied by that mapping.

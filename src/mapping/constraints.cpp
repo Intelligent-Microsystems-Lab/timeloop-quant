@@ -1187,6 +1187,55 @@ void Constraints::ParseDatatypeBypassSettings(config::CompoundConfigNode constra
     }
   }
       
+  // Optional per-dataspace tensor precisions (bits per element) specified at
+  // this storage level. These come from architecture_constraints targets
+  // (e.g., under a "bypass" or "datatype" constraint).
+  if (constraint.exists("tensor_precision"))
+  {
+    auto tensor_precisions = constraint.lookup("tensor_precision");
+
+    // Ensure we have an entry for this storage level.
+    if (tensor_precisions_per_storage_level_.find(level) == tensor_precisions_per_storage_level_.end())
+    {
+      tensor_precisions_per_storage_level_[level] = problem::PerDataSpace<int>();
+      // Initialize to 0 (meaning "unspecified") to allow fallback to workload
+      // precisions where needed.
+      for (unsigned pvi = 0; pvi < problem::GetShape()->NumDataSpaces; pvi++)
+      {
+        auto pv = problem::Shape::DataSpaceID(pvi);
+        tensor_precisions_per_storage_level_.at(level)[pv] = 0;
+      }
+    }
+
+    for (unsigned pvi = 0; pvi < problem::GetShape()->NumDataSpaces; pvi++)
+    {
+      auto pv = problem::Shape::DataSpaceID(pvi);
+      const std::string& dataspace_name = problem::GetShape()->DataSpaceIDToName.at(pvi);
+
+      if (tensor_precisions.exists(dataspace_name))
+      {
+        int precision_bits = 0;
+        if (!tensor_precisions.lookupValue(dataspace_name, precision_bits))
+        {
+          std::cerr << "ERROR: tensor_precision for dataspace " << dataspace_name
+                    << " at storage level " << arch_props_.StorageLevelName(level)
+                    << " must be a scalar numeric value." << std::endl;
+          exit(1);
+        }
+
+        if (precision_bits <= 0)
+        {
+          std::cerr << "ERROR: tensor_precision for dataspace " << dataspace_name
+                    << " at storage level " << arch_props_.StorageLevelName(level)
+                    << " must be positive (bits per element)." << std::endl;
+          exit(1);
+        }
+
+        tensor_precisions_per_storage_level_.at(level)[pv] = precision_bits;
+      }
+    }
+  }
+
   // Datatypes to "bypass" at this level.
   if (constraint.exists("bypass"))
   {

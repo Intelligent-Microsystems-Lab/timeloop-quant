@@ -28,11 +28,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "pat.hpp"index 88297df..0000000
---- a/include/pat
-+++ /dev/null
-
-
+#include "pat.hpp"
 namespace pat
 {
 
@@ -108,7 +104,7 @@ double AdderEnergy(std::uint64_t bits_A, std::uint64_t bits_B)
   /* Energy for a FA: 30.6 nW/MHz 
      For adding two 8b values the energy consumption is 30 * 10e-15 * 8  
     */
-  double energy = (bits_A)/8 * 0.24;
+  double energy = (bits_A)/8 * 0.0114;
   return energy;
 }
 

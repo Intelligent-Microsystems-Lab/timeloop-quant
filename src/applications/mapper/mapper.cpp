@@ -34,6 +34,8 @@
 #include "util/accelergy_interface.hpp"
 
 #include "applications/mapper/mapper.hpp"
+#include "mapping/arch-properties.hpp"
+#include "mapping/constraints.hpp"
 
 //--------------------------------------------//
 //                Application                 //
@@ -254,6 +256,24 @@ Application::Application(config::CompoundConfig* config,
   // }
 
   bool filter_spatial_fanout = sparse_optimizations_->action_spatial_skipping_info.size() == 0;
+
+  // Parse architecture constraints once here to extract any per-storage-level
+  // tensor precisions, and propagate them into the topology specs so that
+  // evaluation can use level-specific operand precisions. This mirrors the
+  // model application path but uses a temporary Constraints object.
+  {
+    ArchProperties arch_props(arch_specs_);
+    mapping::Constraints constraints(arch_props, workload_);
+    constraints.Parse(arch_constraints);
+    const auto& tensor_precisions_per_storage_level =
+      constraints.TensorPrecisionsPerStorageLevel();
+    if (!tensor_precisions_per_storage_level.empty())
+    {
+      arch_specs_.topology.SetTensorPrecisionsPerStorageLevel(
+        tensor_precisions_per_storage_level);
+    }
+  }
+
   mapspace_ = mapspace::ParseAndConstruct(mapspace, arch_constraints, arch_specs_, workload_, filter_spatial_fanout);
   split_mapspaces_ = mapspace_->Split(num_threads_);
 

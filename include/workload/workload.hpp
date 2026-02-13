@@ -129,7 +129,20 @@ class Workload
   }
   int GetPrecision(Shape::DataSpaceID pv) const
   {
-    return precisions_.at(pv);
+    // Older configs may not specify per-dataspace precisions in the problem
+    // section (especially when precisions are provided via
+    // architecture_constraints instead). In that case, precisions_ will be
+    // empty and an at() here would throw. Fall back to a reasonable default
+    // instead of crashing.
+    auto it = precisions_.find(pv);
+    if (it != precisions_.end())
+    {
+      return it->second;
+    }
+    // Default operand precision in bits when not specified at the workload
+    // level. This is only a fallback; architecture-level tensor_precision
+    // should be preferred when available.
+    return 32;
   }
   std::shared_ptr<DensityDistribution> GetDensity(Shape::DataSpaceID pv) const
   {

@@ -1,15 +1,15 @@
 ART:
-  version: 0.3
-  tables:
-  - name: System.ws.GlobalBuffer
-    area: 48170500.0
-  - name: System.ws.WeightRes[0..14]
-    area: 939.5
-  - name: System.ws.MAC[0..14]
-    area: 2389.0
-  - name: System.Wire
-    area: 0.0
-  - name: System.Router
-    area: 0.0
-  - name: System.DRAM
-    area: 85637.92
+    version: '0.4'
+    tables:
+      - name: System.ws.GlobalBuffer
+        area: 52307.2
+      - name: System.ws.WeightRes[0..14]
+        area: 867.925
+      - name: System.ws.MAC[0..14]
+        area: 1.0
+      - name: System.Wire
+        area: 1.0
+      - name: System.Router
+        area: 1.0
+      - name: System.DRAM
+        area: 2625.62

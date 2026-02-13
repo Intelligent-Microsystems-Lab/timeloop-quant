@@ -1,0 +1,149 @@
+2026-02-02 15:28:40 INFO            _                _                      
+2026-02-02 15:28:40 INFO           / \   ___ ___ ___| | ___ _ __ __ _ _   _ 
+2026-02-02 15:28:40 INFO          / _ \ / __/ __/ _ \ |/ _ \ '__/ _` | | | |
+2026-02-02 15:28:40 INFO         / ___ \ (_| (_|  __/ |  __/ | | (_| | |_| |
+2026-02-02 15:28:40 INFO        /_/   \_\___\___\___|_|\___|_|  \__, |\__, |
+2026-02-02 15:28:40 INFO                                        |___/ |___/ 
+2026-02-02 15:28:40 INFO        generating outputs according to the following specified output flags... 
+2026-02-02 15:28:40 INFO         Please use the -f flag to update the preference (default to all output files)
+2026-02-02 15:28:40 INFO        {'ERT': 1, 'ERT_summary': 1, 'ART': 1, 'ART_summary': 1, 'energy_estimation': 1, 'flattened_arch': 1}
+2026-02-02 15:28:40 INFO        Located config file at /home/ptaheri/.config/accelergy/accelergy_config.yaml.
+2026-02-02 15:28:40 INFO        config file located:
+2026-02-02 15:28:40 INFO        /home/ptaheri/.config/accelergy/accelergy_config.yaml
+2026-02-02 15:28:40 INFO        Parsing file ../arch/2level.arch.yaml for architecture info
+
+
+
+
+
+============================================================
+Accelergy has encountered an error and crashed. Error below: 
+============================================================
+|| Traceback (most recent call last):
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/accelergy_console.py", line 339, in main
+||     run()
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/accelergy_console.py", line 94, in run
+||     raw_dicts = RawInputs2Dicts(raw_input_info, args.update_config_version)
+||                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/raw_inputs_2_dicts.py", line 29, in __init__
+||     self.load_and_construct_dicts(update_config_version)
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/raw_inputs_2_dicts.py", line 86, in load_and_construct_dicts
+||     getattr(self, YAML_parser_fname)(file_info)
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/raw_inputs_2_dicts.py", line 167, in architecture_input_parser
+||     arch_comp_list["subtree"][0] = self.tree_node_classification(
+||                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/raw_inputs_2_dicts.py", line 185, in tree_node_classification
+||     node_attrs = parse_expressions_sequentially_replacing_bindings(
+||                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/parsing_utils.py", line 382, in parse_expressions_sequentially_replacing_bindings
+||     propagate_required_keys(binding_dictionary, parsed, location)
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/parsing_utils.py", line 147, in propagate_required_keys
+||     propagate("global_cycle_seconds")
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/parsing_utils.py", line 132, in propagate
+||     raise ValueError(
+|| ValueError: Required key "global_cycle_seconds" not found in arch attribute . Found keys: technology
+============================================================
+Stack with local variables (most recent call last):
+============================================================
+Frame 3
+============================================================
+| /home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/raw_inputs_2_dicts.py:185
+| ValueError: Required key "global_cycle_seconds" not found in arch attribute . Found keys: technology
+| Local var self =                         <accelergy.raw_inputs_2_dicts.RawInputs2Dicts object at 0x6ffcc59fded0>
+| Local var node_attrs =                   {'technology': '45nm'}
+|          181: :param node_attrs: a dictionary that contains the explicitly specified attributes and the projected upper level shared attributes
+|          182: :return: None
+|          183: """
+|          184: # interpret the mapping and arithmetic operations in the raw description
+| ERROR >> 185: node_attrs = parse_expressions_sequentially_replacing_bindings(
+|          186:     node_attrs,
+|          187:     self.arch_variables,
+|          188:     f"arch attribute ",
+|          189:     strings_allowed=True,
+============================================================
+Frame 2
+============================================================
+| /home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/parsing_utils.py:382
+| ValueError: Required key "global_cycle_seconds" not found in arch attribute . Found keys: technology
+| Local var binding_dictionary =           {}
+| Local var location =                     arch attribute 
+| Local var strings_allowed =              True
+| Local var propagate_keys =               True
+| Local var parsed =                       {'technology': '45nm'}
+| Local var k =                            technology
+| Local var v =                            45nm
+| Local var attrs =                        {}
+|          378:         parsed[k] = parse_expression_for_arithmetic(
+|          379:             v, attrs, f'{location}"{k}"', strings_allowed
+|          380:         )
+|          381:     if propagate_keys:
+| ERROR >> 382:         propagate_required_keys(binding_dictionary, parsed, location)
+|          383:     return parsed
+|          384: 
+|          385: 
+|          386: def count_num_identical_comps(name):
+============================================================
+Frame 1
+============================================================
+| /home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/parsing_utils.py:147
+| ValueError: Required key "global_cycle_seconds" not found in arch attribute . Found keys: technology
+| Local var d2 =                           {'technology': '45nm'}
+| Local var action_keys =                  False
+| Local var propagate =                    <function propagate_required_keys.<locals>.propagate at 0x6ffcc4a7b6a0>
+|          143:                d2["global_cycle_seconds"].replace("ns", "e-9").replace(" ", "")
+|          144:            )
+|          145:        return
+|          146: 
+| ERROR >> 147:    propagate("global_cycle_seconds")
+|          148:    propagate("action_latency_cycles", 1)
+|          149:    if action_keys:
+|          150:        return
+|          151:    d2.setdefault("cycle_seconds", d2["global_cycle_seconds"])
+============================================================
+Frame 0
+============================================================
+| /home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/parsing_utils.py:132
+| ValueError: Required key "global_cycle_seconds" not found in arch attribute . Found keys: technology
+| Local var key =                          global_cycle_seconds
+| Local var setdefault =                   None
+| Local var combined_keys =                ['technology']
+| Local var d1 =                           {}
+| Local var d2 =                           {'technology': '45nm'}
+| Local var location =                     arch attribute 
+|          128:     if setdefault is not None:
+|          129:         d2[key] = setdefault
+|          130:         return
+|          131:     combined_keys = list(d1.keys()) + [k for k in d2.keys() if k not in d1]
+| ERROR >> 132:     raise ValueError(
+|          133:         f'Required key "{key}" not found in {location}. Found keys: '
+|          134:         f'{", ".join(combined_keys)}'
+|          135:     )
+|          136: d2[key] = d1.get(key, d1.get(key.upper()))
+============================================================
+|| Traceback (most recent call last):
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/accelergy_console.py", line 339, in main
+||     run()
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/accelergy_console.py", line 94, in run
+||     raw_dicts = RawInputs2Dicts(raw_input_info, args.update_config_version)
+||                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/raw_inputs_2_dicts.py", line 29, in __init__
+||     self.load_and_construct_dicts(update_config_version)
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/raw_inputs_2_dicts.py", line 86, in load_and_construct_dicts
+||     getattr(self, YAML_parser_fname)(file_info)
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/raw_inputs_2_dicts.py", line 167, in architecture_input_parser
+||     arch_comp_list["subtree"][0] = self.tree_node_classification(
+||                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/raw_inputs_2_dicts.py", line 185, in tree_node_classification
+||     node_attrs = parse_expressions_sequentially_replacing_bindings(
+||                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/parsing_utils.py", line 382, in parse_expressions_sequentially_replacing_bindings
+||     propagate_required_keys(binding_dictionary, parsed, location)
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/parsing_utils.py", line 147, in propagate_required_keys
+||     propagate("global_cycle_seconds")
+||   File "/home/ptaheri/Projects/tlv4/accelergy-timeloop-infrastructure/src/accelergy/accelergy/parsing_utils.py", line 132, in propagate
+||     raise ValueError(
+|| ValueError: Required key "global_cycle_seconds" not found in arch attribute . Found keys: technology
+============================================================
+Accelergy has encountered an error and crashed. Error above. 
+============================================================
+

@@ -1,0 +1,61 @@
+architecture:
+    version: '0.4'
+    local:
+      - name: system.PE.Buffer
+        class: storage
+        subclass: smartbuffer_metadata
+        attributes:
+            technology: 45nm
+            data_storage_depth: 128
+            data_storage_width: 64
+            block_size: 64
+            datawidth: 8
+            n_banks: 4
+            metadata_storage_depth: 128
+            metadata_storage_width: 60
+            metadata_block_size: 12
+            metadata_datawidth: 5
+            metadata_counter_width: 4
+            decompression_supported: true
+            compression_supported: true
+            meshX: 1
+            writes: true
+            reads: true
+            global_cycle_seconds: 1e-09
+            n_rdwr_ports: 2
+            ag_datawidth: 4.852030263919617
+        area_scale: 1.0
+        energy_scale: 1.0
+      - name: system.PE.MACC
+        class: intmac
+        attributes:
+            datawidth: 8
+            technology: 45nm
+            global_cycle_seconds: 1e-09
+        area_scale: 1.0
+        energy_scale: 1.0
+      - name: system.BackingStorage
+        class: storage
+        subclass: smartbuffer_metadata
+        attributes:
+            technology: 45nm
+            data_storage_depth: 8196
+            data_storage_width: 64
+            block_size: 64
+            datawidth: 8
+            n_banks: 4
+            metadata_storage_depth: 8196
+            metadata_storage_width: 60
+            metadata_block_size: 12
+            metadata_datawidth: 5
+            metadata_counter_width: 4
+            decompression_supported: true
+            compression_supported: true
+            meshX: 1
+            writes: true
+            reads: true
+            global_cycle_seconds: 1e-09
+            n_rdwr_ports: 2
+            ag_datawidth: 9.011401509358791
+        area_scale: 1.0
+        energy_scale: 1.0

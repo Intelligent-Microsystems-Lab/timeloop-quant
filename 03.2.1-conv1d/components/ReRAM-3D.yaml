@@ -1,0 +1,51 @@
+compound_components:
+  version: 0.3
+  classes:
+  - name: ReRAM_smartbuffer
+    attributes:
+      technology: must_specify
+      width: must_specify
+      depth: must_specify
+      word-bits: must_specify
+      cell_type: must_specify
+      cell_levels: must_specify
+      read-energy-scale: must_specify
+      write-energy-scale: must_specify
+    subcomponents:
+      - name: storage
+        class: ReRAMcell_storage
+        attributes:
+          technology: technology
+          cell_type: cell_type
+          cell_levels: cell_levels
+          depth: depth
+          width: width
+          read-energy-scale: read-energy-scale
+          write-energy-scale: write-energy-scale
+          word-bits: word-bits #actually data width/word
+          writes: False
+      - name: intersection_unit  # place holder
+        class: intadder
+        attributes:
+          technology: technology
+          width: 0
+
+    actions:
+      - name: write
+        subcomponents:
+          - name: storage
+            actions:
+              - name: write
+      - name: read
+        subcomponents:
+          - name: storage
+            actions:
+              - name: read
+      - name: idle
+        subcomponents:
+          - name: storage
+            actions:
+              - name: idle
+          - name: storage
+            actions:
+              - name: idle

@@ -1,0 +1,32 @@
+ART_summary:
+  version: 0.3
+  table_summary:
+  - name: system.PE.MACC
+    area: 2389.0
+    primitive_estimations: table-based-plug-ins
+  - name: system.PE.Buffer
+    area: 16350.64
+    primitive_estimations:
+    - name: storage
+      estimator: Cacti
+    - name: address_generators[0..1]
+      estimator: dummy_table
+    - name: metadata_counters[0..1]
+      estimator: dummy_table
+    - name: metadata_storage
+      estimator: Cacti
+    - name: intersection_unit
+      estimator: table-based-plug-ins
+  - name: system.BackingStorage
+    area: 371961.6
+    primitive_estimations:
+    - name: storage
+      estimator: Cacti
+    - name: address_generators[0..1]
+      estimator: dummy_table
+    - name: metadata_counters[0..1]
+      estimator: dummy_table
+    - name: metadata_storage
+      estimator: Cacti
+    - name: intersection_unit
+      estimator: table-based-plug-ins

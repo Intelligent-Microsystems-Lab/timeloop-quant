@@ -155,6 +155,17 @@ Application::Application(config::CompoundConfig* config,
   constraints_ = new mapping::Constraints(*arch_props_, workload_);
   constraints_->Parse(arch_constraints);
 
+  // Propagate any per-storage-level tensor precisions from architecture
+  // constraints into the topology specs so that evaluation can use
+  // level-specific operand precisions.
+  const auto& tensor_precisions_per_storage_level =
+    constraints_->TensorPrecisionsPerStorageLevel();
+  if (!tensor_precisions_per_storage_level.empty())
+  {
+    arch_specs_.topology.SetTensorPrecisionsPerStorageLevel(
+      tensor_precisions_per_storage_level);
+  }
+
   if (verbose_)
     std::cout << "Architecture configuration complete." << std::endl;
 

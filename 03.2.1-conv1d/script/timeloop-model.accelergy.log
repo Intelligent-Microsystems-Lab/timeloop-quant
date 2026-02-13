@@ -1,0 +1,66 @@
+    _                _                      
+   / \   ___ ___ ___| | ___ _ __ __ _ _   _ 
+  / _ \ / __/ __/ _ \ |/ _ \ '__/ _` | | | |
+ / ___ \ (_| (_|  __/ |  __/ | | (_| | |_| |
+/_/   \_\___\___\___|_|\___|_|  \__, |\__, |
+                                |___/ |___/ 
+
+Info: generating outputs according to the following specified output flags... 
+ Please use the -f flag to update the preference (default to all output files) 
+{'ERT': 1, 'ERT_summary': 1, 'ART': 1, 'ART_summary': 1, 'energy_estimation': 1, 'flattened_arch': 1}
+Warn: Cannot recognize the top key "mapping" in file ../map/conv1d.map.yaml 
+Warn: Cannot recognize the top key "sparse_optimizations" in file ../sparse-opt/compressW.skipIO.yaml 
+Warn: Cannot recognize the top key "problem" in file ../prob/conv1d.prob.yaml 
+Info: Parsing file ../arch/2level.arch.yaml for architecture info 
+Info: Parsing file ../components/addcmp.yaml for compound_components info 
+Info: Parsing file ../components/bus.yaml for compound_components info 
+Info: Parsing file ../components/DRAM_metadata.yaml for compound_components info 
+Info: Parsing file ../components/regfile_metadata.yaml for compound_components info 
+Info: Parsing file ../components/reg_storage.yaml for compound_components info 
+Info: Parsing file ../components/ReRAM-3D.yaml for compound_components info 
+Info: Parsing file ../components/ReRAM_metadata.yaml for compound_components info 
+Info: Parsing file ../components/smartbuffer_metadata.yaml for compound_components info 
+Info: Parsing file ../components/smartbuffer.yaml for compound_components info 
+Info: Parsing file ../components/SRAM-3D.yaml for compound_components info 
+Info: Parsing file ../components/SRAM_metadata.yaml for compound_components info 
+Info: config file located: /afs/crc.nd.edu/user/p/ptaheri/.config/accelergy/accelergy_config.yaml 
+config file content: 
+ {'estimator_plug_ins': ['/afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins'], 'primitive_components': ['/afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/primitive_component_libs'], 'table_plug_ins': {'roots': ['/afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-table-based-plug-ins/set_of_table_templates', '/afs/crc.nd.edu/user/p/ptaheri/Public/timeloopTables/32nm_data_digital/', '/afs/crc.nd.edu/user/m/mhoreni/cimflow/Timeloop-Models/PIM/PIM_estimation_tables']}, 'version': 0.3}
+Info: primitive component file parsed:  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/primitive_component_libs/pim_primitive_component.lib.yaml 
+Info: primitive component file parsed:  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/primitive_component_libs/primitive_component.lib.yaml 
+Info: primitive component file parsed:  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/primitive_component_libs/soc_primitives.lib.yaml 
+Info: estimator plug-in identified by:  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins/dummy_tables/dummy.estimator.yaml 
+Info: estimator plug-in identified by:  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti.estimator.yaml 
+Info: estimator plug-in identified by:  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-table-based-plug-ins/table.estimator.yaml 
+table-based-plug-ins Identifies a set of tables named:  test_tables
+table-based-plug-ins Identifies a set of tables named:  32nm_tables_Digital
+Info: estimator plug-in identified by:  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-nvsim-plug-in/nvsim.estimator.yaml 
+HELLO
+Info: estimator plug-in identified by:  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-aladdin-plug-in/aladdin.estimator.yaml 
+Info: CACTI plug-in... Querying CACTI for request:
+ {'class_name': 'SRAM', 'attributes': OrderedDict([('technology', '32nm'), ('width', 64), ('depth', 128), ('datawidth', 8), ('n_rdwr_ports', 2), ('n_banks', 4), ('avg_sparsity', 'avg_sparsity'), ('writes', True), ('reads', True), ('n_rd_ports', 0), ('n_wr_ports', 0), ('latency', '5ns')]), 'action_name': 'write', 'arguments': None}
+copy  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /afs/crc.nd.edu/user/p/ptaheri/Private/snn_hw_eval/co_design/timeloop-accelergy-exercises/workspace/exercises/2021.isca/designs/03.2.1-conv1d/script/cacti/timeloop-model.09_30_12_32_53_SRAM.cfg
+CACTI plug-in removing temp file:  /afs/crc.nd.edu/user/p/ptaheri/Private/snn_hw_eval/co_design/timeloop-accelergy-exercises/workspace/exercises/2021.isca/designs/03.2.1-conv1d/script/cacti/timeloop-model.09_30_12_32_53_SRAM.cfg
+2.758952e-05
+Info: CACTI plug-in... Querying CACTI for request:
+ {'class_name': 'SRAM', 'attributes': OrderedDict([('technology', '32nm'), ('width', 60), ('depth', 128), ('datawidth', 60), ('writes', True), ('reads', True), ('n_rd_ports', 0), ('n_wr_ports', 0), ('n_rdwr_ports', 1), ('n_banks', 1), ('latency', '5ns')]), 'action_name': 'read', 'arguments': None}
+copy  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /afs/crc.nd.edu/user/p/ptaheri/Private/snn_hw_eval/co_design/timeloop-accelergy-exercises/workspace/exercises/2021.isca/designs/03.2.1-conv1d/script/cacti/timeloop-model.09_30_12_32_55_SRAM.cfg
+CACTI plug-in removing temp file:  /afs/crc.nd.edu/user/p/ptaheri/Private/snn_hw_eval/co_design/timeloop-accelergy-exercises/workspace/exercises/2021.isca/designs/03.2.1-conv1d/script/cacti/timeloop-model.09_30_12_32_55_SRAM.cfg
+1.17369e-05
+Info: CACTI plug-in... Querying CACTI for request:
+ {'class_name': 'SRAM', 'attributes': OrderedDict([('technology', '32nm'), ('width', 64), ('depth', 8196), ('datawidth', 8), ('n_rdwr_ports', 2), ('n_banks', 4), ('avg_sparsity', 'avg_sparsity'), ('writes', True), ('reads', True), ('n_rd_ports', 0), ('n_wr_ports', 0), ('latency', '5ns')]), 'action_name': 'write', 'arguments': None}
+copy  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /afs/crc.nd.edu/user/p/ptaheri/Private/snn_hw_eval/co_design/timeloop-accelergy-exercises/workspace/exercises/2021.isca/designs/03.2.1-conv1d/script/cacti/timeloop-model.09_30_12_32_56_SRAM.cfg
+CACTI plug-in removing temp file:  /afs/crc.nd.edu/user/p/ptaheri/Private/snn_hw_eval/co_design/timeloop-accelergy-exercises/workspace/exercises/2021.isca/designs/03.2.1-conv1d/script/cacti/timeloop-model.09_30_12_32_56_SRAM.cfg
+0.000924604
+Info: CACTI plug-in... Querying CACTI for request:
+ {'class_name': 'SRAM', 'attributes': OrderedDict([('technology', '32nm'), ('width', 60), ('depth', 8196), ('datawidth', 60), ('writes', True), ('reads', True), ('n_rd_ports', 0), ('n_wr_ports', 0), ('n_rdwr_ports', 1), ('n_banks', 1), ('latency', '5ns')]), 'action_name': 'read', 'arguments': None}
+copy  /afs/crc.nd.edu/user/p/ptaheri/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/default_SRAM.cfg  to  /afs/crc.nd.edu/user/p/ptaheri/Private/snn_hw_eval/co_design/timeloop-accelergy-exercises/workspace/exercises/2021.isca/designs/03.2.1-conv1d/script/cacti/timeloop-model.09_30_12_32_58_SRAM.cfg
+CACTI plug-in removing temp file:  /afs/crc.nd.edu/user/p/ptaheri/Private/snn_hw_eval/co_design/timeloop-accelergy-exercises/workspace/exercises/2021.isca/designs/03.2.1-conv1d/script/cacti/timeloop-model.09_30_12_32_58_SRAM.cfg
+0.0006774210000000001
+Warn: No action counts are specified as yaml input 
+Info: flattened architecture is saved to: ../output//timeloop-model.flattened_architecture.yaml 
+Info: energy reference table is saved to: ../output//timeloop-model.ERT.yaml 
+Info: energy reference table summary is saved to: ../output//timeloop-model.ERT_summary.yaml 
+Warn: no runtime energy estimations are generated... not generating energy_estimation.yaml 
+Info: area reference table is saved to: ../output//timeloop-model.ART.yaml 
+Info: area reference table summary is saved to: ../output//timeloop-model.ART_summary.yaml 

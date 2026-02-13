@@ -1,0 +1,35 @@
+sparse_optimizations:
+  targets:
+    - name: BackingStorage
+      representation-format:
+        data-spaces:
+          - name: Inputs
+            ranks:
+              - format: UOP # uncompressed offset pair  
+              # - format: UOP # uncompressed offset pair              
+              - format: RLE # run length encoding           
+      action-optimization:
+        - type: skipping
+          options:
+            - target: Weights
+              condition-on: [Inputs  ]
+        - type: skipping
+          options:
+            - target: Outputs
+              condition-on: [Inputs  ]
+    - name: Buffer
+      representation-format:
+        data-spaces:
+          - name: Inputs
+            ranks:            
+              - format: RLE # run length encoding
+     
+      action-optimization:
+        - type: skipping
+          options:
+            - target: Weights
+              condition-on: [Inputs  ]
+        - type: skipping
+          options:
+            - target: Outputs
+              condition-on: [Inputs  ]

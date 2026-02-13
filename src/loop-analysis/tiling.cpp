@@ -822,13 +822,15 @@ tiling::CompoundTileNest CollapseTiles(analysis::CompoundTileNest& tiles,
                                        int num_tiling_levels,
                                        const CompoundMaskNest& tile_mask,
                                        const CompoundMaskNest& distribution_supported,
-                                       problem::Workload* workload)
+                                       problem::Workload* workload,
+                                       const std::map<unsigned, problem::PerDataSpace<int>>* tensor_precisions_per_storage_level)
 {
   CompoundDataMovementNest collapsed_compound_data_nest = CollapseDataMovementNest(tiles.compound_data_movement_info_nest,
                                                                                    num_tiling_levels,
                                                                                    tile_mask,
                                                                                    distribution_supported, 
-                                                                                   workload);
+                                                                                   workload,
+                                                                                   tensor_precisions_per_storage_level);
   ComputeNest collapsed_compound_compute_nest = CollapseComputeNest(tiles.compound_compute_info_nest, num_tiling_levels); 
   tiling::CompoundTileNest solution;
   solution.compound_data_movement_info_nest = collapsed_compound_data_nest;
@@ -905,14 +907,14 @@ CompoundDataMovementNest CollapseDataMovementNest(analysis::CompoundDataMovement
                                                   int num_tiling_levels,
                                                   const CompoundMaskNest& tile_mask,
                                                   const CompoundMaskNest& distribution_supported,
-                                                  problem::Workload* workload)
+                                                  problem::Workload* workload,
+                                                  const std::map<unsigned, problem::PerDataSpace<int>>* tensor_precisions_per_storage_level)
 {
   // Constructing an array of tile nests, one for each problem::Shape::DataSpaceID.
   // From the tile data, select the size and accesses at the boundaries of each
   // storage level. Size comes from the outermost tile within the storage level,
   // and accesses comes from the innermost tile within the storage level.
   CompoundDataMovementNest solution;
-  (void) workload;
   for (int pv = 0; pv < int(problem::GetShape()->NumDataSpaces); pv++)
   {
     int processed_loop_count = 0;  // number of loops that have been collapsed
@@ -961,7 +963,41 @@ CompoundDataMovementNest CollapseDataMovementNest(analysis::CompoundDataMovement
       collapsed_tile.replication_factor = tiles[pv][outermost_loop].replication_factor;
       collapsed_tile.fanout = tiles[pv][innermost_loop].fanout;
       collapsed_tile.SetTensorRepresentation(); // default to uncompressed
-      collapsed_tile.SetTilePrecision(workload->GetPrecision(pv));
+      // Determine tile precision, preferring per-storage-level settings if
+      // provided, and falling back to workload precisions otherwise.
+      int tile_precision_bits = 0;
+      if (tensor_precisions_per_storage_level &&
+          tensor_precisions_per_storage_level->find(cur_tiling_level) != tensor_precisions_per_storage_level->end())
+      {
+        const auto& per_dspace_prec =
+          tensor_precisions_per_storage_level->at(cur_tiling_level);
+        // We initialized all entries to 0 when parsing constraints. A
+        // positive value here means the user explicitly specified a
+        // precision for this dataspace at this storage level.
+        int candidate = per_dspace_prec.at(unsigned(pv));
+        if (candidate > 0)
+        {
+          tile_precision_bits = candidate;
+        }
+      }
+      if (tile_precision_bits <= 0)
+      {
+        // Fall back to workload-level operand precision if available.
+        // Check if workload has precisions set (they may not be if we're
+        // reading from architecture_constraints instead of problem file).
+        auto pv_id = problem::Shape::DataSpaceID(pv);
+        try
+        {
+          tile_precision_bits = workload->GetPrecision(pv_id);
+        }
+        catch (const std::out_of_range&)
+        {
+          // Workload doesn't have precisions set. Use a default (32 bits
+          // is a reasonable default for floating-point or wide integer ops).
+          tile_precision_bits = 32;
+        }
+      }
+      collapsed_tile.SetTilePrecision(tile_precision_bits);
       collapsed_tile.parent_level = std::numeric_limits<unsigned>::max();
       collapsed_tile.child_level = std::numeric_limits<unsigned>::max();
       

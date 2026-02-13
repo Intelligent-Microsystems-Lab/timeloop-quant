@@ -1,0 +1,93 @@
+ERT:
+  version: 0.3
+  tables:
+  - name: system.PE.MACC
+    actions:
+    - name: mac_random
+      arguments: null
+      energy: 2.13
+    - name: mac_reused
+      arguments: null
+      energy: 1.42
+    - name: mac_gated
+      arguments: null
+      energy: 0.72
+    - name: idle
+      arguments: null
+      energy: 0.72
+  - name: system.PE.Buffer
+    actions:
+    - name: write
+      arguments: null
+      energy: 2.575
+    - name: read
+      arguments: null
+      energy: 2.478
+    - name: gated_write
+      arguments: null
+      energy: 0.0
+    - name: gated_read
+      arguments: null
+      energy: 0.0
+    - name: address_generation
+      arguments: null
+      energy: 1
+    - name: metadata_read
+      arguments: null
+      energy: 0.543
+    - name: metadata_write
+      arguments: null
+      energy: 1.187
+    - name: gated_metadata_read
+      arguments: null
+      energy: 0.0
+    - name: gated_metadata_write
+      arguments: null
+      energy: 0.0
+    - name: decompression_count
+      arguments: null
+      energy: 1
+    - name: compression_count
+      arguments: null
+      energy: 1
+    - name: idle
+      arguments: null
+      energy: 0.0
+  - name: system.BackingStorage
+    actions:
+    - name: write
+      arguments: null
+      energy: 13.733
+    - name: read
+      arguments: null
+      energy: 14.817
+    - name: gated_write
+      arguments: null
+      energy: 0.001
+    - name: gated_read
+      arguments: null
+      energy: 0.001
+    - name: address_generation
+      arguments: null
+      energy: 1
+    - name: metadata_read
+      arguments: null
+      energy: 8.311
+    - name: metadata_write
+      arguments: null
+      energy: 6.377
+    - name: gated_metadata_read
+      arguments: null
+      energy: 0.001
+    - name: gated_metadata_write
+      arguments: null
+      energy: 0.001
+    - name: decompression_count
+      arguments: null
+      energy: 1
+    - name: compression_count
+      arguments: null
+      energy: 1
+    - name: idle
+      arguments: null
+      energy: 0.001

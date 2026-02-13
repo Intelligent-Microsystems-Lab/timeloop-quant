@@ -1,161 +1,38 @@
 ERT:
-  version: 0.3
-  tables:
-  - name: System.ws.GlobalBuffer
-    actions:
-    - name: read
-      arguments:
-        address_delta: 0
-        data_delta: 0
-      energy: 9.148
-    - name: read
-      arguments:
-        address_delta: 0
-        data_delta: 1
-      energy: 588.742
-    - name: read
-      arguments:
-        address_delta: 1
-        data_delta: 0
-      energy: 257.546
-    - name: read
-      arguments:
-        address_delta: 1
-        data_delta: 1
-      energy: 837.14
-    - name: write
-      arguments:
-        address_delta: 0
-        data_delta: 0
-      energy: 9.148
-    - name: write
-      arguments:
-        address_delta: 0
-        data_delta: 1
-      energy: 545.531
-    - name: write
-      arguments:
-        address_delta: 1
-        data_delta: 0
-      energy: 239.027
-    - name: write
-      arguments:
-        address_delta: 1
-        data_delta: 1
-      energy: 775.41
-    - name: idle
-      arguments: null
-      energy: 9.148
-  - name: System.ws.WeightRes[0..14]
-    actions:
-    - name: read
-      arguments:
-        address_delta: 0
-        data_delta: 0
-      energy: 0.0
-    - name: read
-      arguments:
-        address_delta: 0
-        data_delta: 1
-      energy: 0.269
-    - name: read
-      arguments:
-        address_delta: 1
-        data_delta: 0
-      energy: 0.115
-    - name: read
-      arguments:
-        address_delta: 1
-        data_delta: 1
-      energy: 0.384
-    - name: write
-      arguments:
-        address_delta: 0
-        data_delta: 0
-      energy: 0.0
-    - name: write
-      arguments:
-        address_delta: 0
-        data_delta: 1
-      energy: 0.408
-    - name: write
-      arguments:
-        address_delta: 1
-        data_delta: 0
-      energy: 0.175
-    - name: write
-      arguments:
-        address_delta: 1
-        data_delta: 1
-      energy: 0.583
-    - name: idle
-      arguments: null
-      energy: 0.0
-  - name: System.ws.MAC[0..14]
-    actions:
-    - name: mac_random
-      arguments: null
-      energy: 2.13
-    - name: mac_reused
-      arguments: null
-      energy: 1.42
-    - name: mac_gated
-      arguments: null
-      energy: 0.72
-    - name: idle
-      arguments: null
-      energy: 0.72
-  - name: System.Wire
-    actions:
-    - name: transfer_random
-      arguments: null
-      energy: 0.325
-    - name: transfer_repeated
-      arguments: null
-      energy: 0.325
-    - name: idle
-      arguments: null
-      energy: 0.0
-  - name: System.Router
-    actions:
-    - name: transfer_random
-      arguments: null
-      energy: 2.0
-    - name: idle
-      arguments: null
-      energy: 0.0
-  - name: System.DRAM
-    actions:
-    - name: write
-      arguments: null
-      energy: 58.1
-    - name: read
-      arguments: null
-      energy: 58.1
-    - name: gated_write
-      arguments: null
-      energy: 0.0
-    - name: gated_read
-      arguments: null
-      energy: 0.0
-    - name: metadata_read
-      arguments: null
-      energy: 1.03
-    - name: metadata_write
-      arguments: null
-      energy: 2.619
-    - name: gated_metadata_read
-      arguments: null
-      energy: 0.0
-    - name: gated_metadata_write
-      arguments: null
-      energy: 0.0
-    - name: decompression_count
-      arguments: null
-      energy: 0.12
-    - name: compression_count
-      arguments: null
-      energy: 0.12
-    - name: idle
-      arguments: null
-      energy: 0.0
+    version: '0.4'
+    tables:
+      - name: System.DRAM
+        actions:
+          - name: write
+            arguments: {}
+            energy: 2048.0
+          - name: read
+            arguments: {}
+            energy: 2048.0
+          - name: gated_write
+            arguments: {}
+            energy: 0.0
+          - name: gated_read
+            arguments: {}
+            energy: 0.0
+          - name: metadata_read
+            arguments: {}
+            energy: 1.02983
+          - name: metadata_write
+            arguments: {}
+            energy: 2.61851
+          - name: gated_metadata_read
+            arguments: {}
+            energy: 0.0
+          - name: gated_metadata_write
+            arguments: {}
+            energy: 0.0
+          - name: decompression_count
+            arguments: {}
+            energy: 1.0
+          - name: compression_count
+            arguments: {}
+            energy: 1.0
+          - name: idle
+            arguments: {}
+            energy: 0.0

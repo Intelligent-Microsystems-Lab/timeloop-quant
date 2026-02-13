@@ -1,0 +1,22 @@
+mapspace_constraints:
+  template: uber
+  targets:
+  - target: BackingStorage
+    type: bypass
+    bypass: []    
+    keep: [Inputs, Outputs, Weights]
+
+  - target: Buffer
+    type: bypass
+    bypass: []
+    keep: [Inputs, Weights,Outputs]
+
+  - target: BackingStorage
+    type: temporal
+    # factors:  Q=1 M=2
+    permutation: SMQ
+
+  - target: Buffer
+    type: temporal
+    # factors: S=1 
+    permutation: MQS

@@ -1,74 +1,80 @@
 architecture:
-  version: 0.3
-  local:
-  - name: System.ws.GlobalBuffer
-    class: storage
-    subclass: SRAM
-    attributes:
-      block_size: 256
-      depth: 1024000
-      latency: 5ns
-      n_banks: 1
-      n_rd_ports: 0
-      n_rdwr_ports: 1
-      n_wr_ports: 0
-      technology: 32nm
-      width: 256
-      word-bits: 16
-  - name: System.ws.WeightRes[0..14]
-    class: storage
-    subclass: SRAM
-    attributes:
-      block_size: 16
-      depth: 256
-      latency: 5ns
-      n_banks: 1
-      n_rd_ports: 0
-      n_rdwr_ports: 1
-      n_wr_ports: 0
-      technology: 32nm
-      width: 16
-      word-bits: 16
-  - name: System.ws.MAC[0..14]
-    class: compute
-    subclass: intmac
-    attributes:
-      datawidth: 8
-      latency: 5ns
-      num_pipeline_stages: 2
-      technology: 32nm
-      word-bits: 16
-  - name: System.Wire
-    class: wire
-    attributes:
-      datawidth: 1
-      latency: 1ns
-      length: 1
-      technology: 32nm
-      word-bits: 16
-  - name: System.Router
-    class: router
-    attributes:
-      datawidth: 1
-      latency: 1ns
-      technology: 32nm
-      word-bits: 16
-  - name: System.DRAM
-    class: DRAM
-    subclass: dram_smartbuffer_metadata
-    attributes:
-      block_size: 256
-      compression_supported: true
-      datawidth: datawidth
-      decompression_supported: true
-      metadata_block_size: 8
-      metadata_counter_width: 4
-      metadata_datawidth: 8
-      metadata_storage_depth: 200
-      metadata_storage_width: 64
-      n_rdwr_ports: 2
-      reads: true
-      technology: 32nm
-      width: 256
-      word-bits: 16
-      writes: true
+    version: '0.4'
+    local:
+      - name: System.ws.GlobalBuffer
+        class: storage
+        subclass: SRAM
+        attributes:
+            depth: 1024
+            width: 256
+            block_size: 256
+            word-bits: 16
+            technology: 32nm
+            global_cycle_seconds: 1e-09
+        area_scale: 1.0
+        energy_scale: 1.0
+      - name: System.ws.WeightRes[0..14]
+        class: storage
+        subclass: SRAM
+        attributes:
+            depth: 256
+            width: 16
+            block_size: 16
+            word-bits: 16
+            technology: 32nm
+            global_cycle_seconds: 1e-09
+        area_scale: 1.0
+        energy_scale: 1.0
+      - name: System.ws.MAC[0..14]
+        class: compute
+        subclass: intmac
+        attributes:
+            datawidth: 8
+            word-bits: 16
+            technology: 32nm
+            global_cycle_seconds: 1e-09
+        area_scale: 1.0
+        energy_scale: 1.0
+      - name: System.Wire
+        class: wire
+        attributes:
+            technology: 32nm
+            length: 1
+            datawidth: 1
+            latency: 1ns
+            word-bits: 16
+            global_cycle_seconds: 1e-09
+        area_scale: 1.0
+        energy_scale: 1.0
+      - name: System.Router
+        class: router
+        attributes:
+            technology: 32nm
+            latency: 1ns
+            datawidth: 1
+            word-bits: 16
+            global_cycle_seconds: 1e-09
+        area_scale: 1.0
+        energy_scale: 1.0
+      - name: System.DRAM
+        class: DRAM
+        subclass: dram_smartbuffer_metadata
+        attributes:
+            width: 256
+            block_size: 256
+            metadata_storage_depth: 200
+            metadata_storage_width: 64
+            metadata_block_size: 8
+            metadata_datawidth: 8
+            metadata_counter_width: 4
+            decompression_supported: true
+            compression_supported: true
+            writes: true
+            reads: true
+            word-bits: 16
+            technology: 32nm
+            global_cycle_seconds: 1e-09
+            n_rdwr_ports: 2
+            datawidth: datawidth
+        area_scale: 1.0
+        energy_scale: 1.0

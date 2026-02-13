@@ -1,0 +1,77 @@
+ERT_summary:
+    version: '0.4'
+    table_summary:
+      - name: system.PE.Buffer
+        actions:
+          - name: write
+            energy: 2.610512
+          - name: read
+            energy: 2.105512
+          - name: gated_write
+            energy: 0.0
+          - name: gated_read
+            energy: 0.0
+          - name: address_generation
+            energy: 1.0
+          - name: metadata_read
+            energy: 1.596612
+          - name: metadata_write
+            energy: 3.338852
+          - name: gated_metadata_read
+            energy: 0.0
+          - name: gated_metadata_write
+            energy: 0.0
+          - name: decompression_count
+            energy: 1.0
+          - name: compression_count
+            energy: 1.0
+          - name: idle
+            energy: 0.0
+        primitive_estimation(s):
+          - name: storage
+            estimator: CactiSRAM
+          - name: address_generators[0]
+            estimator: dummy
+          - name: metadata_storage
+            estimator: CactiSRAM
+          - name: metadata_counters[1]
+            estimator: dummy
+          - name: metadata_counters[0]
+            estimator: dummy
+      - name: system.BackingStorage
+        actions:
+          - name: write
+            energy: 21.4042
+          - name: read
+            energy: 22.3229
+          - name: gated_write
+            energy: 0.0
+          - name: gated_read
+            energy: 0.0
+          - name: address_generation
+            energy: 1.0
+          - name: metadata_read
+            energy: 24.833908
+          - name: metadata_write
+            energy: 18.840898
+          - name: gated_metadata_read
+            energy: 0.0
+          - name: gated_metadata_write
+            energy: 0.0
+          - name: decompression_count
+            energy: 1.0
+          - name: compression_count
+            energy: 1.0
+          - name: idle
+            energy: 0.0
+        primitive_estimation(s):
+          - name: storage
+            estimator: CactiSRAM
+          - name: address_generators[0]
+            estimator: dummy
+          - name: metadata_storage
+            estimator: CactiSRAM
+          - name: metadata_counters[1]
+            estimator: dummy
+          - name: metadata_counters[0]
+            estimator: dummy

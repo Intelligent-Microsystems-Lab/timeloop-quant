@@ -19,7 +19,7 @@ architecture:
           attributes:
             technology: 32nm
             latency: 1ns
-            datawidth: 1    
+            datawidth: 1
         # - name: DRAM
         #   class: DRAM
         #   attributes:

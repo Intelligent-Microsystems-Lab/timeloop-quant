@@ -1419,8 +1419,9 @@ void BufferLevel::ComputeVectorAccesses(const tiling::CompoundDataMovementInfo& 
 
       uint64_t tile_shape = tile[pvi].shape;
       // for access counts I need to make decisions based on the number of entries not bits
-      // Pooria: this is bad because I am just trying to avoid division by 0 
+      // Pooria: this is bad because I am just trying to avoid division by 0
       auto entries_per_block = tile[pvi].GetTilePrecision() == 0 ? block_size : block_size/tile[pvi].GetTilePrecision();
+      if (entries_per_block == 0) entries_per_block = 1;  // avoid division-by-zero in vector-access and table lookups below
       // determine whether naive model is enough
       // naive calculation of vector accesses is applicable if
       //    (1) tile is uncompressed

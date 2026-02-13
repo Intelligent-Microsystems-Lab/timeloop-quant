@@ -1,0 +1,90 @@
+ERT_summary:
+  version: 0.3
+  table_summary:
+  - name: system.PE.MACC
+    actions:
+    - name: mac_random
+      energy: 2.13
+    - name: mac_reused
+      energy: 1.42
+    - name: mac_gated
+      energy: 0.72
+    - name: idle
+      energy: 0.72
+    primitive_estimation(s):
+    - name: system.PE.MACC
+      estimator: table-based-plug-ins
+  - name: system.PE.Buffer
+    actions:
+    - name: write
+      energy: 2.575
+    - name: read
+      energy: 2.478
+    - name: gated_write
+      energy: 0.0
+    - name: gated_read
+      energy: 0.0
+    - name: address_generation
+      energy: 1
+    - name: metadata_read
+      energy: 0.543
+    - name: metadata_write
+      energy: 1.187
+    - name: gated_metadata_read
+      energy: 0.0
+    - name: gated_metadata_write
+      energy: 0.0
+    - name: decompression_count
+      energy: 1
+    - name: compression_count
+      energy: 1
+    - name: idle
+      energy: 0.0
+    primitive_estimation(s):
+    - name: storage
+      estimator: Cacti
+    - name: address_generators[0]
+      estimator: dummy_table
+    - name: metadata_storage
+      estimator: Cacti
+    - name: metadata_counters[1]
+      estimator: dummy_table
+    - name: metadata_counters[0]
+      estimator: dummy_table
+  - name: system.BackingStorage
+    actions:
+    - name: write
+      energy: 13.733
+    - name: read
+      energy: 14.817
+    - name: gated_write
+      energy: 0.001
+    - name: gated_read
+      energy: 0.001
+    - name: address_generation
+      energy: 1
+    - name: metadata_read
+      energy: 8.311
+    - name: metadata_write
+      energy: 6.377
+    - name: gated_metadata_read
+      energy: 0.001
+    - name: gated_metadata_write
+      energy: 0.001
+    - name: decompression_count
+      energy: 1
+    - name: compression_count
+      energy: 1
+    - name: idle
+      energy: 0.001
+    primitive_estimation(s):
+    - name: storage
+      estimator: Cacti
+    - name: address_generators[0]
+      estimator: dummy_table
+    - name: metadata_storage
+      estimator: Cacti
+    - name: metadata_counters[1]
+      estimator: dummy_table
+    - name: metadata_counters[0]
+      estimator: dummy_table

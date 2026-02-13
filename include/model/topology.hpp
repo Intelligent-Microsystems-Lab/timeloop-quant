@@ -120,6 +120,11 @@ class Topology : public Module
     std::vector<std::shared_ptr<NetworkSpecs>> networks;
     std::map<unsigned, unsigned> storage_map;
     unsigned arithmetic_map;
+    // Optional per-storage-level tensor precisions (bits per element),
+    // indexed by storage level ID, then by dataspace ID. When present,
+    // these override workload-level precisions at the corresponding
+    // storage level.
+    std::map<unsigned, problem::PerDataSpace<int>> tensor_precisions_per_storage_level_;
 
    public:
     // Constructors and assignment operators.
@@ -140,6 +145,7 @@ class Topology : public Module
 
       storage_map = other.storage_map;
       arithmetic_map = other.arithmetic_map;
+      tensor_precisions_per_storage_level_ = other.tensor_precisions_per_storage_level_;
     }
 
     // Copy-and-swap idiom.
@@ -151,6 +157,7 @@ class Topology : public Module
       swap(first.networks, second.networks);
       swap(first.storage_map, second.storage_map);
       swap(first.arithmetic_map, second.arithmetic_map);
+      swap(first.tensor_precisions_per_storage_level_, second.tensor_precisions_per_storage_level_);
     }
 
     Specs& operator = (Specs other)
@@ -181,6 +188,17 @@ class Topology : public Module
     std::shared_ptr<ArithmeticUnits::Specs> GetArithmeticLevel() const;
     std::shared_ptr<LegacyNetwork::Specs> GetInferredNetwork(unsigned network_id) const;
     std::shared_ptr<NetworkSpecs> GetNetwork(unsigned network_id) const;
+
+    void SetTensorPrecisionsPerStorageLevel(
+      const std::map<unsigned, problem::PerDataSpace<int>>& tensor_precisions)
+    {
+      tensor_precisions_per_storage_level_ = tensor_precisions;
+    }
+
+    const std::map<unsigned, problem::PerDataSpace<int>>& TensorPrecisionsPerStorageLevel() const
+    {
+      return tensor_precisions_per_storage_level_;
+    }
   };
 
   //

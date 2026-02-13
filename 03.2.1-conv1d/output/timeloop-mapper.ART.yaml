@@ -1,0 +1,9 @@
+ART:
+    version: '0.4'
+    tables:
+      - name: system.PE.MACC
+        area: 1.0
+      - name: system.PE.Buffer
+        area: 10326.14375
+      - name: system.BackingStorage
+        area: 425305.8125
